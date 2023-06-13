@@ -6,8 +6,8 @@ export const AuthenticationPage = () => {
         <div className={classnames(styles.authenticationPage)}>
             <img src="/logos/thinair-full-white.svg" className={classnames(styles.logo)}/>
             <div className={classnames(styles.buttonRow)}>
-                <a className={classnames(styles.btn)}>Login</a>
-                <a className={classnames(styles.btn)}>Sign Up</a>
+                <a href={`${import.meta.env.VITE_COGNITO__HOSTEDUI_URL}`} className={classnames(styles.btn)}>Login</a>
+                <a href={`${import.meta.env.VITE_COGNITO__HOSTEDUI_URL}`.replace('login', 'signup')} className={classnames(styles.btn)}>Sign Up</a>
             </div>
         </div>
     )

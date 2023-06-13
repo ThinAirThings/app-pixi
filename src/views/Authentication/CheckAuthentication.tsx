@@ -1,9 +1,7 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify"
 import { ReactNode, useEffect } from "react"
 import { useUserDetailsContext } from "../../context/UserContext"
-import { Navigate, useNavigate } from "react-router"
+import { Navigate } from "react-router"
 import { Loading } from "../Loading/Loading"
-
 // const cognitoTokenVerifier = CognitoJwtVerifier.create({
 //     userPoolId: `${import.meta.env.VITE_COGNITO__USERPOOL_ID}`,
 //     clientId: `${import.meta.env.VITE_COGNITO__CLIENT_ID}`,
@@ -16,8 +14,14 @@ export const CheckAuthentication = ({children}: {children: ReactNode}) => {
     useEffect(() => {
         (async () => {
             try {
-                const refreshTokenResponse = await fetch("https://devauth.api.thinair.cloud/refresh");
+                const refreshTokenResponse = await fetch("https://devauth.api.thinair.cloud/refresh", {
+                    method: 'GET',
+                    credentials: 'include',
+                    mode: 'cors'
+                });
                 if (!refreshTokenResponse.ok) {
+                    const {message} = await refreshTokenResponse.json();
+                    console.log(message);
                     setUserDetails(draft => {
                         draft.initialized = true;
                     });
@@ -31,6 +35,7 @@ export const CheckAuthentication = ({children}: {children: ReactNode}) => {
                     });
                 }
             } catch (error) {
+
                 setUserDetails(draft => {
                     draft.initialized = true;
                 })
