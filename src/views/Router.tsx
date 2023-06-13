@@ -2,7 +2,7 @@ import { RouterProvider } from 'react-router'
 import { Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import { UserContextProvider } from '../context/UserContext';
 import { CheckAuthentication } from './Authentication/CheckAuthentication';
-import { Authentication } from './Authentication/Authentication';
+import { AuthenticationPage } from './Authentication/AuthenticationPage';
 import { PixiProvider } from '../context/PixiContext';
 import { InfiniteCanvas } from './InfiniteCanvas/InfiniteCanvas';
 import { Loading } from './Loading/Loading';
@@ -15,7 +15,7 @@ const router = createBrowserRouter(
                 <Outlet/>
             </UserContextProvider>
         }>
-            <Route path="/auth" element={<Authentication/>}/>
+            <Route path="/auth" element={<AuthenticationPage/>}/>
             <Route path="*" element={
                 <CheckAuthentication>
                     <Route path="*" element={<Navigate to="/dashboard"/>}/>

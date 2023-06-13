@@ -1,0 +1,41 @@
+
+@layer Component {
+    .authenticationPage {
+        // Layout
+        @include v-stack('center', 'center');
+        width: 100vw;
+        height: 100vh;
+
+        // Style
+        background-color: $primary-gray;
+        .logo {
+            width: 300px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        .heading {
+            @include set-font(24px, 700);
+            color: white;
+            margin-bottom: 20px;
+        }
+        .buttonRow {
+            @include h-stack('center', 'center');
+            margin-bottom: 20px;
+            gap: 20px;
+            .btn {
+                background-color: white;
+                color: rgba(0, 0, 0, 0.85);
+                width: 80px;
+                text-align: center;
+                height: 32px;
+                border-radius: 4px;
+                padding: 7px 10px;
+                @include set-font(14px, 600);
+                cursor: pointer;
+                &:hover {
+                    background-color: #e6e6e6;
+                }
+            }
+        }
+    }
+}

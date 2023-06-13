@@ -1,0 +1,47 @@
+
+
+// Colors
+$primary-gray: #1c1c1c;
+
+// Typography
+$default-font-family: 'Inter', sans-serif;
+
+// Functions
+@mixin set-font($font-size, $font-weight, $italic: false) {
+    font-family: $default-font-family;
+    font-size: $font-size;
+    font-weight: $font-weight;
+    font-style: if($italic, italic, normal);
+}
+
+// Layout
+@mixin h-stack($h-align: 'left', $v-align: 'center') {
+    display: flex;
+    flex-direction: row;
+    justify-content: if($h-align == 'left', flex-start, if($h-align == 'center', center, if($h-align == 'right', flex-end, if($h-align == 'distribute', space-between, flex-start))));
+    align-items: if($v-align == 'top', flex-start, if($v-align == 'center', center, if($v-align == 'bottom', flex-end, flex-start)));
+}
+
+@mixin v-stack($h-align: 'left', $v-align: 'center') {
+    display: flex;
+    flex-direction: column;
+    align-items: if($h-align == 'left', flex-start, if($h-align == 'center', center, if($h-align == 'right', flex-end, flex-start)));
+    justify-content: if($v-align == 'top', flex-start, if($v-align == 'center', center, if($v-align == 'bottom', flex-end, if($v-align == 'distribute', space-between, flex-start))));
+}
+
+@each $h-align in ('left', 'center', 'right', 'distribute') {
+  @each $v-align in ('top', 'center', 'bottom') {
+    .h-stack-#{$h-align}-#{$v-align} {
+      @include h-stack($h-align, $v-align);
+    }
+  }
+}
+
+// Create handles for all possible combinations of h-stack and v-stack
+@each $h-align in ('left', 'center', 'right') {
+  @each $v-align in ('top', 'center', 'bottom', 'distribute') {
+    .v-stack-#{$h-align}-#{$v-align} {
+      @include v-stack($h-align, $v-align);
+    }
+  }
+}
