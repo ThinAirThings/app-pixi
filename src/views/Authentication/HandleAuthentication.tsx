@@ -2,13 +2,8 @@ import { ReactNode, useEffect } from "react"
 import { useUserDetailsContext } from "../../context/UserContext"
 import { Navigate } from "react-router"
 import { Loading } from "../Loading/Loading"
-// const cognitoTokenVerifier = CognitoJwtVerifier.create({
-//     userPoolId: `${import.meta.env.VITE_COGNITO__USERPOOL_ID}`,
-//     clientId: `${import.meta.env.VITE_COGNITO__CLIENT_ID}`,
-//     tokenUse: 'access',
-// })
 
-export const CheckAuthentication = ({children}: {children: ReactNode}) => {
+export const HandleAuthentication = ({children}: {children: ReactNode}) => {
     const [userDetails, setUserDetails] = useUserDetailsContext();
   
     useEffect(() => {
@@ -20,14 +15,13 @@ export const CheckAuthentication = ({children}: {children: ReactNode}) => {
                     mode: 'cors'
                 });
                 if (!refreshTokenResponse.ok) {
-                    const {message} = await refreshTokenResponse.json();
-                    console.log(message);
+                    console.log(await refreshTokenResponse.json())
                     setUserDetails(draft => {
                         draft.initialized = true;
                     });
                 } else {
                     const {accessToken, userId} = await refreshTokenResponse.json();
-                    setUserDetails(async (draft) => {
+                    setUserDetails((draft) => {
                         draft.initialized = true;
                         draft.accessToken = accessToken;
                         draft.authenticated = true;
@@ -35,7 +29,7 @@ export const CheckAuthentication = ({children}: {children: ReactNode}) => {
                     });
                 }
             } catch (error) {
-
+                console.log(error);
                 setUserDetails(draft => {
                     draft.initialized = true;
                 })

@@ -23,7 +23,7 @@
             margin-bottom: 20px;
             gap: 20px;
             .btn {
-                background-color: white;
+                background-color: $primary-white;
                 color: rgba(0, 0, 0, 0.85);
                 width: 80px;
                 text-align: center;
@@ -33,7 +33,7 @@
                 @include set-font(14px, 600);
                 cursor: pointer;
                 &:hover {
-                    background-color: #e6e6e6;
+                    background-color: $primary-white-hover;
                 }
             }
         }

@@ -1,7 +1,7 @@
 import { RouterProvider } from 'react-router'
 import { Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import { UserContextProvider } from '../context/UserContext';
-import { CheckAuthentication } from './Authentication/CheckAuthentication';
+import { HandleAuthentication } from './Authentication/HandleAuthentication';
 import { AuthenticationPage } from './Authentication/AuthenticationPage';
 import { PixiProvider } from '../context/PixiContext';
 import { InfiniteCanvas } from './InfiniteCanvas/InfiniteCanvas';
@@ -20,7 +20,7 @@ const router = createBrowserRouter(
             <Route path="/auth" element={<AuthenticationPage/>}/>
             <Route path="/auth/token" element={<HandleGrantToken/>}/>
             <Route path="*" element={
-                <CheckAuthentication>
+                <HandleAuthentication>
                     <Routes>
                         <Route path="/dashboard" element={<Dashboard/>}/>
                         <Route path="/space/:spaceId" element={
@@ -32,7 +32,7 @@ const router = createBrowserRouter(
                         }/>
                         <Route path="*" element={<Navigate to="/dashboard"/>}/>
                     </Routes>
-                </CheckAuthentication>
+                </HandleAuthentication>
             }/>
         </Route>
     )
