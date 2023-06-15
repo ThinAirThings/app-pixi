@@ -1,0 +1,63 @@
+@layer Component {
+    .background {
+        // Layout
+        position: absolute;
+        top: 0;
+        left: 0;
+        @include v-stack('center', 'center');
+        width: 100vw;
+        height: 100vh;
+        // Style
+        background-color: $primary-modal-cover;
+        // Transitions
+        visibility: hidden; // Default state is hidden.
+        opacity: 0;
+        transition: visibility 0s 200ms, opacity 200ms; // transition for visibility after the opacity
+        &.show {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 200ms;
+        }
+        .modal {
+            // Layout
+            min-width: 385px;
+            width: auto;
+            height: auto;
+            transform: translateY(-150px) scale(0);
+            @include v-stack('left', 'top');
+            padding: 20px 30px 20px 20px;
+            position: relative;
+            // Style
+            background-color: $primary-gray;
+            border-radius: 5px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            // Transitions
+            transition: transform 200ms;
+            &.show {
+                transform: translateY(-150px) scale(1);
+            }
+            .closeButton {
+                // Layout
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                // Style
+                color: $primary-red;
+                cursor: pointer;
+            }
+            .title {
+                // Layout
+                // Style
+                @include set-font(18px, 700);
+                color: $primary-white;
+            }
+            .content {
+                // Layout
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+                @include v-stack('left', 'top');
+            }
+        }
+    }
+}

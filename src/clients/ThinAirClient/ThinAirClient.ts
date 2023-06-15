@@ -33,6 +33,10 @@ export class ThinAirClient {
                 }): null,
                 mode: 'cors' 
             })
+            // Check if response is no content
+            if (response.status === 204) { 
+                return
+            }
             const result = await response.json()
             // Check for Errors
             if (!response.ok) {

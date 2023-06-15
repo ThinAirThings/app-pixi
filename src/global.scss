@@ -1,4 +1,3 @@
-@layer Global, Component, Composition, Construct, Override;
 @layer Global {
     * {
         box-sizing: border-box;
@@ -16,10 +15,29 @@
         position: relative;
         overflow: hidden;
     }
-
     a {
         color: inherit;
         text-decoration: none;
     }
+    button {
+        @include button-styles;
+    }
+    input {
+        @include input-styles;
+    }
+    h1 {
+        @include h1-styles;
+    }
+    h2 {
+        @include h2-styles;
+    }
+    h3 {
+        @include h3-styles;
+    }
+    h4 {
+        @include h4-styles;
+    }
+    h5 {
+        @include h5-styles;
+    }
 }
-

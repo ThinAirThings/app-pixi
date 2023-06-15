@@ -5,7 +5,7 @@ import { LiveMap, LiveObject, LsonObject, createClient} from '@liveblocks/client
 import { createRoomContext } from '@liveblocks/react'
 import {v4 as uuidv4} from 'uuid'
 import { websocketFetch } from '@thinairthings/websocket-client';
-import { NodeTypeIndex } from '../components/NodeComponentIndex';
+import { NodeTypeIndex } from '../components-canvas/NodeComponentIndex';
 
 export type NodeId = string
 export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{

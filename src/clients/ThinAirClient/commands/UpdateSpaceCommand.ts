@@ -1,10 +1,12 @@
 import { Command } from "../ThinAirClient";
 
-export class CreateSpaceCommand extends Command {
+
+export class UpdateSpaceCommand extends Command {
     returnType!: void;
     constructor(public payload: {
+        spaceId: string,
         spaceDisplayName: string
     }) {
-        super(`devliveblocksv2`, 'create-room', 'POST')
+        super(`devliveblocksv2`, 'update-room', 'POST')
     }
 }

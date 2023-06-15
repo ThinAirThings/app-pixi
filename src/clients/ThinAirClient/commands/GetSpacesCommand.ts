@@ -16,9 +16,7 @@ export class GetSpacesCommand extends Command {
             }
         }>
     }
-    constructor(public payload: {
-        userId: string
-    }) {
+    constructor(public payload: void) {
         super(`devliveblocksv2`, 'get-rooms', 'GET')
     }
 }

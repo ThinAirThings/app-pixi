@@ -1,0 +1,30 @@
+
+
+@mixin h1-styles {
+    @include set-font(32px, 700);
+    color: $primary-white;
+    margin-bottom: 20px;
+}
+@mixin h2-styles {
+    @include set-font(24px, 700);
+    color: $primary-white;
+    margin-bottom: 20px;
+}
+
+@mixin h3-styles {
+    @include set-font(18px, 700);
+    color: $primary-white;
+    margin-bottom: 10px;
+}
+
+@mixin h4-styles {
+    @include set-font(16px, 600);
+    color: $primary-white;
+    margin-bottom: 10px;
+}
+
+@mixin h5-styles {
+    @include set-font(14px, 600);
+    color: $primary-white;
+    margin-bottom: 10px;
+}

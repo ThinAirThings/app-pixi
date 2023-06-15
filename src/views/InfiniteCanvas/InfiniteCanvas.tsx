@@ -1,6 +1,6 @@
 import { useStorage } from "../../context/LiveblocksContext"
 import { useCanvasInitialization } from "./useCanvasInitialization"
-import { NodeComponentIndex } from "../../components/NodeComponentIndex"
+import { NodeComponentIndex } from "../../components-canvas/NodeComponentIndex"
 
 export type ViewportState = {
     x: number

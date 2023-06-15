@@ -1,0 +1,60 @@
+
+@mixin reset-button {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    color: inherit;
+    outline: inherit;
+    text-align: inherit;
+}
+
+@mixin button-styles {
+    @include reset-button;
+    // Layout
+    position: relative;
+    padding: 7px 10px;
+    text-align: center;
+    border-radius: 5px;
+    @include v-stack('center', 'center');
+    // Style
+    @include set-font(14px, 600);
+    color: $primary-white;
+    background-color: $primary-color;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        background-color: $primary-color-hover;
+    }
+    &:active {
+        transform: scale(0.95);
+    }
+    &.disabled {
+        background-color: $secondary-gray;
+        cursor: not-allowed;
+    }
+    &.loading {
+        color: transparent;
+        span {
+            // Layout
+            position: absolute;
+            z-index: 2;
+            width: 18px;
+            height: 18px;
+            border: 2px solid $primary-white;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+            @keyframes rotation {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+}
