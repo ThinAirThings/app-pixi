@@ -1,11 +1,11 @@
 
 import { ReactNode, Suspense } from 'react';
-import { useSpaceDetailsContext } from './SpaceContext';
 import { LiveMap, LiveObject, LsonObject, createClient} from '@liveblocks/client'
 import { createRoomContext } from '@liveblocks/react'
 import {v4 as uuidv4} from 'uuid'
-import { websocketFetch } from '@thinairthings/websocket-client';
 import { NodeTypeIndex } from '../components-canvas/NodeComponentIndex';
+import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
+import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/GetLiveblocksTokenCommand';
 
 export type NodeId = string
 export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
@@ -55,7 +55,8 @@ export type LiveblocksStorage = {
     nodeMap: LiveMap<string, AirNode<any>>
 }
 
-let userId: string
+let _userId: string
+let _accessToken: string
 let spaceId: string
 export const {
     suspense: {
@@ -66,33 +67,41 @@ export const {
         useStorage,
         RoomProvider,
         useMutation,
-        useSelf
+        useSelf,
+        RoomContext
     }
 } = createRoomContext<LiveblocksPresence, LiveblocksStorage, {id: string}>(createClient({
         authEndpoint: async (): Promise<{token: string}> => {
-            const token = await websocketFetch({
-                url: 'wss://devliveblocks.api.thinair.cloud', 
-                action: "get-token",
-                payload:{
-                    userId,
-                    spaceId
-                }
-            }) as {
-                token: string
-            }
+            const thinAirClient = new ThinAirClient(import.meta.env.VITE_ROOT_DOMAIN, {
+                accessToken: _accessToken,
+                userId: _userId
+            })
+            const token = await thinAirClient.send(new GetLiveblocksTokenCommand({
+                spaceId
+            }))
+            console.log(token)
             return token
         },
     }
 ))
 
-export const LiveblocksRoomProvider = ({children, _userId}: {children: ReactNode, _userId?: string}) => {
-    const [spaceDetails] = useSpaceDetailsContext()
-
-    userId = userId??_userId??uuidv4()  // This is set in the auth background. Read createRoomContext docs for more info
-    spaceId = spaceDetails.id
+export const LiveblocksRoomProvider = ({
+    userId,
+    accessToken,
+    spaceId,
+    children
+}: {
+    userId: string
+    accessToken: string
+    spaceId: string    
+    children: ReactNode
+}) => {
+    
+    _userId = userId // This is set in the auth background. Read createRoomContext docs for more info
+    _accessToken = accessToken
     return (
         <RoomProvider
-            id={spaceDetails.id}
+            id={spaceId as string}
             initialPresence={{
                 displayName: '', 
                 cursor: {x: 0, y: 0},
@@ -110,7 +119,7 @@ export const LiveblocksRoomProvider = ({children, _userId}: {children: ReactNode
                 ])
             }}
         >
-            <Suspense fallback={<div>loading...</div>}>
+            <Suspense>
                 {children}
             </Suspense> 
         </RoomProvider>

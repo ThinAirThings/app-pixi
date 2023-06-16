@@ -16,16 +16,19 @@
     @include reset-button;
     // Layout
     position: relative;
-    padding: 7px 10px;
+    padding: 7px 32px;
     text-align: center;
-    border-radius: 5px;
+
     @include v-stack('center', 'center');
     // Style
+    background-color: $primary-color;
+    border-radius: 10px;
+    box-shadow: $primary-box-shadow;
     @include set-font(14px, 600);
     color: $primary-white;
-    background-color: $primary-color;
     transition: all 0.2s ease-in-out;
     &:hover {
+        transform:translateY(-1px);
         background-color: $primary-color-hover;
     }
     &:active {

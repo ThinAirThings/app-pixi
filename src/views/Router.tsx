@@ -6,7 +6,6 @@ import { AuthenticationPage } from './Authentication/AuthenticationPage';
 import { PixiProvider } from '../context/PixiContext';
 import { InfiniteCanvas } from './InfiniteCanvas/InfiniteCanvas';
 import { Loading } from './Loading/Loading';
-import { LiveblocksRoomProvider } from '../context/LiveblocksContext';
 import { HandleGrantToken } from './Authentication/HandleGrantToken';
 import { Routes } from 'react-router-dom';  
 import { Dashboard } from './Dashboard/Dashboard';
@@ -24,11 +23,9 @@ const router = createBrowserRouter(
                     <Routes>
                         <Route path="/dashboard" element={<Dashboard/>}/>
                         <Route path="/space/:spaceId" element={
-                            <LiveblocksRoomProvider>
-                                <PixiProvider>
-                                    <InfiniteCanvas/>
-                                </PixiProvider>
-                            </LiveblocksRoomProvider>
+                            <PixiProvider>
+                                <InfiniteCanvas/>
+                            </PixiProvider>
                         }/>
                         <Route path="*" element={<Navigate to="/dashboard"/>}/>
                     </Routes>

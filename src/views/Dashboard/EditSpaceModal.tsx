@@ -65,9 +65,7 @@ export const EditSpaceModal = ({
                     Save
                 </button>    
             </form> 
-            <button className={classNames(styles.deleteButton, {
-                ['loading']: isDeleting,
-            })}
+            <button className={classNames(styles.deleteButton)}
                 onClick={async () => {
                     setShowDeleteConfirmation(true)
                 }}
@@ -75,25 +73,27 @@ export const EditSpaceModal = ({
                 <span/>
                 Delete Space
             </button>
-            {modalRef.current && showDeleteConfirmation && (
-                <Modal title="Delete Space" showModal={showDeleteConfirmation} setShowModal={setShowDeleteConfirmation}>
-                    <p>Are you sure you want to delete this space?</p>
-                    <button className={classNames(styles.deleteButton)}
-                        onClick={async () => {
-                            if (!spaceData) return;
-                            setIsDeleting(true)
-                            await thinAirClient.send(new DeleteSpaceCommand({
-                                spaceId: spaceData.spaceId
-                            }))
-                            await getAndSetSpaces()
-                            setIsDeleting(false)
-                            setShowModal(false)
-                        }}
-                    >
-                        Delete
-                    </button>
-                </Modal>
-            )}
+            <Modal title="Delete Space" showModal={showDeleteConfirmation} setShowModal={setShowDeleteConfirmation}>
+                <h5>Are you sure you want to delete this space?</h5>
+                <button className={classNames(styles.deleteButton, {
+                        ['loading']: isDeleting,
+                })}
+                    onClick={async () => {
+                        if (!spaceData) return;
+                        setIsDeleting(true)
+                        await thinAirClient.send(new DeleteSpaceCommand({
+                            spaceId: spaceData.spaceId
+                        }))
+                        await getAndSetSpaces()
+                        setShowDeleteConfirmation(false)
+                        setIsDeleting(false)
+                        setShowModal(false)
+                    }}
+                >
+                    <span/>
+                    Delete
+                </button>
+            </Modal>
         </Modal>
     )
 }

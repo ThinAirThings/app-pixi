@@ -11,7 +11,10 @@ export abstract class Command {
 }
 
 export class ThinAirClient {
-    constructor(public rootDomain: string, public userDetails: ReturnType<typeof useUserDetailsContext>[0]) {}
+    constructor(public rootDomain: string, public userDetails: {
+        userId: string | null,
+        accessToken: string | null
+    }) {}
     send = async <T extends Command>(command: T):Promise<T['returnType']> => {
         try {
             const url = new URL(`https://${command.apiName}.api.${this.rootDomain}/${command.commandName}`)

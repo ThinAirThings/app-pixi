@@ -7,6 +7,8 @@ import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
 import { GetSpacesCommand } from '../../clients/ThinAirClient/commands/GetSpacesCommand';
 import { EditSpaceModal } from './EditSpaceModal';
 import { useImmer } from 'use-immer';
+import { useNavigate } from 'react-router-dom';
+import { useSpaceDetailsContext } from '../../context/SpaceContext';
 const headerTags = [
     'Space Name',
     'Creation Time',
@@ -28,6 +30,7 @@ export const Dashboard = () => {
     }>>(new Map())
     const [showEditSpaceModal, setShowEditSpaceModal] = useState(false)
     const [selectedSpaceData, setSelectedSpaceData] = useState<ReturnType<typeof spaces.get>|null>(null)
+    const [_, setSpaceDetails] = useSpaceDetailsContext()
     // Callbacks
     const getAndSetSpaces = useCallback(async () => {
         const output = await thinAirClient.send(new GetSpacesCommand())
@@ -43,6 +46,7 @@ export const Dashboard = () => {
             })
         })
     }, [])
+    const navigate = useNavigate()
     // Effects
     useEffect(() => {
         (async () => {
@@ -52,7 +56,10 @@ export const Dashboard = () => {
     return (
         <div ref={dashboardRef} className={classNames(styles.dashboard)}>
             <div className={classNames(styles.box)}>
-                <img src="/logos/thinair-full-white.svg" className={classNames(styles.logo)}/>
+                <div className={classNames(styles.topCover)}>
+                    <img src="/logos/thinair-full-white.svg" className={classNames(styles.logo)}/>
+                </div>
+                
                 <div className={classNames(styles.table)}>
                     <div className={classNames(styles.headerRow)}>
                         {headerTags.map(tag => <span key={tag} className={classNames(styles.item)}>{tag}</span>)}
@@ -60,19 +67,29 @@ export const Dashboard = () => {
                         {[...spaces.values()].map(space => {return (
                             <div key={space.spaceId} className={classNames(styles.dataRow)}
                                 onClick={() => {
-                                    setSelectedSpaceData(space)
-                                    setShowEditSpaceModal(true)
+                                    // Enter Space
+                                    setSpaceDetails(draft => {
+                                        draft.spaceId = space.spaceId
+                                        draft.spaceDisplayName = space.spaceDisplayName
+                                    })
+                                    navigate(`/space/${space.spaceId}`)
                                 }}
                             >
                                 <span className={classNames(styles.item)}>{space.spaceDisplayName}</span>
                                 <span className={classNames(styles.item)}>{space.creationTime}</span>
                                 <span className={classNames(styles.item)}>{space.lastAccessedTime}</span>
                                 <span className={classNames(styles.item)}>None</span>
+                                <button className={classNames(styles.editButton)}
+                                    onClick={() => {
+                                        setSelectedSpaceData(space)
+                                        setShowEditSpaceModal(true)
+                                    }}
+                                >Edit</button>
                             </div>
                         )})}
                 </div>
                 <button 
-                    className={classNames(styles.btn)}
+                    className={classNames(styles.createSpaceBtn)}
                     onClick={() => setShowCreateSpaceModal(true)}
                 >
                     Create Space

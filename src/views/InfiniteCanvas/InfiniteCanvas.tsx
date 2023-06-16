@@ -13,6 +13,7 @@ export const InfiniteCanvas = () => {
     useCanvasInitialization()
     // Render Components
     const nodeMap = useStorage(root => root.nodeMap)
+    console.log(nodeMap)
     return (
         <>
             {nodeMap&& [...nodeMap].map(([nodeId, nodeRef]) => {

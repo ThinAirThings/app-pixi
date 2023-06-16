@@ -5,12 +5,12 @@ import { ViewportState } from "../views/InfiniteCanvas/InfiniteCanvas"
 const spaceContext = {
     spaceDetailsContext: createContextState<{
         initialized: boolean
-        displayName: string
-        id: string
+        spaceDisplayName: string
+        spaceId: string
     }>({
         initialized: false,
-        displayName: '',
-        id: ''
+        spaceDisplayName: '',
+        spaceId: ''
     }),
     infiniteCanvasRefContext: createContextRef<HTMLDivElement>(),
     refPointRefContext: createContextRef<HTMLDivElement>(),
