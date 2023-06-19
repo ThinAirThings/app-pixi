@@ -1,0 +1,119 @@
+@layer Construct {
+    .languageInterface {
+        // Layout
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -90%);
+        @include v-stack('left', 'top');
+        width: 600px;
+        height: 300px;
+        padding: 15px;
+        // Style
+        border-radius: 10px;
+        background: url('/graphics/primary-color-bg.png');
+        background-size: cover;
+        filter: hue-rotate(0deg);
+        box-shadow: 
+            0px 4px 7px 2px rgba(0, 0, 0, 0.25), 
+            inset -1px -1px 1px rgba(0, 0, 0, 0.25), 
+            inset 1px 1px 1px rgba(255, 255, 255, 0.25), 
+            inset -150px 50px 150px 10px rgba(0, 0, 0, 0.25), 
+            inset 150px -50px 150px 10px rgba(0, 0, 0, 0.25);
+        // Color Animation
+        // Checkout css filter animations here
+        .searchbar {
+            // Layout
+            @include h-stack('left', 'center');
+            width: 100%;
+            gap: 20px;
+            padding-bottom: 10px;
+            // Style
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            img {
+                // Layout
+                width: 38px;
+                height: auto;
+                // Style
+                filter: drop-shadow(1px 1px 2px rgb(0 0 0 / 0.4));
+            }
+            form{
+                // Layout
+                margin-top: 8px;
+                align-self: flex-end;
+                flex-grow: 1;
+                input {
+                    @include input-reset;
+                    // Style
+                    @include set-font(22px, 500);
+                    color: white;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                    &::placeholder {
+                        color: rgba(255, 255, 255, 0.75);
+                        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+                    }
+                }
+            }
+            .loadingSpinner {
+                @include loading-style;
+            }
+        }
+        .results {
+            // Layout
+            margin-top: 10px;
+            padding: 0px 10px;
+            @include v-stack('left', 'top');
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            // Style 
+            .title {
+                // Style
+                @include set-font(20px, 600);
+                color: white;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+            }
+            .resultRow {
+                // Layout
+                margin-top: 5px;
+                @include h-stack('left', 'center');
+                gap: 10px;
+                width: 100%;
+                height: 32px;
+                padding: 0px 10px;
+                // Style
+                background: rgba(0, 0, 0, 0.2);
+                box-shadow: 
+                    inset -1px -1px 1px rgba(0, 0, 0, 0.25), 
+                    inset 1px 1px 1px rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(50px);
+                border-radius: 5px;
+                cursor: pointer;
+                // Transitions
+                transition: all 0.15s ease-in-out;
+                &:hover {
+                    background: rgba(0, 0, 0, 0.7);
+                }
+                &.selected {
+                    background: rgba(0, 0, 0, 0.7);
+                }
+                img {
+                    // Layout
+                    width: 16px;
+                    height: auto;
+                    max-height: 16px;
+                    // Style
+                    filter: drop-shadow(1px 1px 2px rgb(0 0 0 / 0.4));
+                }
+                span {
+                    // Layout
+                    margin-top: 2px;
+                    // Style
+                    @include set-font(16px, 500);
+                    color: white;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                }
+            }
+        }
+    }
+}

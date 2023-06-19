@@ -3,12 +3,11 @@ import { Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements 
 import { UserContextProvider } from '../context/UserContext';
 import { HandleAuthentication } from './Authentication/HandleAuthentication';
 import { AuthenticationPage } from './Authentication/AuthenticationPage';
-import { PixiProvider } from '../context/PixiContext';
-import { InfiniteCanvas } from './InfiniteCanvas/InfiniteCanvas';
 import { Loading } from './Loading/Loading';
 import { HandleGrantToken } from './Authentication/HandleGrantToken';
 import { Routes } from 'react-router-dom';  
 import { Dashboard } from './Dashboard/Dashboard';
+import { SpaceMain } from './SpaceMain/SpaceMain';
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route element={
@@ -23,9 +22,7 @@ const router = createBrowserRouter(
                     <Routes>
                         <Route path="/dashboard" element={<Dashboard/>}/>
                         <Route path="/space/:spaceId" element={
-                            <PixiProvider>
-                                <InfiniteCanvas/>
-                            </PixiProvider>
+                            <SpaceMain/>
                         }/>
                         <Route path="*" element={<Navigate to="/dashboard"/>}/>
                     </Routes>

@@ -1,4 +1,4 @@
-import { Command } from "../ThinAirClient";
+import { Command } from "../../ThinAirClient";
 
 
 export class UpdateSpaceCommand extends Command {
@@ -7,6 +7,6 @@ export class UpdateSpaceCommand extends Command {
         spaceId: string,
         spaceDisplayName: string
     }) {
-        super(`devliveblocksv2`, 'update-room', 'POST')
+        super('REST', `devliveblocksv2`, 'update-room', 'POST')
     }
 }

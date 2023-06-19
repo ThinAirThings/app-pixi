@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CreateSpaceModal } from './CreateSpaceModal';
 import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
-import { GetSpacesCommand } from '../../clients/ThinAirClient/commands/GetSpacesCommand';
+import { GetSpacesCommand } from '../../clients/ThinAirClient/commands/liveblocks/GetSpacesCommand';
 import { EditSpaceModal } from './EditSpaceModal';
 import { useImmer } from 'use-immer';
 import { useNavigate } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { Command } from "../ThinAirClient";
+import { Command } from "../../ThinAirClient";
 
 export class GetSpacesCommand extends Command {
     returnType!: {
@@ -17,6 +17,6 @@ export class GetSpacesCommand extends Command {
         }>
     }
     constructor(public payload: void) {
-        super(`devliveblocksv2`, 'get-rooms', 'GET')
+        super('REST', `devliveblocksv2`, 'get-rooms', 'GET')
     }
 }

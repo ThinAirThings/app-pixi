@@ -15,7 +15,6 @@ export const HandleAuthentication = ({children}: {children: ReactNode}) => {
                     mode: 'cors'
                 });
                 if (!refreshTokenResponse.ok) {
-                    console.log(await refreshTokenResponse.json())
                     setUserDetails(draft => {
                         draft.initialized = true;
                     });
@@ -36,7 +35,6 @@ export const HandleAuthentication = ({children}: {children: ReactNode}) => {
             }
         })();
     }, []);
-    console.log(userDetails)
     if (!userDetails.initialized) {
         return <Loading/>;
     }

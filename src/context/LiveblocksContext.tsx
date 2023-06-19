@@ -5,7 +5,9 @@ import { createRoomContext } from '@liveblocks/react'
 import {v4 as uuidv4} from 'uuid'
 import { NodeTypeIndex } from '../components-canvas/NodeComponentIndex';
 import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
-import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/GetLiveblocksTokenCommand';
+import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
+import { useParams } from 'react-router-dom';
+import { useUserDetailsContext } from './UserContext';
 
 export type NodeId = string
 export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
@@ -79,29 +81,23 @@ export const {
             const token = await thinAirClient.send(new GetLiveblocksTokenCommand({
                 spaceId
             }))
-            console.log(token)
             return token
         },
     }
 ))
 
 export const LiveblocksRoomProvider = ({
-    userId,
-    accessToken,
-    spaceId,
     children
 }: {
-    userId: string
-    accessToken: string
-    spaceId: string    
-    children: ReactNode
+     children: ReactNode
 }) => {
-    
-    _userId = userId // This is set in the auth background. Read createRoomContext docs for more info
-    _accessToken = accessToken
+    const [userDetails] = useUserDetailsContext()
+    const params = useParams() 
+    _userId = userDetails.userId! // This is set in the auth background. Read createRoomContext docs for more info
+    _accessToken = userDetails.accessToken!
     return (
         <RoomProvider
-            id={spaceId as string}
+            id={params.spaceId as string}
             initialPresence={{
                 displayName: '', 
                 cursor: {x: 0, y: 0},

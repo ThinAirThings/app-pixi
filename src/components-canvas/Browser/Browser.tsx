@@ -3,8 +3,7 @@ import { Graphics as pxGraphics } from "pixi.js"
 import { useCallback } from "react"
 import { ImmutableAirNode } from "../../context/LiveblocksContext"
 
-
-export const Box = ({
+export const Browser = ({
     nodeRef
 }: {
     nodeRef: ImmutableAirNode

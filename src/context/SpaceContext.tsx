@@ -1,5 +1,5 @@
 import { createContextExports, createContextProviderComposition, createContextRef, createContextState } from "@thinairthings/react-context"
-import { ViewportState } from "../views/InfiniteCanvas/InfiniteCanvas"
+import { ViewportState } from "../views/InfiniteCanvas/PixiCanvas"
 
 
 const spaceContext = {

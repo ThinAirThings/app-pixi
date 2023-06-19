@@ -19,7 +19,7 @@
         "@pixi/react": "^7.1.0",
         "@thinairthings/mouse-utils": "^1.0.17",
         "@thinairthings/react-context": "^0.0.1",
-        "@thinairthings/websocket-client": "^1.0.22",
+        "@thinairthings/websocket-client": "^1.0.23",
         "aws-jwt-verify": "^4.0.0",
         "classnames": "^2.3.2",
         "pixi.js": "^7.2.4",

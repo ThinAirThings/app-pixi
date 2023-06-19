@@ -3,7 +3,7 @@ import styles from './CreateSpaceModal.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useThinAirClient } from "../../clients/ThinAirClient/useThinAirClient";
-import { CreateSpaceCommand } from "../../clients/ThinAirClient/commands/CreateSpaceCommand";
+import { CreateSpaceCommand } from "../../clients/ThinAirClient/commands/liveblocks/CreateSpaceCommand";
 import { useState } from "react";
 import { Modal } from "../../components-dashboard/Modal/Modal";
 

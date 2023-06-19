@@ -1,12 +1,24 @@
-import { useUserDetailsContext } from "../../context/UserContext"
+import { websocketFetch } from '@thinairthings/websocket-client'
 
 export abstract class Command {
     abstract payload: any
     abstract returnType: any
     constructor(
-        public apiName: string, 
+        apiType: 'REST',
+        apiName: string,
+        commandName: string,
+        methodType: "GET" | "POST"
+    );
+    constructor(
+        apiType: 'WEBSOCKET',
+        apiName: string,
+        commandName: string,
+    );
+    constructor(
+        public apiType: 'REST' | 'WEBSOCKET',
+        public apiName: string,
         public commandName: string, 
-        public methodType: 'GET' | 'POST',
+        public methodType?: "GET" | "POST"
     ) {}
 }
 
@@ -16,6 +28,29 @@ export class ThinAirClient {
         accessToken: string | null
     }) {}
     send = async <T extends Command>(command: T):Promise<T['returnType']> => {
+        if (command.apiType === 'REST') {
+            return this.handleRestCommand(command)
+        }
+        if (command.apiType === 'WEBSOCKET') {
+            return this.handleWebsocketCommand(command)
+        }
+    }
+    private handleWebsocketCommand = async <T extends Command>(command: T):Promise<T['returnType']> => {
+        try {
+            const response =  await websocketFetch({
+                url: `wss://${command.apiName}.api.${this.rootDomain}`,
+                action: command.commandName,
+                payload: {
+                    authorization: this.userDetails?.accessToken,
+                    ...command.payload
+                }
+            })
+            return response
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    private handleRestCommand = async <T extends Command>(command: T):Promise<T['returnType']> => {
         try {
             const url = new URL(`https://${command.apiName}.api.${this.rootDomain}/${command.commandName}`)
             if (command.methodType === 'GET'){
@@ -51,3 +86,4 @@ export class ThinAirClient {
         }
     }
 }
+

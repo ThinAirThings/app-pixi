@@ -3,8 +3,8 @@ import { Modal } from "../../components-dashboard/Modal/Modal";
 import styles from './EditSpaceModal.module.scss';
 import { useThinAirClient } from "../../clients/ThinAirClient/useThinAirClient";
 import { useEffect, useRef, useState } from "react";
-import { DeleteSpaceCommand } from "../../clients/ThinAirClient/commands/DeleteSpaceCommand";
-import { UpdateSpaceCommand } from "../../clients/ThinAirClient/commands/UpdateSpaceCommand";
+import { DeleteSpaceCommand } from "../../clients/ThinAirClient/commands/liveblocks/DeleteSpaceCommand";
+import { UpdateSpaceCommand } from "../../clients/ThinAirClient/commands/liveblocks/UpdateSpaceCommand";
 export const EditSpaceModal = ({
     showModal, 
     setShowModal, 

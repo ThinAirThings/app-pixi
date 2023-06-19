@@ -1,4 +1,4 @@
-import { Command } from "../ThinAirClient";
+import { Command } from "../../ThinAirClient";
 
 export class GetLiveblocksTokenCommand extends Command {
     returnType!: {
@@ -7,6 +7,6 @@ export class GetLiveblocksTokenCommand extends Command {
     constructor(public payload: {
         spaceId: string
     }) {
-        super(`devliveblocksv2`, 'get-token', 'GET')
+        super('REST', `devliveblocksv2`, 'get-token', 'GET')
     }
 }
