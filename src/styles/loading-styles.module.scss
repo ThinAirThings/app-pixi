@@ -1,9 +1,9 @@
 
-@mixin loading-style {
+@mixin spinner-style($size: 18px, $border-size: 2px) {
     // Layout
-    width: 18px;
-    height: 18px;
-    border: 2px solid $primary-white;
+    width: $size;
+    height: $size;
+    border: $border-size solid $primary-white;
     border-bottom-color: transparent;
     border-radius: 50%;
     animation: rotation 1s linear infinite;

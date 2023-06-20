@@ -55,7 +55,7 @@
                 }
             }
             .loadingSpinner {
-                @include loading-style;
+                @include spinner-style;
             }
         }
         .results {

@@ -7,7 +7,7 @@
         width: 100vw;
         padding: 75px;
         // Style
-        @include primary-background;
+        background-color: $primary-gray;
         .box {
             // Layout
             @include v-stack('center', 'center');
@@ -31,7 +31,7 @@
                 .headerRow {
                     // Layout
                     display: grid;
-                    grid-template-columns: repeat(4, minmax(0, 1fr));
+                    grid-template-columns: repeat(4, minmax(0, 1fr)) 100px;
                     margin-bottom: 10px;
                     justify-items: start;
                     padding: 0px 20px;
@@ -46,12 +46,11 @@
                     // Layout
                     display: grid;
                     position: relative;
-                    grid-template-columns: repeat(4, minmax(0, 1fr));
+                    grid-template-columns: repeat(4, minmax(0, 1fr)) 100px;
                     justify-items: start;
-                    padding: 10px 20px;
+                    padding: 2px 20px;
                     // Style
                     @include primary-glass;
-                    border-radius: 100px;
                     cursor: pointer;
                     transition: all 0.2s ease-in-out;
                     &:hover {
@@ -67,16 +66,11 @@
                     }
                     .editButton {
                         // Layout
-                        position: absolute;
-                        top: 5px;
-                        right: 10px;
+                        place-self: center end;
                         // Style
-                        background-color: $primary-green;
                         cursor: pointer;
-                        border-radius: 100px;
                         &:hover {
                             transform: translateY(-1px);
-                            background-color: $primary-green-hover;
                         }
                     }
                 }

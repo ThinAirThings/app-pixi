@@ -4,7 +4,7 @@ import { RoomContext, useRoom } from "./LiveblocksContext";
 
 const rootElement = document.getElementById('root')!
 
-export const PixiProvider = ({ children }: { children: ReactNode }) => { 
+export const PixiContextProvider = ({ children }: { children: ReactNode }) => { 
     const room = useRoom()
     return (
         <Stage

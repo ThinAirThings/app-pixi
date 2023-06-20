@@ -1,0 +1,23 @@
+@layer Component {
+    .loadingContainer {
+        // Layout
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+
+        // Style
+        background-color: $primary-gray;
+        .loadingSpinner {
+            @include spinner-style(170px, 4px);
+        }
+        .logo {
+            position: absolute;
+            width: 86px;
+            height: auto;
+            transform: translate(-10px, -10px);
+        }
+    }
+}

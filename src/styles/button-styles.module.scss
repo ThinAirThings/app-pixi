@@ -16,32 +16,31 @@
     @include reset-button;
     // Layout
     position: relative;
-    padding: 7px 32px;
+    height: 32px;
+    padding: 0px 30px;
     text-align: center;
-
     @include v-stack('center', 'center');
     // Style
-    background-color: $primary-color;
-    border-radius: 10px;
-    box-shadow: $primary-box-shadow;
+    background-color: $secondary-gray;
+    border-radius: 5px;
+    box-shadow: $primary-button-shadow;
     @include set-font(14px, 600);
     color: $primary-white;
     transition: all 0.2s ease-in-out;
     &:hover {
-        transform:translateY(-1px);
-        background-color: $primary-color-hover;
+        transform: translateY(-1px);
     }
     &:active {
         transform: scale(0.95);
     }
     &.disabled {
-        background-color: $secondary-gray;
+        background-color: $primary-gray;
         cursor: not-allowed;
     }
     &.loading {
         color: transparent;
         span {
-            @include loading-style;
+            @include spinner-style;
         }
     }
 }

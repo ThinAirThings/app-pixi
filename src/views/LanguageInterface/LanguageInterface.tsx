@@ -7,7 +7,11 @@ import { NodeComponentIndex } from '../../components-canvas/NodeComponentIndex';
 import { useArrowKeyNavigation } from './useArrowKeyNavigation';
 
 
-
+export type NodeOption = {
+    type: keyof typeof NodeComponentIndex
+    typeDisplayName: string
+    typeDisplayIcon: string
+}
 export const LanguageInterface = ({
 
 }: {
@@ -17,18 +21,14 @@ export const LanguageInterface = ({
     const [query, setQuery] = useState('');
     const [isAutoCompleting, setIsAutoCompleting] = useState(false)
     
-    const [options, setOptions] = useState<Array<{
-        type: keyof typeof NodeComponentIndex
-        typeDisplayName: string
-        typeDisplayIcon: string
-    }>>((Object.keys(NodeComponentIndex) as Array<keyof typeof NodeComponentIndex>).map((key) => {
+    const [options, setOptions] = useState<Array<NodeOption>>((Object.keys(NodeComponentIndex) as Array<keyof typeof NodeComponentIndex>).map((key) => {
         return {
             type: key,
             typeDisplayName: NodeComponentIndex[key].typeDisplayName,
             typeDisplayIcon: NodeComponentIndex[key].typeDisplayIcon
         }
     }))
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1) // -1 is searchbar
     // Updater Function
     const updateSuggestionsList = async (query: string) => {
         setIsAutoCompleting(true)
@@ -51,8 +51,9 @@ export const LanguageInterface = ({
     }
     // Refs
     const autocompleteTimerRef = useRef<NodeJS.Timeout | null>(null)
+    const searchbarInputRef = useRef<HTMLInputElement>(null)
     // Effects
-    useArrowKeyNavigation(options, setSelectedOptionIndex)
+    useArrowKeyNavigation(searchbarInputRef, options, selectedOptionIndex, setSelectedOptionIndex )
     // Clients
     const thinAirClient = useThinAirClient()
     return (
@@ -66,6 +67,7 @@ export const LanguageInterface = ({
                     }}
                 >
                     <input 
+                        ref={searchbarInputRef}
                         value={query}
                         onChange={async (event) => {
                             setQuery(event.target.value)
@@ -74,7 +76,11 @@ export const LanguageInterface = ({
                                 await updateSuggestionsList(event.target.value)
                             }, 300)
                         }}
+                        onFocus={() => {
+                            setSelectedOptionIndex(-1)
+                        }}
                         placeholder='Need something?'
+                        autoFocus
                     />
                 </form>
                 <span className={classNames(styles.loadingSpinner)} style={{
