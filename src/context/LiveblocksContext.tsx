@@ -3,7 +3,7 @@ import { ReactNode, Suspense } from 'react';
 import { LiveMap, LiveObject, LsonObject, createClient} from '@liveblocks/client'
 import { createRoomContext } from '@liveblocks/react'
 import {v4 as uuidv4} from 'uuid'
-import { NodeTypeIndex } from '../components-canvas/NodeComponentIndex';
+import { NodeTypeIndex } from '../NodeComponentIndex';
 import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
@@ -54,7 +54,7 @@ export type LiveblocksPresence = {
     focusedNode: string | null
 }
 export type LiveblocksStorage = {
-    nodeMap: LiveMap<string, AirNode<any>>
+    nodeMap: LiveMap<string, AirNode<{}>>
 }
 
 let _userId: string

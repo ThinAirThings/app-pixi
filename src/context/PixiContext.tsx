@@ -12,8 +12,9 @@ export const PixiContextProvider = ({ children }: { children: ReactNode }) => {
             height={window.innerHeight}
             options={{
                 resizeTo: rootElement,
-                background: '#1c1c1c',
-            }}
+                background: '#111111',
+                
+            }} 
         >
             <RoomContext.Provider value={room}>
                 <Suspense>

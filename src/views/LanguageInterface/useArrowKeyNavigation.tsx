@@ -1,8 +1,8 @@
 import { Dispatch, RefObject,  SetStateAction, useEffect } from "react"
 import { fromEvent } from "rxjs"
 import { NodeOption } from "./LanguageInterface"
-import { useCreateNode } from "../../hooks/liveblocksHooks"
-import { NodeComponentIndex } from "../../components-canvas/NodeComponentIndex"
+import { NodeComponentIndex } from "../../NodeComponentIndex"
+import { useMutationCreateNode } from "../../hooks/liveblocks/useMutationCreateNode"
 
 
 export const useArrowKeyNavigation = (
@@ -11,7 +11,8 @@ export const useArrowKeyNavigation = (
     selectionOptionIndex: number,
     setSelectedOptionIndex: Dispatch<SetStateAction<number>> 
 ) => {
-    const createNodeComponent = useCreateNode()
+    // Get Mutations
+    const createNodeComponent = useMutationCreateNode()
     useEffect(() => {
         const subscription = fromEvent<KeyboardEvent>(window, 'keydown')
         .subscribe((event) => {

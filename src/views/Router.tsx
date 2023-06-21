@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router'
-import { Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import { UserContextProvider } from '../context/UserContext';
 import { HandleAuthentication } from './Authentication/HandleAuthentication';
 import { AuthenticationPage } from './Authentication/AuthenticationPage';

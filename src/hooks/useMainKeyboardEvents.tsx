@@ -1,13 +1,16 @@
 import { useEffect } from "react"
 import { fromEvent } from "rxjs"
-import { useMyFocusedNodeId, useMySelectedNodeIds } from "./liveblocksHooks"
 import { useLanguageInterfaceActiveContext } from "../context/SpaceContext"
+import { useStorageMyFocusedNodeId } from "./liveblocks/useStorageMyFocusedNodeId"
+import { useMutationMySelectedNodeIds } from "./liveblocks/useMutationMySelectedNodeIds"
+import { useMutationMyFocusedNodeId } from "./liveblocks/useMutationMyFocusedNodeId"
 
 
 export const useMainKeyboardEvents = () => {
     // State
-    const [myFocusedNodeId, setMyFocusedNodeId] = useMyFocusedNodeId()
-    const [mySelectedNodeIds, setMySelectedNodeIds] = useMySelectedNodeIds()
+    const myFocusedNodeId = useStorageMyFocusedNodeId()
+    const setMyFocusedNodeId = useMutationMyFocusedNodeId()
+    const setMySelectedNodeIds = useMutationMySelectedNodeIds()
     const [languageInterfaceActive, setLanguageInterfaceActive] = useLanguageInterfaceActiveContext()
     useEffect(() => {
         const subscription = fromEvent<KeyboardEvent>(window, "keydown")

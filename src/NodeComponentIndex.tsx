@@ -1,5 +1,5 @@
-import { Browser } from "./Browser/Browser"
-import { Rectangle } from "./Rectangle/Rectangle"
+import { Browser } from "./components-pixi/Browser/Browser"
+import { Rectangle } from "./components-pixi/Rectangle/Rectangle"
 export type NodeTypeIndex = {
     browser: {
         type: 'browser'
@@ -40,7 +40,7 @@ export const NodeComponentIndex: {
             width: 836,
             height: 536
         },
-        Component: ({nodeRef}) => <Browser nodeRef={nodeRef} />
+        Component: ({nodeId}) => <Browser nodeId={nodeId} />
     },
     rectangle: {
         type: 'rectangle',
@@ -51,6 +51,6 @@ export const NodeComponentIndex: {
             width: 100,
             height: 100
         },
-        Component: ({nodeRef}) => <Rectangle nodeRef={nodeRef} />
+        Component: ({nodeId}) => <Rectangle nodeId={nodeId} />
     }
 }

@@ -3,7 +3,7 @@ import styles from './LanguageInterface.module.scss';
 import { useRef, useState } from 'react';
 import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
 import { AutocompleteInterfaceCommand } from '../../clients/ThinAirClient/commands/ai/AutocompleteInterfaceCommand';
-import { NodeComponentIndex } from '../../components-canvas/NodeComponentIndex';
+import { NodeComponentIndex } from '../../NodeComponentIndex';
 import { useArrowKeyNavigation } from './useArrowKeyNavigation';
 
 
