@@ -2,6 +2,7 @@ import { useApp } from "@pixi/react"
 import { Rectangle } from "pixi.js"
 import { useEffect } from "react"
 import { useViewportStateContext } from "../../../context/SpaceContext"
+import { TxPxContainer } from "../../../components-pixi/_ext/MixinThinAirTargetingDataset"
 
 
 export const usePixiViewportStage = () => {
@@ -13,7 +14,8 @@ export const usePixiViewportStage = () => {
     useEffect(() => {
         // Run all stage initialization code
         app.stage.eventMode = 'static'
-        app.stage.hitArea = new Rectangle(-1e+6, -1e+6, 2e+6, 2e+6) // Oversize the hit area for scaling
+        app.stage.hitArea = new Rectangle(-1e+6, -1e+6, 2e+6, 2e+6); // Oversize the hit area for scaling
+        (app.stage as TxPxContainer).dataset = { ...(app.stage as TxPxContainer).dataset, isviewport: "true" };
     }, [])
     // Stage Updates
     useEffect(() => {

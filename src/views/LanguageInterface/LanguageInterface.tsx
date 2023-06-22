@@ -88,9 +88,9 @@ export const LanguageInterface = ({
                 }}/>
             </div>
             <div className={classNames(styles.results)}>
-                <span className={classNames(styles.title)}>Tools</span>
+                <span>Tools</span>
                 {options.map((option, index) => (
-                    <div key={option.type} className={classNames(styles.resultRow, {
+                    <div key={option.type} className={classNames({
                         [styles.selected]: index === selectedOptionIndex
                     })}>
                         <img src={option.typeDisplayIcon} alt="result" />

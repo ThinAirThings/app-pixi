@@ -1,5 +1,5 @@
 import { ViewportState } from "@thinairthings/zoom-utils"
-import { useViewportStateContext } from "../../../context/SpaceContext"
+import { useViewportStateContext } from "../../context/SpaceContext"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { fromEvent, takeUntil } from "rxjs"
 

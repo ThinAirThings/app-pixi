@@ -1,9 +1,9 @@
 import { ContainerState, ViewportState } from "@thinairthings/zoom-utils"
-import { TxPxContainer } from "../../../components-pixi/_ext/TxPxContainer"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { fromEvent, takeUntil } from "rxjs"
-import { useMutationContainerState } from "../../../hooks/liveblocks/useMutationContainerState"
-import { useStorageContainerStateMap } from "../../../hooks/liveblocks/useStorageContainerStateMap"
+import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
+import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
+import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
 export const handleSelectionTarget = (event: PointerEvent, {
     viewportState,
     mySelectedNodeIds,
@@ -24,7 +24,7 @@ export const handleSelectionTarget = (event: PointerEvent, {
         mySelectedNodeIds.length = 0 // Clear selection
     }
     // Add target to selection
-    mySelectedNodeIds.push(target.nodeId)
+    mySelectedNodeIds.push(target.dataset.nodeid!)
     updateMySelectedNodeIds([...mySelectedNodeIds]) // Set react state to update ui
     // Get Initial Container States Map
     const initialContainerStatesMap = new Map<string, ContainerState>(

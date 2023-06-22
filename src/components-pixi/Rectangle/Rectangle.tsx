@@ -1,20 +1,27 @@
 import { PixiComponent, applyDefaultProps, Graphics as RxGraphics} from "@pixi/react"
 import { useRef } from "react"
-import { TxPxGraphics } from "../_ext/TxPxGraphics"
 import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState"
+import { Graphics } from "pixi.js"
+import { MixinThinAirTargetingDataset, TxPxGraphics } from "../_ext/MixinThinAirTargetingDataset"
+
 
 const RxTxPxRectangle = PixiComponent<{
-    nodeId: string
-    selectionTarget: boolean
+    nodeid?: string
+    isselectiontarget?: boolean
+    isviewport?: boolean
+    istransformtarget?: boolean
     x: number
     y: number
     width: number
     height: number
 }&Parameters<typeof RxGraphics>['0'], TxPxGraphics>('RxTxPxRectangle', {
-    create: ({nodeId, selectionTarget}) => {
-        return new TxPxGraphics(
-            nodeId, selectionTarget
-        )
+    create: ({nodeid, isselectiontarget, isviewport, istransformtarget}) => {
+        return MixinThinAirTargetingDataset(Graphics).create({
+            nodeid,
+            isselectiontarget,
+            isviewport,
+            istransformtarget
+        })
     },
     applyProps: (instance, oldProps, newProps) => {
         if (oldProps.width !== newProps.width || oldProps.height !== newProps.height) {
@@ -27,6 +34,7 @@ const RxTxPxRectangle = PixiComponent<{
     }
 })
 
+
 export const Rectangle = ({
     nodeId
 }: {
@@ -37,8 +45,8 @@ export const Rectangle = ({
 
     return(
         <RxTxPxRectangle
-            nodeId={nodeId}
-            selectionTarget={true}
+            nodeid={nodeId}
+            isselectiontarget={true}
             ref={rectangleRef}
             eventMode="static"
             cursor="pointer"

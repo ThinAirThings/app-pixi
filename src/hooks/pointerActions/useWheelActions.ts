@@ -1,19 +1,16 @@
 import { useEffect } from "react"
-import { useViewportStateContext } from "../../../context/SpaceContext"
+import { useViewportStateContext } from "../../context/SpaceContext"
 import { fromEvent } from "rxjs"
-import { useApp } from "@pixi/react"
 import { mousePoint } from "@thinairthings/mouse-utils"
+import { DisplayObject } from "pixi.js"
 
-
-export const usePixiWheelActions = () => {
-    // Get Pixi App Handle
-    const app = useApp()
+export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
     // States
     const [viewportState, setViewportState] = useViewportStateContext()
 
     // Wheel Actions
     useEffect(() => {
-        const subscription = fromEvent<WheelEvent>(app.stage, 'wheel')
+        const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             // Get zoom direction
             let direction: -1 | 1
