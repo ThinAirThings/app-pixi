@@ -8,6 +8,7 @@ import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
 import { useUserDetailsContext } from './UserContext';
+import { Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
 
 export type NodeId = string
 export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
@@ -44,11 +45,11 @@ export const createAirNode = <T extends LsonObject={}> ({
 })
 export type LiveblocksPresence = {
     displayName: string
-    cursor: {x: number, y: number} | null
-    viewportState: {
-        x: number
-        y: number
-        scale: number
+    absoluteCursorState: Point | null
+    viewportState: ViewportState
+    mouseSelectionState: {
+        selectionActive: boolean
+        absoluteSelectionBounds: ScreenState | null
     }
     selectedNodes: string[]
     focusedNode: string | null
@@ -100,11 +101,15 @@ export const LiveblocksRoomProvider = ({
             id={params.spaceId as string}
             initialPresence={{
                 displayName: '', 
-                cursor: {x: 0, y: 0},
+                absoluteCursorState: {x: 0, y: 0},
                 viewportState: {
                     x: 0,
                     y: 0,
                     scale: 1
+                },
+                mouseSelectionState: {
+                    selectionActive: false,
+                    absoluteSelectionBounds: null
                 },
                 selectedNodes: [],
                 focusedNode: null

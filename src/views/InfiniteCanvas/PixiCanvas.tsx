@@ -1,13 +1,9 @@
 import { NodeComponentIndex } from "../../NodeComponentIndex"
 import { usePixiPointerActions } from "./hooks/usePixiPointerActions"
-import { usePixiInitializeStage } from "./hooks/usePixiInitializeStage"
+import { usePixiViewportStage } from "./hooks/usePixiViewportStage"
 import { memo } from "react"
 import { useStorageComponentArray } from "../../hooks/liveblocks/useStorageComponentArray"
-export type ViewportState = {
-    x: number
-    y: number
-    scale: number
-}
+import { usePixiWheelActions } from "./hooks/usePixiWheelActions"
 
 export const ComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentArray>}) => {
     return (
@@ -26,8 +22,9 @@ export const ComponentArrayMemo = memo(({componentArray}: {componentArray: Retur
 })
 export const PixiCanvas = () => { 
     // Initialize App 
-    usePixiInitializeStage()
+    usePixiViewportStage()
     usePixiPointerActions()
+    usePixiWheelActions()
     // Render Components
     const componentArray = useStorageComponentArray()
     return (

@@ -10,7 +10,7 @@ export const useMainKeyboardEvents = () => {
     // State
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     const setMyFocusedNodeId = useMutationMyFocusedNodeId()
-    const setMySelectedNodeIds = useMutationMySelectedNodeIds()
+    const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     const [languageInterfaceActive, setLanguageInterfaceActive] = useLanguageInterfaceActiveContext()
     useEffect(() => {
         const subscription = fromEvent<KeyboardEvent>(window, "keydown")
@@ -29,7 +29,7 @@ export const useMainKeyboardEvents = () => {
             if (event.key === "Escape"){
                 event.preventDefault()
                 setMyFocusedNodeId(null)
-                setMySelectedNodeIds([])
+                updateMySelectedNodeIds([])
                 setLanguageInterfaceActive(false)
             }
         })

@@ -1,42 +1,48 @@
-import { Container as PxContainer } from 'pixi.js'
 import { fromEvent, takeUntil } from 'rxjs'
-import { SelectionBox } from '../../../webcomponents/SelectionBox'
 import { mousePoint, mouseRect } from '@thinairthings/mouse-utils'
 import { ContainerState, ScreenState, ViewportState, screenStateToAbsoluteState } from '@thinairthings/zoom-utils'
 import { useStorageContainerStateMap } from '../../../hooks/liveblocks/useStorageContainerStateMap'
+import { useMutationMyMouseSelectionState } from '../../../hooks/liveblocks/useMutationMyMouseSelectionState'
 
 export const handleStageTarget = (event: PointerEvent, {
-    stage,
     mySelectedNodeIds,
-    setMySelectedNodeIds,
+    updateMySelectedNodeIds,
     viewportState,
     containerStateMap,
+    updateMyMouseSelectionState
 }: {
-    stage: PxContainer
     mySelectedNodeIds: string[]
-    setMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
+    updateMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
     viewportState: ViewportState
     containerStateMap: ReturnType<typeof useStorageContainerStateMap>
+    updateMyMouseSelectionState: ReturnType<typeof useMutationMyMouseSelectionState>
 }) => {
     // If the shift key is not pressed, clear the selection
     if ((!event.shiftKey)) {
         mySelectedNodeIds.length = 0
+        updateMySelectedNodeIds([])
     } 
     const initialSelectedNodeIds = [...mySelectedNodeIds]
     const pointerDownPoint = mousePoint(event)
-    const selectionBox = new SelectionBox(pointerDownPoint)
-    document.getElementById('root')!.append(selectionBox)
-    fromEvent<PointerEvent>(stage, 'pointermove')
+    document.body.setPointerCapture(event.pointerId)
+    fromEvent<PointerEvent>(document.body, 'pointermove')
     .pipe (
         takeUntil(
-            fromEvent<PointerEvent, void>(stage, 'pointerup', {}, (event) => {
-                selectionBox.remove()
+            fromEvent<PointerEvent, void>(document.body, 'pointerup', {}, (event) => {
+                updateMyMouseSelectionState({
+                    selectionActive: false,
+                    absoluteSelectionBounds: null
+                })
+                document.body.releasePointerCapture(event.pointerId)
             })
         )
     )
     .subscribe((event) => {
         const pointerMovePoint = mousePoint(event)
-        selectionBox.update(mousePoint(event))
+        updateMyMouseSelectionState({
+            selectionActive: true,
+            absoluteSelectionBounds: screenStateToAbsoluteState(viewportState, mouseRect(pointerDownPoint, pointerMovePoint))
+        })
         const absoluteSelectionBounds = screenStateToAbsoluteState(viewportState, mouseRect(pointerDownPoint, pointerMovePoint))
         // Check all nodes container states to see if they are in the selection bounds
         const nodeIdsWithinSelectionBounds = [...containerStateMap].filter(
@@ -46,10 +52,9 @@ export const handleStageTarget = (event: PointerEvent, {
         const nodesToAddBack = initialSelectedNodeIds.filter(nodeId => !nodeIdsWithinSelectionBounds.includes(nodeId))
         // Remove the nodes that were in the selection bounds but were previously selected due to shift key
         const nodeIdsWithinSelectionBoundsFiltered = nodeIdsWithinSelectionBounds.filter(nodeId => !initialSelectedNodeIds.includes(nodeId))
-        setMySelectedNodeIds([...nodesToAddBack, ...nodeIdsWithinSelectionBoundsFiltered])
+        updateMySelectedNodeIds([...nodesToAddBack, ...nodeIdsWithinSelectionBoundsFiltered])
     })
 }
-
 const isNodeInSelectionBounds = (selectionBounds: ScreenState, containerState: ContainerState) => {
     return !(selectionBounds.x > containerState.x + containerState.width ||
              selectionBounds.x + selectionBounds.width < containerState.x ||

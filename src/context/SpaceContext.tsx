@@ -1,6 +1,5 @@
 import { createContextExports, createContextProviderComposition, createContextRef, createContextState } from "@thinairthings/react-context"
-import { ViewportState } from "../views/InfiniteCanvas/PixiCanvas"
-
+import { ViewportState } from "@thinairthings/zoom-utils"
 const spaceMetaContext = {
     spaceDetailsContext: createContextState<{
         initialized: boolean
@@ -18,7 +17,7 @@ export const {
 
 export const SpaceMetaContextProvider = createContextProviderComposition(spaceMetaContext)
 
-const spaceMainContext = {
+export const SpaceMainContext = {
     infiniteCanvasRefContext: createContextRef<HTMLDivElement>(),
     refPointRefContext: createContextRef<HTMLDivElement>(),
     viewportStateContext: createContextState<ViewportState>({
@@ -26,12 +25,12 @@ const spaceMainContext = {
         y: 0,
         scale: 1
     }),
-    languageInterfaceActiveContext: createContextState<boolean>(false),
+    languageInterfaceActiveContext: createContextState<boolean>(false)
 }
-export const SpaceMainContextProvider = createContextProviderComposition(spaceMainContext)
+export const SpaceMainContextProvider = createContextProviderComposition(SpaceMainContext)
 export const {
     useInfiniteCanvasRefContext,
     useRefPointRefContext,
     useViewportStateContext,
-    useLanguageInterfaceActiveContext
-} = createContextExports(spaceMainContext)
+    useLanguageInterfaceActiveContext,
+} = createContextExports(SpaceMainContext)

@@ -1,0 +1,12 @@
+
+@layer Component {
+    .selectionBoundingBox {
+        // Control
+        pointer-events: none;
+        // Layout
+        position: absolute;
+        // Style
+        border-radius: 5px;
+        border: 2px solid var(--neon-green, #0F0);
+    }
+}

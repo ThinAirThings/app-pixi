@@ -1,4 +1,4 @@
-import { useMyPresence, useSelf, useUpdateMyPresence } from "../../context/LiveblocksContext"
+import { useMyPresence, useSelf } from "../../context/LiveblocksContext"
 
 export const useStorageMySelectedNodeIds = ()
 : ReturnType<typeof useMyPresence>[0]['selectedNodes'] => {

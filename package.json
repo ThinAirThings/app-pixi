@@ -18,7 +18,7 @@
         "@liveblocks/react": "^1.0.7",
         "@pixi/react": "^7.1.0",
         "@thinairthings/mouse-utils": "^1.0.17",
-        "@thinairthings/react-context": "^0.0.1",
+        "@thinairthings/react-context": "^0.0.3",
         "@thinairthings/websocket-client": "^1.0.23",
         "@thinairthings/zoom-utils": "^1.0.3",
         "aws-jwt-verify": "^4.0.0",

@@ -29,12 +29,15 @@
                 // Style
                 border-radius: 15px;
                 .headerRow {
+
                     // Layout
                     display: grid;
                     grid-template-columns: repeat(4, minmax(0, 1fr)) 100px;
                     margin-bottom: 10px;
                     justify-items: start;
                     padding: 0px 20px;
+                    // Style
+
                     .item {
                         @include h-stack('center', 'center');
                         // Style

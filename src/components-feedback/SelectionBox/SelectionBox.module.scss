@@ -1,0 +1,12 @@
+@layer Component {
+    .selectionBox {
+        // Control
+        pointer-events: none;
+        // Layout
+        position: absolute;
+        // Style
+        border-radius: 2px;
+        border: 1px solid #D2D2D2;
+        background: rgba(165, 165, 165, 0.20);
+    }
+}
