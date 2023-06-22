@@ -22,34 +22,40 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         isselectiontarget?: string,
         isviewport?: string,
         istransformtarget?: string
+        transformtargettype?: "topLeft" | "topMiddle" | "topRight" | "middleLeft" | "middleRight" | "bottomLeft" | "bottomMiddle" | "bottomRight"
     } = {};
 
     private constructor(...args: any[]) {
-        super(...args.slice(4));
-        const [nodeid, isselectiontarget, isviewport, istransformtarget] = args[0];
+        super(...args.slice(5));
+        const [nodeid, isselectiontarget, isviewport, istransformtarget, transformtargettype] = args;
+        
         this.dataset["nodeid"] = nodeid;
         this.dataset["isselectiontarget"] = isselectiontarget?.toString();
         this.dataset["isviewport"] = isviewport?.toString();
         this.dataset["istransformtarget"] = istransformtarget?.toString();
+        this.dataset["transformtargettype"] = transformtargettype;
     }
     static create({
         nodeid,
         isselectiontarget,
         isviewport,
-        istransformtarget
+        istransformtarget,
+        transformtargettype
     }:{
         nodeid?: string,
         isselectiontarget?: boolean,
         isviewport?: boolean,
         istransformtarget?: boolean
+        transformtargettype?: "topLeft" | "topmiddle" | "topRight" | "middleLeft" | "middleRight" | "bottomLeft" | "bottomMiddle" | "bottomRight"
     }, args?: ConstructorParameters<T>) {
-        return new MixedInClass([
+        return new MixedInClass(
             nodeid ?? null, 
             isselectiontarget ?? null,
             isviewport ?? null,
-            istransformtarget ?? null, 
-            args ?? []
-        ]);
+            istransformtarget ?? null,
+            transformtargettype ?? null,
+            ...(args ?? [])
+        );
     }
   };
 }

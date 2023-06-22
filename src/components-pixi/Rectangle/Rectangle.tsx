@@ -1,32 +1,19 @@
-import { PixiComponent, applyDefaultProps, Graphics as RxGraphics} from "@pixi/react"
-import { useRef } from "react"
+import { PixiComponent, Graphics as RxGraphics, applyDefaultProps} from "@pixi/react"
+import {Graphics as PxGraphics} from "pixi.js"
 import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState"
-import { Graphics } from "pixi.js"
-import { MixinThinAirTargetingDataset, TxPxGraphics } from "../_ext/MixinThinAirTargetingDataset"
+import { RxTxContainer } from "../RxTxContainer/RxTxContainer"
 
 
-const RxTxPxRectangle = PixiComponent<{
-    nodeid?: string
-    isselectiontarget?: boolean
-    isviewport?: boolean
-    istransformtarget?: boolean
-    x: number
-    y: number
+const RxPxRectangle = PixiComponent<{
     width: number
     height: number
-}&Parameters<typeof RxGraphics>['0'], TxPxGraphics>('RxTxPxRectangle', {
-    create: ({nodeid, isselectiontarget, isviewport, istransformtarget}) => {
-        return MixinThinAirTargetingDataset(Graphics).create({
-            nodeid,
-            isselectiontarget,
-            isviewport,
-            istransformtarget
-        })
-    },
+    color: number
+}&Parameters<typeof RxGraphics>['0'], PxGraphics>('RxPxRectangle', {
+    create: () => new PxGraphics(),
     applyProps: (instance, oldProps, newProps) => {
         if (oldProps.width !== newProps.width || oldProps.height !== newProps.height) {
             instance.clear()
-            instance.beginFill(0x0000ff)
+            instance.beginFill(newProps.color)
             instance.drawRect(0, 0, newProps.width, newProps.height)
             instance.endFill()
         }
@@ -40,20 +27,14 @@ export const Rectangle = ({
 }: {
     nodeId: string
 }) => {
-    const rectangleRef = useRef<TxPxGraphics>(null)
     const containerState = useStorageContainerState(nodeId)
-
     return(
-        <RxTxPxRectangle
-            nodeid={nodeId}
-            isselectiontarget={true}
-            ref={rectangleRef}
-            eventMode="static"
-            cursor="pointer"
-            x={containerState.x}
-            y={containerState.y}
-            width={containerState.width}
-            height={containerState.height}
-        />
+        <RxTxContainer nodeId={nodeId}>
+            <RxPxRectangle
+                width={(1/containerState.scale)*containerState.width}
+                height={(1/containerState.scale)*containerState.height}
+                color={0x0000ff}
+            />
+        </RxTxContainer>
     )
 }
