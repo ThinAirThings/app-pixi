@@ -1,0 +1,15 @@
+
+@layer Component {
+    .transformZone {
+        background-color: transparent;
+        position: absolute;
+        &.topLeft {cursor: nwse-resize;}
+        &.topRight {cursor: nesw-resize;}
+        &.bottomLeft {cursor: nesw-resize;}
+        &.bottomRight {cursor: nwse-resize;}
+        &.topMiddle {cursor: ns-resize;}
+        &.bottomMiddle {cursor: ns-resize;}
+        &.middleLeft {cursor: ew-resize;}
+        &.middleRight {cursor: ew-resize;}
+    }
+}

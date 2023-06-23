@@ -7,5 +7,7 @@ export const useStorageContainerStateMap = (nodeIds?: string[]): Map<string, Con
         return new Map([...root.nodeMap].filter(([nodeId]) => nodeIds ? nodeIds.includes(nodeId) : true)
             .map(([nodeId, node]) => ([nodeId, node.state.containerState]))
         )
-    }, (a,b)=>_isEqual(a,b))
+    }
+    , (a,b)=>_isEqual(a,b)
+    )
 }

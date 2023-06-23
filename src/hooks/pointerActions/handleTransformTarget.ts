@@ -1,4 +1,4 @@
-import { ContainerState, Point, ViewportState } from "@thinairthings/zoom-utils"
+import { ContainerState, Point, ScreenState, ViewportState, getSelectionBoundingBox, screenLengthToAbsoluteLength, screenStateToAbsoluteState } from "@thinairthings/zoom-utils"
 import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
 import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
 import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
@@ -8,25 +8,21 @@ import { fromEvent, takeUntil } from "rxjs"
 
 export const handleTransformTarget = (event: PointerEvent, {
     viewportState,
-    mySelectedNodeIds,
-    containerStateMap,
+    initialSelectedContainerStatesMap,
     updateContainerState
 } : {
     viewportState: ViewportState
-    mySelectedNodeIds: string[]
-    containerStateMap: ReturnType<typeof useStorageContainerStateMap>
+    initialSelectedContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
     updateContainerState: ReturnType<typeof useMutationContainerState>
 }) => {
     // Get target
     const target = event.target as TxPxContainer
     const transformTargetType = target.dataset.transformtargettype
-    // Get Initial Container States Map
-    const initialContainerStatesMap = new Map<string, ContainerState>(
-        mySelectedNodeIds.map(nodeId => [nodeId, containerStateMap.get(nodeId)!])
-    )
+     
+    // Get initial bounding box state
+    const initialBoundingBoxState = getSelectionBoundingBox(viewportState, initialSelectedContainerStatesMap)
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
     document.body.setPointerCapture(event.pointerId)
-
     // Pointer Move
     fromEvent<PointerEvent>(document.body, 'pointermove')
     .pipe(
@@ -34,63 +30,124 @@ export const handleTransformTarget = (event: PointerEvent, {
             document.body.releasePointerCapture(event.pointerId)
         }))
     )
+    .subscribe((event) => {
+        const pointerMovePoint = mousePoint(event);
+        // Get new bounding box state
+        const finalBoundingBoxState = getNewBoundingBoxState(transformTargetType!, {
+            initialBoundingBoxState,
+            pointerDownPoint,
+            pointerMovePoint
+        });
+        // GOOD UP TO HERE!!!
+        // Update Container States
+        [...initialSelectedContainerStatesMap].forEach(([nodeId, containerState]) => {
+            updateContainerState(nodeId, applyTransformation(
+                viewportState,
+                initialBoundingBoxState,
+                finalBoundingBoxState,
+                containerState
+            ))
+        })
+    })
 }
 
-const resizeCalculation = (type: NonNullable<TxPxContainer['dataset']['transformtargettype']>, {
-    initialContainerState,
-    recursiveScale,
-    mouseDownPoint,
-    mouseMovePoint
+const applyTransformation = (
+    viewportState: ViewportState,
+    initialScreenBoundingBoxState: ScreenState, 
+    finalScreenBoundingBoxState: ScreenState,
+    containerState: ContainerState
+): ContainerState => {
+    // Get initial distance from origin
+    const initialAbsoluteBoundingBoxState = screenStateToAbsoluteState(viewportState, initialScreenBoundingBoxState)
+    const {
+        absoluteXDistanceFromBoundingBoxOrigin, 
+        absoluteYDistanceFromBoundingBoxOrigin
+    } = {
+        absoluteXDistanceFromBoundingBoxOrigin: containerState.x - initialAbsoluteBoundingBoxState.x,
+        absoluteYDistanceFromBoundingBoxOrigin: containerState.y - initialAbsoluteBoundingBoxState.y
+    }
+
+    const transformationScreenValues = getScreenTransformationValues(finalScreenBoundingBoxState, initialScreenBoundingBoxState)
+    // Apply transformation
+    return {
+        ...containerState,
+        x: containerState.x 
+            + absoluteXDistanceFromBoundingBoxOrigin*(transformationScreenValues.xScale - 1) 
+            + screenLengthToAbsoluteLength(viewportState, transformationScreenValues.xScreenTranslate),
+        y: containerState.y 
+            + absoluteYDistanceFromBoundingBoxOrigin*(transformationScreenValues.yScale - 1) 
+            + screenLengthToAbsoluteLength(viewportState, transformationScreenValues.yScreenTranslate),
+        width: containerState.width * transformationScreenValues.xScale,
+        height: containerState.height * transformationScreenValues.yScale
+    }
+}
+const getScreenTransformationValues = (newBoundingBoxState: ScreenState, initialBoundingBoxState: ScreenState): {
+    xScale: number
+    yScale: number
+    xScreenTranslate: number
+    yScreenTranslate: number
+} => {
+    return {
+        xScale: newBoundingBoxState.width / initialBoundingBoxState.width,
+        yScale: newBoundingBoxState.height / initialBoundingBoxState.height,
+        xScreenTranslate: newBoundingBoxState.x - initialBoundingBoxState.x,
+        yScreenTranslate: newBoundingBoxState.y - initialBoundingBoxState.y
+    }
+}
+
+const getNewBoundingBoxState = (type: NonNullable<TxPxContainer['dataset']['transformtargettype']>, {
+    initialBoundingBoxState,
+    pointerDownPoint,
+    pointerMovePoint
 }:{
-    initialContainerState: ContainerState
-    recursiveScale: number  
-    mouseDownPoint: Point
-    mouseMovePoint: Point
-}): ContainerState=> {
-    const dWidth = recursiveScale*(mouseMovePoint.x - mouseDownPoint.x)
-    const dHeight = recursiveScale*(mouseMovePoint.y - mouseDownPoint.y)
+    initialBoundingBoxState: ScreenState 
+    pointerDownPoint: Point
+    pointerMovePoint: Point
+}): ScreenState=> {
+    const dWidth = (pointerMovePoint.x - pointerDownPoint.x)
+    const dHeight = (pointerMovePoint.y - pointerDownPoint.y)
     switch(type) {
         case('topLeft'): return {
-            ...initialContainerState,
-            x: initialContainerState.x + dWidth,
-            y: initialContainerState.y + dHeight,
-            width: initialContainerState.width - (1/initialContainerState.scale*dWidth),
-            height: initialContainerState.height - (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            x: initialBoundingBoxState.x + dWidth,
+            y: initialBoundingBoxState.y + dHeight,
+            width: initialBoundingBoxState.width - dWidth,
+            height: initialBoundingBoxState.height - dHeight
         }
         case('topMiddle'): return {
-            ...initialContainerState,
-            y: initialContainerState.y + dHeight,
-            height: initialContainerState.height - (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            y: initialBoundingBoxState.y + dHeight,
+            height: initialBoundingBoxState.height - dHeight
         }
         case('topRight'): return {
-            ...initialContainerState,
-            y: initialContainerState.y + dHeight,
-            width: initialContainerState.width + (1/initialContainerState.scale*dWidth),
-            height: initialContainerState.height - (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            y: initialBoundingBoxState.y + dHeight,
+            width: initialBoundingBoxState.width + dWidth,
+            height: initialBoundingBoxState.height - dHeight
         }
         case('middleRight'): return {
-            ...initialContainerState,
-            width: initialContainerState.width + (1/initialContainerState.scale*dWidth),
+            ...initialBoundingBoxState,
+            width: initialBoundingBoxState.width + dWidth,
         }
         case('bottomRight'): return {
-            ...initialContainerState,
-            width: initialContainerState.width + (1/initialContainerState.scale*dWidth),
-            height: initialContainerState.height + (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            width: initialBoundingBoxState.width + dWidth,
+            height: initialBoundingBoxState.height + dHeight
         }
         case('bottomMiddle'): return {
-            ...initialContainerState,
-            height: initialContainerState.height + (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            height: initialBoundingBoxState.height + dHeight
         }
         case('bottomLeft'): return {
-            ...initialContainerState,
-            x: initialContainerState.x + dWidth,
-            width: initialContainerState.width - (1/initialContainerState.scale*dWidth),
-            height: initialContainerState.height + (1/initialContainerState.scale*dHeight)
+            ...initialBoundingBoxState,
+            x: initialBoundingBoxState.x + dWidth,
+            width: initialBoundingBoxState.width - dWidth,
+            height: initialBoundingBoxState.height + dHeight
         }
         case('middleLeft'): return {
-            ...initialContainerState,
-            x: initialContainerState.x + dWidth,
-            width: initialContainerState.width - (1/initialContainerState.scale*dWidth),
+            ...initialBoundingBoxState,
+            x: initialBoundingBoxState.x + dWidth,
+            width: initialBoundingBoxState.width - dWidth,
         }
     }
 }

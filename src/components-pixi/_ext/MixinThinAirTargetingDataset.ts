@@ -1,4 +1,5 @@
 import { Container, Graphics } from "pixi.js";
+import { TransformTargetType } from "../../hooks/pointerActions/usePointerActions";
 
 /* 
     What is all this?
@@ -22,7 +23,7 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         isselectiontarget?: string,
         isviewport?: string,
         istransformtarget?: string
-        transformtargettype?: "topLeft" | "topMiddle" | "topRight" | "middleLeft" | "middleRight" | "bottomLeft" | "bottomMiddle" | "bottomRight"
+        transformtargettype?: TransformTargetType
     } = {};
 
     private constructor(...args: any[]) {
@@ -46,7 +47,7 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         isselectiontarget?: boolean,
         isviewport?: boolean,
         istransformtarget?: boolean
-        transformtargettype?: "topLeft" | "topmiddle" | "topRight" | "middleLeft" | "middleRight" | "bottomLeft" | "bottomMiddle" | "bottomRight"
+        transformtargettype?: TransformTargetType
     }, args?: ConstructorParameters<T>) {
         return new MixedInClass(
             nodeid ?? null, 

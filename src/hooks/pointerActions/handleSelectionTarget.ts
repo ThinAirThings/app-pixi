@@ -7,13 +7,13 @@ import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingD
 export const handleSelectionTarget = (event: PointerEvent, {
     viewportState,
     mySelectedNodeIds,
-    containerStateMap,
+    allContainerStatesMap,
     updateMySelectedNodeIds,
     updateContainerState,
 }: {
     viewportState: ViewportState
     mySelectedNodeIds: string[] 
-    containerStateMap: ReturnType<typeof useStorageContainerStateMap>
+    allContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
     updateMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
     updateContainerState: ReturnType<typeof useMutationContainerState>
 }) => {
@@ -28,7 +28,7 @@ export const handleSelectionTarget = (event: PointerEvent, {
     updateMySelectedNodeIds([...mySelectedNodeIds]) // Set react state to update ui
     // Get Initial Container States Map
     const initialContainerStatesMap = new Map<string, ContainerState>(
-        mySelectedNodeIds.map(nodeId => [nodeId, containerStateMap.get(nodeId)!])
+        mySelectedNodeIds.map(nodeId => [nodeId, allContainerStatesMap.get(nodeId)!])
     )
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
     document.body.setPointerCapture(event.pointerId)

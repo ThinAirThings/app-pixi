@@ -1,20 +1,20 @@
 import { fromEvent, takeUntil } from 'rxjs'
 import { mousePoint, mouseRect } from '@thinairthings/mouse-utils'
 import { ContainerState, ScreenState, ViewportState, screenStateToAbsoluteState } from '@thinairthings/zoom-utils'
-import { useStorageContainerStateMap } from '../../../hooks/liveblocks/useStorageContainerStateMap'
-import { useMutationMyMouseSelectionState } from '../../../hooks/liveblocks/useMutationMyMouseSelectionState'
+import { useStorageContainerStateMap } from '../liveblocks/useStorageContainerStateMap'
+import { useMutationMyMouseSelectionState } from '../liveblocks/useMutationMyMouseSelectionState'
 
-export const handleStageTarget = (event: PointerEvent, {
+export const handleViewportTarget = (event: PointerEvent, {
     mySelectedNodeIds,
     updateMySelectedNodeIds,
     viewportState,
-    containerStateMap,
+    allContainerStatesMap,
     updateMyMouseSelectionState
 }: {
     mySelectedNodeIds: string[]
     updateMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
     viewportState: ViewportState
-    containerStateMap: ReturnType<typeof useStorageContainerStateMap>
+    allContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
     updateMyMouseSelectionState: ReturnType<typeof useMutationMyMouseSelectionState>
 }) => {
     // If the shift key is not pressed, clear the selection
@@ -45,7 +45,7 @@ export const handleStageTarget = (event: PointerEvent, {
         })
         const absoluteSelectionBounds = screenStateToAbsoluteState(viewportState, mouseRect(pointerDownPoint, pointerMovePoint))
         // Check all nodes container states to see if they are in the selection bounds
-        const nodeIdsWithinSelectionBounds = [...containerStateMap].filter(
+        const nodeIdsWithinSelectionBounds = [...allContainerStatesMap].filter(
             ([_, containerState]) => isNodeInSelectionBounds(absoluteSelectionBounds, containerState)
         ).map(([nodeId]) => nodeId)
         // Get the nodes that are outside the selection bounds but were previously selected due to shift key (You can probably simplify this with set operations)
