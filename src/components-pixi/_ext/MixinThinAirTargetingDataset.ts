@@ -1,4 +1,4 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, Sprite } from "pixi.js";
 import { TransformTargetType } from "../../hooks/pointerActions/usePointerActions";
 
 /* 
@@ -64,3 +64,4 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
 // Declare Type Mixins
 export type TxPxGraphics = MixedInTargetType<typeof Graphics>
 export type TxPxContainer = MixedInTargetType<typeof Container>
+export type TxPxSprite = MixedInTargetType<typeof Sprite>

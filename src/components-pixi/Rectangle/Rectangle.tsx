@@ -1,7 +1,7 @@
 import { PixiComponent, Graphics as RxGraphics, applyDefaultProps} from "@pixi/react"
 import {Graphics as PxGraphics} from "pixi.js"
 import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState"
-import { RxTxContainer } from "../RxTxContainer/RxTxContainer"
+import { RxTxContainer } from "../_base/RxTxContainer"
 
 
 const RxPxRectangle = PixiComponent<{
@@ -33,7 +33,7 @@ export const Rectangle = ({
             <RxPxRectangle
                 width={(1/containerState.scale)*containerState.width}
                 height={(1/containerState.scale)*containerState.height}
-                color={0x0000ff}
+                color={0x000000}
             />
         </RxTxContainer>
     )

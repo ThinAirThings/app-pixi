@@ -47,7 +47,8 @@ export const useArrowKeyNavigation = (
                                 width: nodeComponentEntry.defaultBoxSize.width,
                                 height: nodeComponentEntry.defaultBoxSize.height,
                                 scale: 1
-                            }
+                            },
+                            ...nodeComponentEntry.defaultProps
                         }
                     }))
                     updateMySelectedNodeIds([...mySelectedNodeIds, newNodeId])

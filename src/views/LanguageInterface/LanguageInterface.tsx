@@ -5,6 +5,7 @@ import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
 import { AutocompleteInterfaceCommand } from '../../clients/ThinAirClient/commands/ai/AutocompleteInterfaceCommand';
 import { NodeComponentIndex } from '../../NodeComponentIndex';
 import { useArrowKeyNavigation } from './useArrowKeyNavigation';
+import { ColorBar } from './ColorBar';
 
 
 export type NodeOption = {
@@ -87,15 +88,22 @@ export const LanguageInterface = ({
                     display: isAutoCompleting ? 'block' : 'none'
                 }}/>
             </div>
+            <ColorBar visible={selectedOptionIndex === -1} />
             <div className={classNames(styles.results)}>
                 <span>Tools</span>
                 {options.map((option, index) => (
-                    <div key={option.type} className={classNames({
-                        [styles.selected]: index === selectedOptionIndex
-                    })}>
-                        <img src={option.typeDisplayIcon} alt="result" />
-                        <span>{option.typeDisplayName}</span>
+                    <div key={option.type}>
+                        <div>
+                            <div className={classNames({
+                                [styles.selected]: index === selectedOptionIndex
+                            })}>
+                                <img src={option.typeDisplayIcon} alt="result" />
+                                <span>{option.typeDisplayName}</span>
+                            </div>
+                            <ColorBar visible={index === selectedOptionIndex}/>
+                        </div>
                     </div>
+
                 ))}
             </div>
         </div>

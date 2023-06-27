@@ -8,7 +8,7 @@ import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
 import { useUserDetailsContext } from './UserContext';
-import { Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
+import { ContainerState, Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
 
 export type NodeId = string
 export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
@@ -21,13 +21,6 @@ export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
 }>
 export type ImmutableAirNode<T extends {[key: string]: any}={}> = ReturnType<AirNode<T>["toImmutable"]>
 
-export type ContainerState = {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    scale: number;
-}
 export const createAirNode = <T extends LsonObject={}> ({
     type,
     state

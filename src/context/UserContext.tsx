@@ -1,7 +1,7 @@
 import { createContextExports, createContextProviderComposition, createContextState } from "@thinairthings/react-context";
 
 
-const userContext = {
+export const UserContext = {
     userDetailsContext: createContextState<{
         initialized: boolean
         accessToken: string | null
@@ -17,5 +17,5 @@ const userContext = {
 
 export const {
     useUserDetailsContext
-} = createContextExports(userContext)
-export const UserContextProvider = createContextProviderComposition(userContext)
+} = createContextExports(UserContext)
+export const UserContextProvider = createContextProviderComposition(UserContext)

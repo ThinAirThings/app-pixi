@@ -1,6 +1,6 @@
 import { createContextExports, createContextProviderComposition, createContextRef, createContextState } from "@thinairthings/react-context"
 import { ViewportState } from "@thinairthings/zoom-utils"
-const spaceMetaContext = {
+export const SpaceMetaContext = {
     spaceDetailsContext: createContextState<{
         initialized: boolean
         spaceDisplayName: string
@@ -13,9 +13,9 @@ const spaceMetaContext = {
 }
 export const {
     useSpaceDetailsContext,
-} = createContextExports(spaceMetaContext)
+} = createContextExports(SpaceMetaContext)
 
-export const SpaceMetaContextProvider = createContextProviderComposition(spaceMetaContext)
+export const SpaceMetaContextProvider = createContextProviderComposition(SpaceMetaContext)
 
 export const SpaceMainContext = {
     infiniteCanvasRefContext: createContextRef<HTMLDivElement>(),

@@ -5,7 +5,9 @@ export type NodeTypeIndex = {
         type: 'browser'
         typeDisplayName: string
         typeDisplayIcon: string
-        defaultProps: {}
+        defaultProps: {
+            url: string
+        }
         Component: typeof Browser
     }
     rectangle: {
@@ -35,7 +37,9 @@ export const NodeComponentIndex: {
         type: 'browser',
         typeDisplayName: "Browser",
         typeDisplayIcon: "/icons/icon-earth.svg",
-        defaultProps: {},
+        defaultProps: {
+            url: "https://www.youtube.com/watch?v=gxxqdrrpgZc&t=326s"
+        },
         defaultBoxSize: {
             width: 836,
             height: 536
