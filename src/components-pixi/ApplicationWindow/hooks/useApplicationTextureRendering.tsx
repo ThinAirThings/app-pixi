@@ -6,41 +6,43 @@ import { useSpaceDetailsContext } from "../../../context/SpaceContext"
 import { useUserDetailsContext } from "../../../context/UserContext"
 import { useNodeState } from "../../../hooks/liveblocks/useStorageNodeState"
 import { NodeComponentIndex } from "../../../NodeComponentIndex"
-import { Texture } from "pixi.js"
+import { RenderTexture, Sprite, Texture } from "pixi.js"
+import { ScreenState } from "@thinairthings/zoom-utils"
+import { useApp } from "@pixi/react"
 
-export const useBrowserCanvasWorker = (nodeId: string, {
-    canvasRef,
-    browserTextureRef,
+export const useApplicationTextureRendering = (nodeId: string, {
+    applicationTextureRef,
     workerClientRef,
     setReadyToRender
 }: {
-    canvasRef: MutableRefObject<HTMLCanvasElement | null>
-    browserTextureRef: MutableRefObject<Texture | null>
+    applicationTextureRef: MutableRefObject<RenderTexture | null>
     workerClientRef: MutableRefObject<WorkerClient | null>
     setReadyToRender: (readyToRender: boolean) => void
 }) => {
     // Storage
+    const app = useApp()
     const containerState = useStorageContainerState(nodeId)
     const url = useNodeState<typeof NodeComponentIndex['browser']['defaultProps'], 'url'>(nodeId, 'url') // Used in initialization
     const [spaceDetails] = useSpaceDetailsContext()
     const [userDetails] = useUserDetailsContext()
     useEffect(() => {
-        // Create Texture
-        browserTextureRef.current = Texture.EMPTY
         // Create worker client
         workerClientRef.current = new WorkerClient(new RenderWorker(), {
-            'rxFrameDamage': ({imageBitmap}:{imageBitmap: ImageBitmap}) => {
-                const texture = Texture.from(imageBitmap)
-                browserTextureRef.current = texture
-                console.log("Received")
-                // setReadyToRender(true)
+            'rxFrameDamage': ({dirtyBitmap, dirtyRect}:{
+                dirtyBitmap: ImageBitmap
+                dirtyRect: ScreenState
+            }) => {
+                if (!applicationTextureRef.current) return  // Handle case where texture was destroyed and we're still cleaning up
+                const dirtySprite = Sprite.from(Texture.from(dirtyBitmap))
+                dirtySprite.position.x = dirtyRect.x
+                dirtySprite.position.y = dirtyRect.y
+                app.renderer.render(dirtySprite, {
+                    renderTexture: applicationTextureRef.current!,
+                    clear: false, 
+                })
+                setReadyToRender(true)
             }
         })
-        // Create canvas
-        canvasRef.current = document.createElement('canvas')
-        canvasRef.current.width = containerState.width
-        canvasRef.current.height = containerState.height
-        const offscreenCanvasTransfer = canvasRef.current.transferControlToOffscreen()
 
         // Initialize worker
         workerClientRef.current.sendMessage('initialize', {
@@ -56,8 +58,16 @@ export const useBrowserCanvasWorker = (nodeId: string, {
                 height: Math.round(containerState.height),
                 scale: containerState.scale
             },
-            canvas: offscreenCanvasTransfer
-        }, [offscreenCanvasTransfer])
-        setReadyToRender(true)
+        })
+        return () => {
+            applicationTextureRef.current?.destroy()
+            applicationTextureRef.current = null
+            workerClientRef.current?.sendMessage('txDeleteBrowserNode', {
+                nodeId
+            })
+            setTimeout(() => {
+                workerClientRef.current?.worker.terminate()
+            }, 500)
+        }
     }, [])
 }

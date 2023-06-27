@@ -44,8 +44,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 return
             }
             // Check if target is a transform target
-            if (target.dataset.istransformtarget && target.dataset.transformtargettype) {
-
+            if (target.dataset?.istransformtarget && target.dataset?.transformtargettype) {
                 // Target is a transform target
                 handleTransformTarget(event, {
                     viewportState,
@@ -57,7 +56,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 return
             }
             // Check if target is a viewport
-            if (target.dataset.isviewport){
+            if (target.dataset?.isviewport){
                 // Target is a Viewport
                 handleViewportTarget(event, {
                     viewportState,
@@ -69,7 +68,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 return
             }
             // Implies target is a button or some other ui component. Ignore.
-            if ((!target.dataset.isselectiontarget) || target.dataset.nodeid === myFocusedNodeId) return
+            if ((!target.dataset?.isselectiontarget) || target.dataset?.nodeid === myFocusedNodeId) return
 
             // Target is a selectionTarget
             handleSelectionTarget(event, {

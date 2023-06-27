@@ -1,4 +1,5 @@
-import { createAirNode, useMutation } from "../../context/LiveblocksContext"
+import { createAirNode } from "@thinairthings/liveblocks-model"
+import {  useMutation } from "../../context/LiveblocksContext"
 
 export const useMutationCreateNode = () => {
     return useMutation(({storage}, {type, state}: Parameters<typeof createAirNode>[0]) => {

@@ -1,12 +1,10 @@
 import { SocketioClient } from "@thinairthings/websocket-client"
 import {WorkerClient} from "@thinairthings/worker-client"
-import { ContainerState } from "@thinairthings/zoom-utils"
+import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
 
 // Setup Messaging
 let ioClient: SocketioClient
 let mainServerClient: SocketioClient
-let canvasRef: OffscreenCanvas
-let canvasCtx: OffscreenCanvasRenderingContext2D
 const workerClient = new WorkerClient(self as unknown as Worker, {
     'initialize': async ({
         serverUrl,
@@ -15,7 +13,6 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
         nodeId,
         url,
         containerState,
-        canvas
     }: {
         serverUrl: string
         userId: string
@@ -23,10 +20,7 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
         nodeId: string
         url: string
         containerState: ContainerState
-        canvas: OffscreenCanvas
     }) => {
-        canvasRef = canvas
-        canvasCtx = canvasRef.getContext('2d') as OffscreenCanvasRenderingContext2D
         mainServerClient = new SocketioClient( serverUrl, {})
         console.log(url)
         await mainServerClient.fetch('txCreateHeadlessBrowser', {
@@ -38,21 +32,14 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
         })
         ioClient = new SocketioClient( `${serverUrl}/${nodeId}`, {
             'rxFrameDamage': async (payload: {
-                dirtyRect: {
-                    x: number
-                    y: number
-                    width: number
-                    height: number
-                }
+                dirtyRect: ScreenState
                 frameBuffer: ArrayBuffer
             }) => {
                 try {
                     const arrayBufferView = new Uint8Array(payload.frameBuffer)
                     const blob = new Blob([arrayBufferView], { type: "image/jpeg" })
                     const dirtyBitmap = await createImageBitmap(blob)
-                    canvasCtx.drawImage(dirtyBitmap, payload.dirtyRect.x, payload.dirtyRect.y )
-                    const imageBitmap = await createImageBitmap(canvasRef)
-                    workerClient.sendMessage('txFrameDamage', {imageBitmap})
+                    workerClient.sendMessage('txFrameDamage', {dirtyBitmap, dirtyRect: payload.dirtyRect})                    
                 } catch (err) {
                     console.error(err)
                 }

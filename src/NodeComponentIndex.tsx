@@ -1,24 +1,6 @@
 import { Browser } from "./components-pixi/Browser/Browser"
 import { Rectangle } from "./components-pixi/Rectangle/Rectangle"
-export type NodeTypeIndex = {
-    browser: {
-        type: 'browser'
-        typeDisplayName: string
-        typeDisplayIcon: string
-        defaultProps: {
-            url: string
-        }
-        Component: typeof Browser
-    }
-    rectangle: {
-        type: 'rectangle'
-        typeDisplayName: string
-        typeDisplayIcon: string
-        defaultProps: {}
-        Component: typeof Rectangle
-    }
-}
-
+import {NodeTypeIndex} from "@thinairthings/liveblocks-model"
 
 export const NodeComponentIndex: {
     [Key in keyof NodeTypeIndex]: {
@@ -30,7 +12,7 @@ export const NodeComponentIndex: {
             width: number
             height: number
         }
-        Component: NodeTypeIndex[Key]['Component']
+        Component: ({nodeId}: {nodeId: string}) => JSX.Element
     }
 }= {
     browser: {

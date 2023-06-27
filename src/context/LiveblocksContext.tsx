@@ -1,41 +1,14 @@
 
 import { ReactNode, Suspense } from 'react';
-import { LiveMap, LiveObject, LsonObject, createClient} from '@liveblocks/client'
+import { LiveMap, createClient} from '@liveblocks/client'
 import { createRoomContext } from '@liveblocks/react'
-import {v4 as uuidv4} from 'uuid'
-import { NodeTypeIndex } from '../NodeComponentIndex';
 import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
 import { useUserDetailsContext } from './UserContext';
-import { ContainerState, Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
+import { Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
+import { LiveblocksStorageModel} from "@thinairthings/liveblocks-model"
 
-export type NodeId = string
-export type AirNode<T extends {[key: string]: any}={}> = LiveObject<{
-    nodeId: string
-    type: keyof NodeTypeIndex
-    state: LiveObject<T&
-        {containerState: LiveObject<ContainerState>
-    }>
-    children: LiveMap<string, AirNode<any>>
-}>
-export type ImmutableAirNode<T extends {[key: string]: any}={}> = ReturnType<AirNode<T>["toImmutable"]>
-
-export const createAirNode = <T extends LsonObject={}> ({
-    type,
-    state
-}: {
-    type: keyof NodeTypeIndex
-    state: T&{containerState: ContainerState}
-}): AirNode<T> => new LiveObject({
-    nodeId: uuidv4(),
-    type,
-    state: new LiveObject({
-        ...state,
-        containerState: new LiveObject(state.containerState)
-    }),
-    children: new LiveMap()
-})
 export type LiveblocksPresence = {
     displayName: string
     absoluteCursorState: Point | null
@@ -46,9 +19,6 @@ export type LiveblocksPresence = {
     }
     selectedNodes: string[]
     focusedNode: string | null
-}
-export type LiveblocksStorage = {
-    nodeMap: LiveMap<string, AirNode<{}>>
 }
 
 let _userId: string
@@ -66,7 +36,7 @@ export const {
         useSelf,
         RoomContext
     }
-} = createRoomContext<LiveblocksPresence, LiveblocksStorage, {id: string}>(createClient({
+} = createRoomContext<LiveblocksPresence, LiveblocksStorageModel, {id: string}>(createClient({
         authEndpoint: async (): Promise<{token: string}> => {
             const thinAirClient = new ThinAirClient(import.meta.env.VITE_ROOT_DOMAIN, {
                 accessToken: _accessToken,
