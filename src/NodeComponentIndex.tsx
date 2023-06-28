@@ -1,4 +1,4 @@
-import { Browser } from "./components-pixi/Browser/Browser"
+import { ApplicationWindow } from "./components-pixi/ApplicationWindow/ApplicationWindow"
 import { Rectangle } from "./components-pixi/Rectangle/Rectangle"
 import {NodeTypeIndex} from "@thinairthings/liveblocks-model"
 
@@ -26,7 +26,7 @@ export const NodeComponentIndex: {
             width: 836,
             height: 536
         },
-        Component: ({nodeId}) => <Browser nodeId={nodeId} />
+        Component: ({nodeId}) => <ApplicationWindow nodeId={nodeId} />
     },
     rectangle: {
         type: 'rectangle',

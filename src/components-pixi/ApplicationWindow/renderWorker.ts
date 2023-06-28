@@ -4,32 +4,11 @@ import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
 
 // Setup Messaging
 let ioClient: SocketioClient
-let mainServerClient: SocketioClient
 const workerClient = new WorkerClient(self as unknown as Worker, {
-    'initialize': async ({
-        serverUrl,
-        userId,
-        spaceId,
-        nodeId,
-        url,
-        containerState,
-    }: {
+    'initialize': async ({serverUrl, nodeId}: {
         serverUrl: string
-        userId: string
-        spaceId: string
         nodeId: string
-        url: string
-        containerState: ContainerState
     }) => {
-        mainServerClient = new SocketioClient( serverUrl, {})
-        console.log(url)
-        await mainServerClient.fetch('txCreateHeadlessBrowser', {
-            userId,
-            spaceId,
-            nodeId,
-            url,
-            containerState
-        })
         ioClient = new SocketioClient( `${serverUrl}/${nodeId}`, {
             'rxFrameDamage': async (payload: {
                 dirtyRect: ScreenState

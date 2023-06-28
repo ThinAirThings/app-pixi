@@ -24,30 +24,34 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         isviewport?: string,
         istransformtarget?: string
         transformtargettype?: TransformTargetType
+        isapplicationtarget?: string
     } = {};
 
     private constructor(...args: any[]) {
-        super(...args.slice(5));
-        const [nodeid, isselectiontarget, isviewport, istransformtarget, transformtargettype] = args;
+        super(...args.slice(6));
+        const [nodeid, isselectiontarget, isviewport, istransformtarget, transformtargettype, isapplicationtarget] = args;
         
         this.dataset["nodeid"] = nodeid;
         this.dataset["isselectiontarget"] = isselectiontarget?.toString();
         this.dataset["isviewport"] = isviewport?.toString();
         this.dataset["istransformtarget"] = istransformtarget?.toString();
         this.dataset["transformtargettype"] = transformtargettype;
+        this.dataset["isapplicationtarget"] = isapplicationtarget?.toString();
     }
     static create({
         nodeid,
         isselectiontarget,
         isviewport,
         istransformtarget,
-        transformtargettype
+        transformtargettype,
+        isapplicationtarget
     }:{
         nodeid?: string,
         isselectiontarget?: boolean,
         isviewport?: boolean,
         istransformtarget?: boolean
         transformtargettype?: TransformTargetType
+        isapplicationtarget?: boolean
     }, args?: ConstructorParameters<T>) {
         return new MixedInClass(
             nodeid ?? null, 
@@ -55,6 +59,7 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
             isviewport ?? null,
             istransformtarget ?? null,
             transformtargettype ?? null,
+            isapplicationtarget ?? null,
             ...(args ?? [])
         );
     }

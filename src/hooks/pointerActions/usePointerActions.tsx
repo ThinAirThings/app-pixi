@@ -14,11 +14,15 @@ import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingD
 import { handleViewportTarget } from "./handleViewportTarget"
 import { handleTransformTarget } from "./handleTransformTarget"
 import { ContainerState } from "@thinairthings/zoom-utils"
+import { useMutationMyFocusedNodeId } from "../liveblocks/useMutationMyFocusedNodeId"
 
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
 
 export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
+    // Refs
+    const clickCount = useRef(0)
+    const clickTimeout = useRef<NodeJS.Timeout | null>(null)
     // States
     const [viewportState, setViewportState] = useViewportStateContext() 
     const mySelectedNodeIds = useStorageMySelectedNodeIds()
@@ -28,6 +32,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
     const updateMyMouseSelectionState = useMutationMyMouseSelectionState()
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     const updateContainerState = useMutationContainerState()
+    const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
     // Compound Pointer Actions
     useEffect(() => {
         if (!targetRef) return  // React Suspense with Liveblocks sort of breaks the react timeline
@@ -66,6 +71,19 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                     updateMyMouseSelectionState
                 })
                 return
+            }
+            // Check if target is application target
+            if (target.dataset?.isapplicationtarget){
+                // Target is an application target
+                if (myFocusedNodeId === target.dataset.nodeid!) {
+                    return  // Pass control off to application event listeners
+                }
+                clickCount.current += 1
+                clearTimeout(clickTimeout.current!)
+                clickTimeout.current = setTimeout(() => clickCount.current = 0, 400)
+                if (clickCount.current > 1) {
+                    updateMyFocusedNodeId(target.dataset.nodeid!)
+                }
             }
             // Implies target is a button or some other ui component. Ignore.
             if ((!target.dataset?.isselectiontarget) || target.dataset?.nodeid === myFocusedNodeId) return

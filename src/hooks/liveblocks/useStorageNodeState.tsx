@@ -1,5 +1,5 @@
-import { ImmutableAirNode, useStorage } from "../../context/LiveblocksContext"
-
+import {  useStorage } from "../../context/LiveblocksContext"
+import {ImmutableAirNode} from "@thinairthings/liveblocks-model"
 
 export const useNodeState = <
     T extends Record<string, any>, 
