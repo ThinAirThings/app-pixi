@@ -20,7 +20,8 @@ const RxTxPxContainer = PixiComponent<{
             nodeid,
             isselectiontarget,
             isviewport,
-            istransformtarget
+            istransformtarget,
+            ispixitarget: true,
         })
     },
     applyProps: (instance, oldProps, newProps) => {

@@ -12,6 +12,7 @@ export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
     useEffect(() => {
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
+            if (event.altKey) return    // Application Zoom owns this
             // Get zoom direction
             let direction: -1 | 1
             event.deltaY < 0 ? (direction = -1) : (direction = 1)

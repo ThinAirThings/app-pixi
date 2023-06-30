@@ -20,7 +20,8 @@ export const NodeComponentIndex: {
         typeDisplayName: "Browser",
         typeDisplayIcon: "/icons/icon-earth.svg",
         defaultProps: {
-            url: "https://www.youtube.com/watch?v=gxxqdrrpgZc&t=326s"
+            url: "https://www.youtube.com/watch?v=gxxqdrrpgZc&t=326s",
+            cursor: "pointer"
         },
         defaultBoxSize: {
             width: 836,

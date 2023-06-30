@@ -15,7 +15,8 @@ export const usePixiViewportStage = () => {
         // Run all stage initialization code
         app.stage.eventMode = 'static'
         app.stage.hitArea = new Rectangle(-1e+6, -1e+6, 2e+6, 2e+6); // Oversize the hit area for scaling
-        (app.stage as TxPxContainer).dataset = { ...(app.stage as TxPxContainer).dataset, isviewport: "true" };
+        (app.stage as TxPxContainer).dataset = { ...(app.stage as TxPxContainer).dataset, isviewport: "true", ispixitarget: "true"};
+        (app.view as HTMLCanvasElement).dataset.ispixitarget = "true"
     }, [])
     // Stage Updates
     useEffect(() => {

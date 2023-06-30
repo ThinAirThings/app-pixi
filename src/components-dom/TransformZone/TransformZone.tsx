@@ -13,6 +13,7 @@ export const TransformZone = ({
 }) => {
     return (
         <div
+            data-isdomtarget={true}
             data-istransformtarget={true}
             data-transformtargettype={transformTargetType}
             className={classNames(styles.transformZone, styles[transformTargetType])}

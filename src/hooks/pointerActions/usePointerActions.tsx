@@ -15,6 +15,7 @@ import { handleViewportTarget } from "./handleViewportTarget"
 import { handleTransformTarget } from "./handleTransformTarget"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { useMutationMyFocusedNodeId } from "../liveblocks/useMutationMyFocusedNodeId"
+import { useApp } from "@pixi/react"
 
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
@@ -39,14 +40,33 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             const target = event.target as TxPxContainer
+
             // Check if click was right click
             if (event.button === 2) {
                 // Right click
                 handleRightClickPan(event, {
                     viewportState,
-                    setViewportState
+                    setViewportState,
                 })
                 return
+            }
+            // Switch on target (DOM or Pixi)
+            if (target instanceof HTMLElement && target.dataset?.ispixitarget) return
+            if (target instanceof DisplayObject && target.dataset?.isdomtarget) return
+            // Check if target is application target
+            if (target.dataset?.isapplicationtarget){
+                // Target is an application target
+                if (myFocusedNodeId === target.dataset.nodeid!) {
+                    return  // Pass control off to application event listeners
+                }
+                clickCount.current += 1
+                clearTimeout(clickTimeout.current!)
+                clickTimeout.current = setTimeout(() => clickCount.current = 0, 400)
+                if (clickCount.current > 1) {
+                    updateMyFocusedNodeId(target.dataset.nodeid!)
+                }
+            } else {
+                updateMyFocusedNodeId(null)
             }
             // Check if target is a transform target
             if (target.dataset?.istransformtarget && target.dataset?.transformtargettype) {
@@ -72,19 +92,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 })
                 return
             }
-            // Check if target is application target
-            if (target.dataset?.isapplicationtarget){
-                // Target is an application target
-                if (myFocusedNodeId === target.dataset.nodeid!) {
-                    return  // Pass control off to application event listeners
-                }
-                clickCount.current += 1
-                clearTimeout(clickTimeout.current!)
-                clickTimeout.current = setTimeout(() => clickCount.current = 0, 400)
-                if (clickCount.current > 1) {
-                    updateMyFocusedNodeId(target.dataset.nodeid!)
-                }
-            }
+
             // Implies target is a button or some other ui component. Ignore.
             if ((!target.dataset?.isselectiontarget) || target.dataset?.nodeid === myFocusedNodeId) return
 

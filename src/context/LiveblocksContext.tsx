@@ -6,20 +6,8 @@ import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
 import { useUserDetailsContext } from './UserContext';
-import { Point, ScreenState, ViewportState } from '@thinairthings/zoom-utils';
-import { LiveblocksStorageModel} from "@thinairthings/liveblocks-model"
+import { LiveblocksPresence, LiveblocksStorageModel} from "@thinairthings/liveblocks-model"
 
-export type LiveblocksPresence = {
-    displayName: string
-    absoluteCursorState: Point | null
-    viewportState: ViewportState
-    mouseSelectionState: {
-        selectionActive: boolean
-        absoluteSelectionBounds: ScreenState | null
-    }
-    selectedNodes: string[]
-    focusedNode: string | null
-}
 
 let _userId: string
 let _accessToken: string
@@ -74,8 +62,8 @@ export const LiveblocksRoomProvider = ({
                     selectionActive: false,
                     absoluteSelectionBounds: null
                 },
-                selectedNodes: [],
-                focusedNode: null
+                selectedNodeIds: [],
+                focusedNodeId: null
             }}
             initialStorage={{
                 nodeMap: new LiveMap([

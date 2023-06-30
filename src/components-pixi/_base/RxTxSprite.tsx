@@ -7,11 +7,13 @@ import { MixinThinAirTargetingDataset, TxPxSprite } from "../_ext/MixinThinAirTa
 const RxTxPxSprite = PixiComponent<{
     nodeid?: string
     isselectiontarget?: boolean
+    isapplicationtarget?: boolean
 }&Parameters<typeof RxSprite>['0'], TxPxSprite>('RxTxPxSprite', {
-    create: ({nodeid, isselectiontarget}) => {
+    create: ({nodeid, isselectiontarget, isapplicationtarget}) => {
         return MixinThinAirTargetingDataset(PxSprite).create({
             nodeid,
-            isselectiontarget
+            isselectiontarget,
+            isapplicationtarget
         })
     },
     applyProps: (instance, oldProps, newProps) => {

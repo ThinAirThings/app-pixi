@@ -33,7 +33,8 @@ export const useApplicationTextureRendering = (nodeId: string, {
                 dirtyRect: ScreenState
             }) => {
                 if (!applicationTextureRef.current) return  // Handle case where texture was destroyed and we're still cleaning up
-                const dirtySprite = Sprite.from(Texture.from(dirtyBitmap))
+                const dirtyTexture = Texture.from(dirtyBitmap)
+                const dirtySprite = Sprite.from(dirtyTexture)
                 dirtySprite.position.x = dirtyRect.x
                 dirtySprite.position.y = dirtyRect.y
                 app.renderer.render(dirtySprite, {
@@ -41,6 +42,8 @@ export const useApplicationTextureRendering = (nodeId: string, {
                     clear: false, 
                 })
                 setReadyToRender(true)
+                // // Cleanup
+                dirtyTexture.destroy(true);
             }
         })
 

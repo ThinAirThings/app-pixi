@@ -25,11 +25,22 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         istransformtarget?: string
         transformtargettype?: TransformTargetType
         isapplicationtarget?: string
+        ispixitarget?: string
+        isdomtarget?: string
     } = {};
 
     private constructor(...args: any[]) {
-        super(...args.slice(6));
-        const [nodeid, isselectiontarget, isviewport, istransformtarget, transformtargettype, isapplicationtarget] = args;
+        super(...args.slice(8));
+        const [
+            nodeid, 
+            isselectiontarget, 
+            isviewport, 
+            istransformtarget, 
+            transformtargettype, 
+            isapplicationtarget,
+            ispixitarget,
+            isdomtarget
+        ] = args;
         
         this.dataset["nodeid"] = nodeid;
         this.dataset["isselectiontarget"] = isselectiontarget?.toString();
@@ -37,6 +48,8 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         this.dataset["istransformtarget"] = istransformtarget?.toString();
         this.dataset["transformtargettype"] = transformtargettype;
         this.dataset["isapplicationtarget"] = isapplicationtarget?.toString();
+        this.dataset["ispixitarget"] = ispixitarget?.toString();
+        this.dataset["isdomtarget"] = isdomtarget?.toString();
     }
     static create({
         nodeid,
@@ -44,7 +57,9 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         isviewport,
         istransformtarget,
         transformtargettype,
-        isapplicationtarget
+        isapplicationtarget,
+        ispixitarget,
+        isdomtarget
     }:{
         nodeid?: string,
         isselectiontarget?: boolean,
@@ -52,6 +67,8 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
         istransformtarget?: boolean
         transformtargettype?: TransformTargetType
         isapplicationtarget?: boolean
+        ispixitarget?: boolean
+        isdomtarget?: boolean
     }, args?: ConstructorParameters<T>) {
         return new MixedInClass(
             nodeid ?? null, 
@@ -60,6 +77,8 @@ export const MixinThinAirTargetingDataset = <T extends new (...args: any[]) => a
             istransformtarget ?? null,
             transformtargettype ?? null,
             isapplicationtarget ?? null,
+            ispixitarget ?? null,
+            isdomtarget ?? null,
             ...(args ?? [])
         );
     }
