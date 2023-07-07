@@ -1,4 +1,4 @@
-import { NodeTypeIndex } from "../../NodeComponentIndex"
+import { NodeTypeIndex } from "@thinairthings/liveblocks-model"
 import { useStorage } from "../../context/LiveblocksContext"
 import _isEqual from "lodash.isequal"
 

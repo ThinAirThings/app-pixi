@@ -1,0 +1,29 @@
+@layer Component {
+    .topLeftTag {
+        // Layout
+        @include h-stack('left', 'center');
+        width: auto;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+        background-color: black;
+        border-radius: 5px;
+        gap: 10px;
+        user-select: none;
+        cursor: pointer;
+        div {
+            @include h-stack('center', 'center');
+            padding-right: 10px;
+            border-right: 1px dotted white;
+            img {
+                width: 24px;
+                height: auto;
+            }
+        }
+        span {
+            @include set-font(14px, 700);
+            color: white;
+        }
+    }
+}

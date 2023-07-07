@@ -1,5 +1,5 @@
 import classNames from "classnames"
-import { ReactNode, forwardRef } from "react"
+import { ReactNode, forwardRef, useState } from "react"
 import styles from './Modal.module.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
@@ -18,7 +18,7 @@ export const Modal = forwardRef<
 }, ref) => {
     return (
         <div ref={ref} className={classNames(styles.background,{
-            [styles.show]: showModal,
+            [styles.show]: showModal
         })}>
             <div className={classNames(styles.modal, {
                 [styles.show]: showModal,

@@ -37,6 +37,7 @@ export const ApplicationWindow = ({
     // Effects
     useApplicationTextureRendering(nodeId, {
         applicationTextureRef,
+        applicationSpriteRef,
         workerClientRef,
         setReadyToRender
     })
@@ -54,8 +55,9 @@ export const ApplicationWindow = ({
                 ? <ApplicationSprite
                     ref={applicationSpriteRef}
                     nodeId={nodeId}
-                    texture={applicationTextureRef.current}
+                    texture={applicationTextureRef.current!}
                     cursor={cursor}
+                    containerState={containerState}
                 />
                 : <PixiLoading
                     width={(1/containerState.scale)*containerState.width}

@@ -16,7 +16,7 @@ export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
             // Get zoom direction
             let direction: -1 | 1
             event.deltaY < 0 ? (direction = -1) : (direction = 1)
-            const viewportBoxScaleFactor = 1 + (0.1*direction);
+            const viewportBoxScaleFactor = 1 + (0.15*direction);
             // NOTE: Scale = Units / Pixel
             // Translate
             ((  screenWidth=window.innerWidth, screenHeight=window.innerHeight, 

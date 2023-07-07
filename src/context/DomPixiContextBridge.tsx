@@ -20,7 +20,7 @@ export const DomPixiContextBridge = ({ children }: { children: ReactNode }) => {
             height={window.innerHeight}
             options={{
                 resizeTo: rootElement,
-                background: '#585858', 
+                background: '#2e2f30', 
             }} 
         >
             <RoomContext.Provider value={room}>

@@ -29,7 +29,7 @@ export const useApplicationKeyboardEvents = (nodeId: string, {
     // Key Up
     useEffect(() => {
         if (!readyToRender) return
-        const subscription = fromEvent<KeyboardEvent>(window, "keydown").subscribe((event) => {
+        const subscription = fromEvent<KeyboardEvent>(window, "keyup").subscribe((event) => {
             if (myFocusedNodeId !== nodeId) return
             event.key === "Tab" && event.preventDefault()
             workerClientRef.current?.sendMessage('txKeyboardInput', {
