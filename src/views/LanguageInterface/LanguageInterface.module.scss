@@ -11,10 +11,15 @@
         height: 300px;
         padding: 15px;
         // Style
-        border-radius: 5px;
+        border-radius: 16px;
         background-color: #0e0e0e;
         box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.20) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.50) inset, 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(2px);
+
+        // // Mods
+        // border-radius: 16px;
+        // background: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.00) 100%);
+        // backdrop-filter: blur(50px);
         .searchbar {
             // Layout
             @include h-stack('left', 'center');
@@ -59,10 +64,33 @@
             width: 100%;
             height: 100%;
             overflow: auto;
+            &::-webkit-scrollbar {
+                width: 10px; // Adjust scrollbar width
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #f1f1f1; // Adjust track background
+                border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #888; // Adjust thumb color
+                border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #555; // Adjust thumb color on hover
+            }
+
+            &::-ms-scrollbar {
+                width: thin;
+                background-color: #f1f1f1; // Adjust color for IE and Edge
+            }
+
             span {
                 // Style
                 @include set-font(20px, 600);
-                color: white;
+                color: rgb(255, 255, 255);
                 text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
             }
             div {
@@ -94,12 +122,13 @@
                             margin-top: 2px;
                             // Style
                             @include set-font(16px, 500);
-                            color: white;
-                            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                            color: #ffffff;
+                            // text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
                         }
                     }
                 }
             }
         }
     }
+
 }

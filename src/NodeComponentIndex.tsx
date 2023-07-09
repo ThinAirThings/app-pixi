@@ -1,3 +1,5 @@
+import { DomBox } from "./components-dom/DomBox/DomBox"
+import { TextBox } from "./components-dom/TextBox/TextBox"
 import { ApplicationWindow } from "./components-pixi/ApplicationWindow/ApplicationWindow"
 import { Rectangle } from "./components-pixi/Rectangle/Rectangle"
 import {NodeTypeIndex} from "@thinairthings/liveblocks-model"
@@ -65,13 +67,25 @@ export const NodeComponentIndex: {
         typeDisplayName: "Text Box",
         typeDisplayIcon: "/icons/icon-rectangle.svg",
         defaultProps: {
-            content: "Text Box"
+            content: "Hello World"
         },
         defaultBoxSize: {
             width: 200,
             height: 50
         },
         Component: ({nodeId}) => <TextBox nodeId={nodeId}/>
+    },
+    domBox: {
+        type: 'domBox',
+        renderer: 'dom',
+        typeDisplayName: "Dom Box",
+        typeDisplayIcon: "/icons/icon-rectangle.svg",
+        defaultProps: {},
+        defaultBoxSize: {
+            width: 200,
+            height: 50
+        },
+        Component: ({nodeId}) => <DomBox nodeId={nodeId}/>
     }
 
 }

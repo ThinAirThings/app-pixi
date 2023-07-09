@@ -4,7 +4,7 @@ import { NodeOption } from "./LanguageInterface"
 import { NodeComponentIndex } from "../../NodeComponentIndex"
 import { useMutationCreateNode } from "../../hooks/liveblocks/useMutationCreateNode"
 import { useLanguageInterfaceActiveContext, useViewportStateContext } from "../../context/SpaceContext"
-import { ContainerState, screenStateToAbsoluteState } from "@thinairthings/zoom-utils"
+import { screenStateToAbsoluteState } from "@thinairthings/zoom-utils"
 import { useMutationMySelectedNodeIds } from "../../hooks/liveblocks/useMutationMySelectedNodeIds"
 import { useStorageMySelectedNodeIds } from "../../hooks/liveblocks/useStorageMySelectedNodeIds"
 

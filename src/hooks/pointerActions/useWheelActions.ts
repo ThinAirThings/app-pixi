@@ -10,6 +10,7 @@ export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
 
     // Wheel Actions
     useEffect(() => {
+        if (!targetRef) return
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (event.altKey) return    // Application Zoom owns this

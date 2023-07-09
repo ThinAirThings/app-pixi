@@ -1,14 +1,14 @@
 import { NodeComponentIndex } from "../../NodeComponentIndex"
 import { usePixiViewportStage } from "./hooks/usePixiViewportStage"
 import { memo } from "react"
-import { useStorageComponentArray } from "../../hooks/liveblocks/useStorageComponentArray"
+import { useStorageComponentsArray } from "../../hooks/liveblocks/useStorageComponentsArray"
 import { useWheelActions } from "../../hooks/pointerActions/useWheelActions"
 import { usePointerActions } from "../../hooks/pointerActions/usePointerActions"
 import { useApp } from "@pixi/react"
 
-export const ComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentArray>}) => {
+export const ComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentsArray>}) => {
     return (
-        <>
+        <>  
             {componentArray.map((componentSpec) => {
                 const Component = NodeComponentIndex[componentSpec.type].Component
                 return (
@@ -28,7 +28,7 @@ export const PixiCanvas = () => {
     usePointerActions(app.stage)
     useWheelActions(app.stage)
     // Render Components
-    const componentArray = useStorageComponentArray()
+    const componentArray = useStorageComponentsArray('pixi')
     return (
         <ComponentArrayMemo componentArray={componentArray}/>
     )

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import styles from './LanguageInterface.module.scss';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
 import { AutocompleteInterfaceCommand } from '../../clients/ThinAirClient/commands/ai/AutocompleteInterfaceCommand';
 import { NodeComponentIndex } from '../../NodeComponentIndex';
@@ -53,8 +53,15 @@ export const LanguageInterface = ({
     // Refs
     const autocompleteTimerRef = useRef<NodeJS.Timeout | null>(null)
     const searchbarInputRef = useRef<HTMLInputElement>(null)
+    const toolsMapRef = options.map(() => useRef<HTMLDivElement>(null))
     // Effects
     useArrowKeyNavigation(searchbarInputRef, options, selectedOptionIndex, setSelectedOptionIndex )
+    useEffect(() => {
+        toolsMapRef[selectedOptionIndex]?.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+        })
+    }, [selectedOptionIndex])
     // Clients
     const thinAirClient = useThinAirClient()
     return (
@@ -92,7 +99,9 @@ export const LanguageInterface = ({
             <div className={classNames(styles.results)}>
                 <span>Tools</span>
                 {options.map((option, index) => (
-                    <div key={option.type}>
+                    <div key={option.type}
+                        ref={toolsMapRef[index]}
+                    >
                         <div>
                             <div className={classNames({
                                 [styles.selected]: index === selectedOptionIndex
