@@ -25,7 +25,12 @@ export const {
         RoomProvider,
         useMutation,
         useSelf,
-        RoomContext
+        RoomContext,
+        useHistory,
+        useCanUndo,
+        useUndo,
+        useCanRedo,
+        useRedo,
     }
 } = createRoomContext<LiveblocksPresence, LiveblocksStorageModel, {id: string}>(createClient({
         authEndpoint: async (): Promise<{token: string}> => {

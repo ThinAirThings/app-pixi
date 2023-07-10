@@ -1,6 +1,6 @@
 import { SocketioClient } from "@thinairthings/websocket-client"
 import {WorkerClient} from "@thinairthings/worker-client"
-import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
+import {  ScreenState } from "@thinairthings/zoom-utils"
 
 // Setup Messaging
 let ioClient: SocketioClient

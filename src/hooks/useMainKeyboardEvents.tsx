@@ -6,6 +6,7 @@ import { useMutationMySelectedNodeIds } from "./liveblocks/useMutationMySelected
 import { useMutationMyFocusedNodeId } from "./liveblocks/useMutationMyFocusedNodeId"
 import { useStorageMySelectedNodeIds } from "./liveblocks/useStorageMySelectedNodeIds"
 import { useMutationDeleteNode } from "./liveblocks/useMutationDeleteNode"
+import { useCanRedo, useCanUndo, useRedo, useUndo } from "../context/LiveblocksContext"
 
 
 export const useMainKeyboardEvents = () => {
@@ -13,11 +14,14 @@ export const useMainKeyboardEvents = () => {
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     const mySelectedNodeIds = useStorageMySelectedNodeIds()
     const [languageInterfaceActive, setLanguageInterfaceActive] = useLanguageInterfaceActiveContext()
-
+    const canUndo = useCanUndo()
+    const canRedo = useCanRedo()
     // Mutations
     const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     const deleteNode = useMutationDeleteNode()
+    const undo = useUndo()
+    const redo = useRedo()
     useEffect(() => {
         const subscription = fromEvent<KeyboardEvent>(window, "keydown")
         .subscribe((event) => {
@@ -35,6 +39,16 @@ export const useMainKeyboardEvents = () => {
                     event.preventDefault()
                     mySelectedNodeIds.forEach(nodeId => deleteNode(nodeId))
                     updateMySelectedNodeIds([])
+                }
+                // Undo
+                if (event.ctrlKey && event.code === "KeyZ"){
+                    event.preventDefault()
+                    canUndo && undo()
+                }
+                // Redo
+                if (event.ctrlKey && (event.code === "KeyY" || (event.shiftKey && event.code === "KeyZ") || event.code === "KeyR")){
+                    event.preventDefault()
+                    canRedo && redo()
                 }
             }
             if (event.key === "Escape"){

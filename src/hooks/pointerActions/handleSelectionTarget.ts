@@ -4,18 +4,21 @@ import { fromEvent, takeUntil } from "rxjs"
 import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
 import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
 import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
+import { useHistory } from "../../context/LiveblocksContext"
 export const handleSelectionTarget = (event: PointerEvent, {
     viewportState,
     mySelectedNodeIds,
     allContainerStatesMap,
     updateMySelectedNodeIds,
     updateContainerState,
+    historyControl
 }: {
     viewportState: ViewportState
     mySelectedNodeIds: string[] 
     allContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
     updateMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
     updateContainerState: ReturnType<typeof useMutationContainerState>
+    historyControl: ReturnType<typeof useHistory>
 }) => {
     // Get target
     const target = event.target as TxPxContainer
@@ -32,12 +35,15 @@ export const handleSelectionTarget = (event: PointerEvent, {
     )
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
     document.body.setPointerCapture(event.pointerId)
-    
+    // Pause History
+    historyControl.pause()
     // Pointer Move
     fromEvent<PointerEvent>(document.body, 'pointermove')
     .pipe (
         takeUntil(fromEvent<PointerEvent, void>(document.body, 'pointerup', {}, (event) => {
             document.body.releasePointerCapture(event.pointerId)
+            // Resume History
+            historyControl.resume()
         }))
     )
     .subscribe((event) => {

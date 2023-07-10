@@ -2,12 +2,13 @@ import { CSSProperties, ReactNode, forwardRef } from "react"
 
 
 export const DivTarget = forwardRef<HTMLDivElement, {
-    nodeId: string, 
+    nodeId: string,
+    isApplicationTarget?: boolean,
     children?: ReactNode
     className?: string
     style?: CSSProperties
 }>(
-    ({nodeId, children, className, style}, ref) => {
+    ({nodeId, children, className, isApplicationTarget, style}, ref) => {
         return (
             <div
                 className={className}
@@ -16,6 +17,7 @@ export const DivTarget = forwardRef<HTMLDivElement, {
                 data-nodeid={nodeId}
                 data-isdomtarget={true}
                 data-isselectiontarget={true}
+                data-isapplicationtarget={!!isApplicationTarget}
             >
                 {children}
             </div>

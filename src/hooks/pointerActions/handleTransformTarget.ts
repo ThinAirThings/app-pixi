@@ -4,30 +4,39 @@ import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerSt
 import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { fromEvent, takeUntil } from "rxjs"
+import { useMutationMyMouseSelectionState } from "../liveblocks/useMutationMyMouseSelectionState"
+import { useHistory } from "../../context/LiveblocksContext"
 
 
 export const handleTransformTarget = (event: PointerEvent, {
     viewportState,
     initialSelectedContainerStatesMap,
-    updateContainerState
+    updateContainerState,
+    historyControl
 } : {
     viewportState: ViewportState
     initialSelectedContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
     updateContainerState: ReturnType<typeof useMutationContainerState>
+    historyControl: ReturnType<typeof useHistory>
 }) => {
     // Get target
     const target = event.target as TxPxContainer
     const transformTargetType = target.dataset.transformtargettype
-     
+    
     // Get initial bounding box state
     const initialBoundingBoxState = getSelectionBoundingBox(viewportState, initialSelectedContainerStatesMap)
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
+
     document.body.setPointerCapture(event.pointerId)
+    // Pause History
+    historyControl.pause()
     // Pointer Move
     fromEvent<PointerEvent>(document.body, 'pointermove')
     .pipe(
         takeUntil(fromEvent<PointerEvent, void>(document.body, 'pointerup', {}, (event) => {
             document.body.releasePointerCapture(event.pointerId)
+            // Resume History
+            historyControl.resume()
         }))
     )
     .subscribe((event) => {

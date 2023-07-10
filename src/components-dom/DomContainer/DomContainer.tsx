@@ -8,7 +8,6 @@ export const DomContainer = ({nodeId, children}: {
     children?: ReactNode
 }) => {
     const containerState = useStorageContainerState(nodeId)
-    console.log(containerState)
     return (
         <div
             className={classNames(style.domContainer)}

@@ -16,6 +16,7 @@ import { handleTransformTarget } from "./handleTransformTarget"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { useMutationMyFocusedNodeId } from "../liveblocks/useMutationMyFocusedNodeId"
 import { useApp } from "@pixi/react"
+import { useHistory } from "../../context/LiveblocksContext"
 
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
@@ -34,13 +35,14 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     const updateContainerState = useMutationContainerState()
     const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
+    // History Controls
+    const historyControl = useHistory()
     // Compound Pointer Actions
     useEffect(() => {
         if (!targetRef) return  // React Suspense with Liveblocks sort of breaks the react timeline
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             const target = event.target as TxPxContainer
-
             // Check if click was right click
             if (event.button === 2) {
                 // Right click
@@ -77,6 +79,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                         mySelectedNodeIds.map(nodeId => [nodeId, allContainerStatesMap.get(nodeId)!])
                     ), 
                     updateContainerState,
+                    historyControl
                 })
                 return
             }
@@ -102,7 +105,8 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 allContainerStatesMap,
                 viewportState,
                 updateMySelectedNodeIds,
-                updateContainerState
+                updateContainerState,
+                historyControl
             })
         })
         return () => {

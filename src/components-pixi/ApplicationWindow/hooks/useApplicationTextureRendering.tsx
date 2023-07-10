@@ -40,17 +40,28 @@ export const useApplicationTextureRendering = (nodeId: string, {
                 if (!applicationTextureRef.current) {
                     return
                 }  // Handle case where texture was destroyed and we're still cleaning up
+                console.time('createTexture')
                 const dirtyTexture = Texture.from(dirtyBitmap)
+                console.timeEnd('createTexture')
+                console.time('createSprite')
                 const dirtySprite = Sprite.from(dirtyTexture)
+                console.timeEnd('createSprite')
+                console.time('position')
                 dirtySprite.position.x = dirtyRect.x
                 dirtySprite.position.y = dirtyRect.y
+                console.timeEnd('position')
+                console.time('render')
                 app.renderer.render(dirtySprite, {
                     renderTexture: applicationTextureRef.current!,
                     clear: false, 
                 })
+                console.timeEnd('render')
                 setReadyToRender(true)
                 // Cleanup
+                console.time('destroy')
                 dirtyTexture.destroy(true);
+                console.timeEnd('destroy')
+
             }
         })
 
