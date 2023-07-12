@@ -1,5 +1,4 @@
 
-import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState"
 import { RxTxContainer } from "../_base/RxTxContainer"
 import { RenderTexture } from "pixi.js"
 import { ReactNode, useRef, useState } from "react"
@@ -9,9 +8,9 @@ import { useApplicationTextureRendering } from "./hooks/useApplicationTextureRen
 import { useApplicationPointerEvents } from "./hooks/useApplicationPointerEvents"
 import {Sprite as PxSprite} from "pixi.js"
 import { ApplicationSprite } from "../_base/ApplicationSprite"
-import { useNodeState } from "../../hooks/liveblocks/useStorageNodeState"
-import { NodeTypeIndex } from "@thinairthings/liveblocks-model"
+import { useStorageContainerState, useStorageNodeState } from "@thinairthings/liveblocks-model"
 import { useApplicationKeyboardEvents } from "./hooks/useApplicationKeyboardEvents"
+import { useStorage } from "../../context/LiveblocksContext"
 
 export const applicationSocketMap = new Map<string, WorkerClient>()
 
@@ -23,15 +22,16 @@ export const ApplicationWindow = ({
     children?: ReactNode
 }) => {
     // State
-    const containerState = useStorageContainerState(nodeId)
+    const containerState = useStorageContainerState(useStorage, nodeId)
     const [readyToRender, setReadyToRender] = useState(false)
-    const cursor = useNodeState<NodeTypeIndex['browser']['defaultProps'], 'cursor'>(nodeId, "cursor")
+    const cursor = useStorageNodeState<'browser', 'cursor'>(useStorage, nodeId, "cursor")
     // Refs
     const applicationSpriteRef = useRef<PxSprite>(null)
     const applicationTextureRef = useRef<RenderTexture>(RenderTexture.create({
         width: containerState.width,
         height: containerState.height
     }))
+
     const workerClientRef = useRef<WorkerClient | null>(null)
     applicationSocketMap.has(nodeId) || applicationSocketMap.set(nodeId, workerClientRef.current!)
     // Effects
@@ -58,7 +58,7 @@ export const ApplicationWindow = ({
                     texture={applicationTextureRef.current!}
                     cursor={cursor}
                     containerState={containerState}
-                />
+                /> 
                 : <PixiLoading
                     width={(1/containerState.scale)*containerState.width}
                     height={(1/containerState.scale)*containerState.height}

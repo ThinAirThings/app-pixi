@@ -1,0 +1,45 @@
+@layer Component {
+    .textEditMenu {
+        // Layout
+        position: absolute;
+        @include h-stack('left', 'center');
+        background-color: $dark-toolbar;
+        border-radius: 10px;
+        top: -50px;
+        left: 0px;
+        width: auto;
+        height: 35px;
+        padding: 10px;
+        gap: 10px;
+        div {
+            @include h-stack('center', 'center');
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            &.active {
+                background-color: $viewport-gray;
+            }
+            &:hover {
+                background-color: $viewport-gray;
+            }
+            svg {
+                color: white;
+            }
+            img {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+            }
+            input {
+                position: absolute;
+                visibility: hidden;
+                width: 20px;
+                height: 20px;
+                transform: translate(40px, -245px);
+
+            }
+        }
+
+    }
+}

@@ -2,21 +2,19 @@ import { useEffect, useRef } from "react"
 import { fromEvent } from "rxjs"
 import { handleSelectionTarget } from "./handleSelectionTarget"
 import { handleRightClickPan } from "./handleRightClickPan"
-import { useViewportStateContext } from "../../context/SpaceContext"
+import { useGhostContainersContext, useViewportStateContext } from "../../context/SpaceContext"
 import { useStorageMySelectedNodeIds } from "../liveblocks/useStorageMySelectedNodeIds"
 import { useStorageMyFocusedNodeId } from "../liveblocks/useStorageMyFocusedNodeId"
-import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
 import { useMutationMyMouseSelectionState } from "../liveblocks/useMutationMyMouseSelectionState"
 import { useMutationMySelectedNodeIds } from "../liveblocks/useMutationMySelectedNodeIds"
-import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
-import { Container as PxContainer, DisplayObject } from "pixi.js"
+import { DisplayObject } from "pixi.js"
 import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
 import { handleViewportTarget } from "./handleViewportTarget"
 import { handleTransformTarget } from "./handleTransformTarget"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { useMutationMyFocusedNodeId } from "../liveblocks/useMutationMyFocusedNodeId"
-import { useApp } from "@pixi/react"
-import { useHistory } from "../../context/LiveblocksContext"
+import { useHistory, useMutation, useStorage } from "../../context/LiveblocksContext"
+import { useMutationContainerState, useMutationCreateNode, useStorageContainerStateMap, useStorageNodeMap } from "@thinairthings/liveblocks-model"
 
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
@@ -29,11 +27,14 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
     const [viewportState, setViewportState] = useViewportStateContext() 
     const mySelectedNodeIds = useStorageMySelectedNodeIds()
     const myFocusedNodeId = useStorageMyFocusedNodeId()
-    const allContainerStatesMap = useStorageContainerStateMap()
+    const allContainerStatesMap = useStorageContainerStateMap(useStorage)
+    const nodeMap = useStorageNodeMap(useStorage)
+    const [ghostContainers, setGhostContainers] = useGhostContainersContext()
     // Mutations
+    const createNode = useMutationCreateNode(useMutation)
     const updateMyMouseSelectionState = useMutationMyMouseSelectionState()
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
-    const updateContainerState = useMutationContainerState()
+    const updateContainerState = useMutationContainerState(useMutation)
     const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
     // History Controls
     const historyControl = useHistory()
@@ -53,6 +54,7 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
                 return
             }
             // Switch on target (DOM or Pixi)
+            if (!target.dataset?.ispixitarget && !target.dataset?.isdomtarget) return // If neither pixi or dom target, ignore. This is for general ui components
             if (target instanceof HTMLElement && target.dataset?.ispixitarget) return
             if (target instanceof DisplayObject && target.dataset?.isdomtarget) return
             // Check if target is application target
@@ -102,8 +104,11 @@ export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
             // Target is a selectionTarget
             handleSelectionTarget(event, {
                 mySelectedNodeIds,
+                nodeMap,
                 allContainerStatesMap,
+                setGhostContainers,
                 viewportState,
+                createNode,
                 updateMySelectedNodeIds,
                 updateContainerState,
                 historyControl

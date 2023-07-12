@@ -6,7 +6,8 @@ import { fromEvent } from "rxjs";
 import { WorkerClient } from "@thinairthings/worker-client";
 import { MouseButton, mouseButton } from "@thinairthings/mouse-utils";
 import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils";
-import { useStorageContainerState } from "../../../hooks/liveblocks/useStorageContainerState";
+import { useStorageContainerState } from "@thinairthings/liveblocks-model";
+import { useStorage } from "../../../context/LiveblocksContext";
 
 
 export const useApplicationPointerEvents = (
@@ -25,7 +26,7 @@ export const useApplicationPointerEvents = (
     // State
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     const [viewportState] = useViewportStateContext()
-    const containerState = useStorageContainerState(nodeId)
+    const containerState = useStorageContainerState(useStorage, nodeId)
     // Effects
     // PointerDown
     useEffect(() => {

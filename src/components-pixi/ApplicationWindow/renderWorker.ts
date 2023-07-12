@@ -1,13 +1,13 @@
 import { SocketioClient } from "@thinairthings/websocket-client"
 import {WorkerClient} from "@thinairthings/worker-client"
-import {  ScreenState } from "@thinairthings/zoom-utils"
+import { ScreenState } from "@thinairthings/zoom-utils"
 
 // Setup Messaging
 let ioClient: SocketioClient
 const workerClient = new WorkerClient(self as unknown as Worker, {
     'initialize': async ({serverUrl, nodeId}: {
         serverUrl: string
-        nodeId: string
+        nodeId: string,
     }) => {
         ioClient = new SocketioClient( `${serverUrl}/${nodeId}`, {
             'rxFrameDamage': async (payload: {

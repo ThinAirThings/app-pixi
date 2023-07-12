@@ -1,21 +1,28 @@
 import { ContainerState, ViewportState } from "@thinairthings/zoom-utils"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { fromEvent, takeUntil } from "rxjs"
-import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
-import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
 import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
 import { useHistory } from "../../context/LiveblocksContext"
+import { useMutationContainerState, useMutationCreateNode, useStorageContainerStateMap, useStorageNodeMap } from "@thinairthings/liveblocks-model"
+import { useGhostContainersContext } from "../../context/SpaceContext"
+import { NodeComponentIndex } from "../../NodeComponentIndex"
 export const handleSelectionTarget = (event: PointerEvent, {
     viewportState,
     mySelectedNodeIds,
+    nodeMap,
     allContainerStatesMap,
+    setGhostContainers,
+    createNode,
     updateMySelectedNodeIds,
     updateContainerState,
     historyControl
 }: {
     viewportState: ViewportState
-    mySelectedNodeIds: string[] 
+    mySelectedNodeIds: string[]
+    nodeMap: ReturnType<typeof useStorageNodeMap>
     allContainerStatesMap: ReturnType<typeof useStorageContainerStateMap>
+    setGhostContainers: ReturnType<typeof useGhostContainersContext>[1]
+    createNode: ReturnType<typeof useMutationCreateNode>
     updateMySelectedNodeIds: (mySelectedNodeIds: string[]) => void
     updateContainerState: ReturnType<typeof useMutationContainerState>
     historyControl: ReturnType<typeof useHistory>
@@ -33,6 +40,7 @@ export const handleSelectionTarget = (event: PointerEvent, {
     const initialContainerStatesMap = new Map<string, ContainerState>(
         mySelectedNodeIds.map(nodeId => [nodeId, allContainerStatesMap.get(nodeId)!])
     )
+    let finalContainerStatesMap: Map<string, ContainerState>
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
     document.body.setPointerCapture(event.pointerId)
     // Pause History
@@ -42,17 +50,57 @@ export const handleSelectionTarget = (event: PointerEvent, {
     .pipe (
         takeUntil(fromEvent<PointerEvent, void>(document.body, 'pointerup', {}, (event) => {
             document.body.releasePointerCapture(event.pointerId)
+            // If alt key, Duplicate
+            if (event.altKey) {
+                [...finalContainerStatesMap].forEach(([nodeId, containerState]) => {
+                    const immutableNodeData = nodeMap.get(nodeId)!
+                    const nodeData = JSON.parse(JSON.stringify(immutableNodeData))
+                    if ((nodeData.state as any).readyToConnect) {
+                        (nodeData.state as any).readyToConnect = false
+                    }
+                    console.log(nodeData)
+                    createNode({
+                        type: immutableNodeData.type,
+                        state: {
+                            ...nodeData.state,
+                            containerState: {
+                                ...containerState,
+                            }
+                        }
+                    })
+                })
+            }
+            // Clear Ghost Containers
+            setGhostContainers([])
             // Resume History
             historyControl.resume()
         }))
     )
     .subscribe((event) => {
         const pointerMovePoint = mousePoint(event);
+        finalContainerStatesMap = new Map<string, ContainerState>(
+            [...initialContainerStatesMap].map(([nodeId, containerState]) => {
+                return [nodeId, {
+                    ...containerState,
+                    x: containerState.x + viewportState.scale*(pointerMovePoint.x - pointerDownPoint.x),
+                    y: containerState.y + viewportState.scale*(pointerMovePoint.y - pointerDownPoint.y),
+                }]
+            })
+        )
+        // Handle Alt Drag
+        if (event.altKey) {
+            // Update Ghost Containers
+            setGhostContainers([...finalContainerStatesMap].map(([nodeId, containerState]) => ({
+                nodeId,
+                containerState
+            })))
+            return
+        }
+        setGhostContainers([]); // Clear Ghost Containers
         // Update Container States
-        [...initialContainerStatesMap].forEach(([nodeId, containerState]) => {
+        [...finalContainerStatesMap].forEach(([nodeId, containerState]) => {
             updateContainerState(nodeId, {
-                x: containerState.x + viewportState.scale*(pointerMovePoint.x - pointerDownPoint.x),
-                y: containerState.y + viewportState.scale*(pointerMovePoint.y - pointerDownPoint.y),
+                x: containerState.x, y: containerState.y,
             })
         })
     })

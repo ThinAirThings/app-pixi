@@ -13,6 +13,8 @@ export const useEditorPointerActions = ({editorInitialized, isFocused, editor}: 
         if (!editorInitialized || !isFocused) return
         const subscription = fromEvent<PointerEvent>(editor!.view.dom, 'pointerdown')
         .subscribe((event) => {
+            // Check for right click
+            if (event.button !== 0) return
             event.stopPropagation()
             editor!.view.dom.setPointerCapture(event.pointerId)
             fromEvent<PointerEvent>(editor!.view.dom, 'pointermove')

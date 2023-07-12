@@ -1,6 +1,6 @@
-import { memo, useEffect, useRef } from "react"
+import { createContext, memo, useRef, useState } from "react"
 import { DomPixiContextBridge } from "../../context/DomPixiContextBridge"
-import { useLanguageInterfaceActiveContext, useSpaceDetailsContext } from "../../context/SpaceContext"
+import { useLanguageInterfaceActiveContext } from "../../context/SpaceContext"
 import { useMainKeyboardEvents } from "../../hooks/useMainKeyboardEvents"
 import { PixiCanvas } from "../InfiniteCanvas/PixiCanvas"
 import { LanguageInterface } from "../LanguageInterface/LanguageInterface"
@@ -20,24 +20,28 @@ const PixiMemo = memo(() => {
         </DomPixiContextBridge>
     )
 })
+
+export const MainDivContext = createContext<HTMLDivElement | null>(null)
 export const SpaceMain = () => {
     // Refs
-    const spaceMainRef = useRef<HTMLDivElement>(null)
+    const mainDivRef = useRef<HTMLDivElement>(null)
     // State
     const [languageInterfaceActive] = useLanguageInterfaceActiveContext()
     // Effects
-    usePointerActions(spaceMainRef.current!)
-    useWheelActions(spaceMainRef.current!)
+    usePointerActions(mainDivRef.current!)
+    useWheelActions(mainDivRef.current!)
     useMainKeyboardEvents()
 
     return (
-        <div ref={spaceMainRef} className={classNames(styles.spaceMain)}>
-            <TopLeftTag/>
-            {languageInterfaceActive && <LanguageInterface/>}
-            <SelectionBox/>
-            <SelectionBoundingBox/>
-            <DomComponentReferencePoint/>
-            <PixiMemo/>
+        <div ref={mainDivRef} className={classNames(styles.spaceMain)}>
+            <MainDivContext.Provider value={mainDivRef.current}>
+                <TopLeftTag/>
+                {languageInterfaceActive && <LanguageInterface/>}
+                <SelectionBox/>
+                <SelectionBoundingBox/>
+                <DomComponentReferencePoint/>
+                <PixiMemo/>
+            </MainDivContext.Provider>
         </div>
     )
 }

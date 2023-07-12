@@ -1,0 +1,17 @@
+@layer Component {
+    .ghostContainer {
+        // Layout
+        position:absolute;
+        transform-origin: top left;
+        @include v-stack('center', 'center');
+
+        background-color: black;
+        img {
+            max-width: 50%;
+            max-height: 50%;
+            width: auto;
+            height: auto;
+            user-select: none;
+        }
+    }
+}

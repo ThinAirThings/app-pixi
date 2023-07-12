@@ -1,11 +1,9 @@
 import { ContainerState, Point, ScreenState, ViewportState, getSelectionBoundingBox, screenLengthToAbsoluteLength, screenStateToAbsoluteState } from "@thinairthings/zoom-utils"
 import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingDataset"
-import { useStorageContainerStateMap } from "../liveblocks/useStorageContainerStateMap"
-import { useMutationContainerState } from "../liveblocks/useMutationContainerState"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { fromEvent, takeUntil } from "rxjs"
-import { useMutationMyMouseSelectionState } from "../liveblocks/useMutationMyMouseSelectionState"
 import { useHistory } from "../../context/LiveblocksContext"
+import { useMutationContainerState, useStorageContainerStateMap } from "@thinairthings/liveblocks-model"
 
 
 export const handleTransformTarget = (event: PointerEvent, {
@@ -25,6 +23,7 @@ export const handleTransformTarget = (event: PointerEvent, {
     
     // Get initial bounding box state
     const initialBoundingBoxState = getSelectionBoundingBox(viewportState, initialSelectedContainerStatesMap)
+    let finalBoundingBoxState: ScreenState
     const pointerDownPoint = mousePoint(event) // Get Initial Pointer Position
 
     document.body.setPointerCapture(event.pointerId)
@@ -42,15 +41,46 @@ export const handleTransformTarget = (event: PointerEvent, {
     .subscribe((event) => {
         const pointerMovePoint = mousePoint(event);
         // Get new bounding box state
-        const finalBoundingBoxState = getNewBoundingBoxState(transformTargetType!, {
+        finalBoundingBoxState = getNewBoundingBoxState(transformTargetType!, {
             initialBoundingBoxState,
             pointerDownPoint,
             pointerMovePoint
         });
-        // GOOD UP TO HERE!!!
+        // Handle Shift Scale Transform
+        if (event.shiftKey) {
+            const scaleRatio = getScaleRatio(initialBoundingBoxState, finalBoundingBoxState);
+            const {xDirection, yDirection} = (()=>{switch(transformTargetType) {
+                case('topLeft'): return {xDirection: -1, yDirection: -1}
+                case('topRight'): return {xDirection: 1, yDirection: -1}
+                case('bottomLeft'): return {xDirection: -1, yDirection: 1}
+                case('bottomRight'): return {xDirection: 1, yDirection: 1}
+            }})()
+            finalBoundingBoxState = getNewBoundingBoxState(transformTargetType!, {
+                initialBoundingBoxState,
+                pointerDownPoint,
+                pointerMovePoint: {
+                    x: pointerDownPoint.x + xDirection*((scaleRatio * initialBoundingBoxState.width) - initialBoundingBoxState.width),
+                    y: pointerDownPoint.y + yDirection*((scaleRatio * initialBoundingBoxState.height) - initialBoundingBoxState.height)
+                }
+            });
+
+            // Update Container States
+            [...initialSelectedContainerStatesMap].forEach(([nodeId, containerState]) => {
+                updateContainerState(nodeId, {
+                    ...applyResizeTransformation(
+                        viewportState,
+                        initialBoundingBoxState,
+                        finalBoundingBoxState,
+                        containerState
+                    ),
+                    scale: scaleRatio * containerState.scale
+                })
+            })
+            return
+        }
         // Update Container States
         [...initialSelectedContainerStatesMap].forEach(([nodeId, containerState]) => {
-            updateContainerState(nodeId, applyTransformation(
+            updateContainerState(nodeId, applyResizeTransformation(
                 viewportState,
                 initialBoundingBoxState,
                 finalBoundingBoxState,
@@ -60,7 +90,18 @@ export const handleTransformTarget = (event: PointerEvent, {
     })
 }
 
-const applyTransformation = (
+const getScaleRatio = (initialBoundingBoxState: ScreenState, finalBoundingBoxState: ScreenState): number => {
+    const initialWidth = initialBoundingBoxState.width
+    const initialHeight = initialBoundingBoxState.height
+    const finalWidth = finalBoundingBoxState.width
+    const finalHeight = finalBoundingBoxState.height
+    if ((finalWidth / initialWidth) < (finalHeight / initialHeight)){
+        return finalWidth / initialWidth
+    }
+    return finalHeight / initialHeight
+}
+
+const applyResizeTransformation = (
     viewportState: ViewportState,
     initialScreenBoundingBoxState: ScreenState, 
     finalScreenBoundingBoxState: ScreenState,

@@ -1,13 +1,13 @@
 import classNames from "classnames"
 import styles from "./SelectionBoundingBox.module.scss"
-import { useStorageContainerStateMap } from "../../hooks/liveblocks/useStorageContainerStateMap"
 import { useStorageMySelectedNodeIds } from "../../hooks/liveblocks/useStorageMySelectedNodeIds"
 import { useViewportStateContext } from "../../context/SpaceContext"
 import { getSelectionBoundingBox } from "@thinairthings/zoom-utils"
 import { transformTargetTypes } from "../../hooks/pointerActions/usePointerActions"
 import { TransformZone } from "../TransformZone/TransformZone"
-import { useCallback, useEffect, useMemo, useRef } from "react"
-import { zoomSpeed } from "../../views/InfiniteCanvas/hooks/usePixiViewportStage"
+import { useMemo, useRef } from "react"
+import { useStorageContainerStateMap } from "@thinairthings/liveblocks-model"
+import { useStorage } from "../../context/LiveblocksContext"
 
 
 export const SelectionBoundingBox = () => {
@@ -15,6 +15,7 @@ export const SelectionBoundingBox = () => {
     const selectionBoundingBoxRef = useRef<HTMLDivElement>(null)
     const [viewportState] = useViewportStateContext()
     const selectedContainerStateMap = useStorageContainerStateMap(
+        useStorage,
         useStorageMySelectedNodeIds()
     )
 

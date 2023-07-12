@@ -6,11 +6,10 @@ import { ThinAirClient } from '../clients/ThinAirClient/ThinAirClient';
 import { GetLiveblocksTokenCommand } from '../clients/ThinAirClient/commands/liveblocks/GetLiveblocksTokenCommand';
 import { useParams } from 'react-router-dom';
 import { useUserDetailsContext } from './UserContext';
-import { LiveblocksPresence, LiveblocksStorageModel} from "@thinairthings/liveblocks-model"
+import { LiveblocksPresence, LiveblocksStorageModel, } from "@thinairthings/liveblocks-model"
 import { useThinAirClient } from '../clients/ThinAirClient/useThinAirClient';
 import { GetSpaceCommand } from '../clients/ThinAirClient/commands/liveblocks/GetSpaceCommand';
 import { useSpaceDetailsContext } from './SpaceContext';
-
 
 let _userId: string
 let _accessToken: string
@@ -32,7 +31,7 @@ export const {
         useCanRedo,
         useRedo,
     }
-} = createRoomContext<LiveblocksPresence, LiveblocksStorageModel, {id: string}>(createClient({
+} = createRoomContext<LiveblocksPresence, LiveblocksStorageModel>(createClient({
         authEndpoint: async (): Promise<{token: string}> => {
             const thinAirClient = new ThinAirClient(import.meta.env.VITE_ROOT_DOMAIN, {
                 accessToken: _accessToken,
@@ -89,9 +88,7 @@ export const LiveblocksRoomProvider = ({
                 focusedNodeId: null
             }}
             initialStorage={{
-                nodeMap: new LiveMap([
-                    //[initialNode.get("nodeId"), initialNode]
-                ])
+                nodeMap: new LiveMap([])
             }}
         >
             <Suspense>

@@ -2,11 +2,12 @@ import { Dispatch, RefObject,  SetStateAction, useEffect } from "react"
 import { fromEvent } from "rxjs"
 import { NodeOption } from "./LanguageInterface"
 import { NodeComponentIndex } from "../../NodeComponentIndex"
-import { useMutationCreateNode } from "../../hooks/liveblocks/useMutationCreateNode"
 import { useLanguageInterfaceActiveContext, useViewportStateContext } from "../../context/SpaceContext"
 import { screenStateToAbsoluteState } from "@thinairthings/zoom-utils"
 import { useMutationMySelectedNodeIds } from "../../hooks/liveblocks/useMutationMySelectedNodeIds"
 import { useStorageMySelectedNodeIds } from "../../hooks/liveblocks/useStorageMySelectedNodeIds"
+import { useMutationCreateNode } from "@thinairthings/liveblocks-model"
+import { useMutation } from "../../context/LiveblocksContext"
 
 
 export const useArrowKeyNavigation = (
@@ -20,7 +21,7 @@ export const useArrowKeyNavigation = (
     const [viewportState] = useViewportStateContext()
     const mySelectedNodeIds = useStorageMySelectedNodeIds()
     // Get Mutations
-    const createNodeComponent = useMutationCreateNode()
+    const createNodeComponent = useMutationCreateNode(useMutation)
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     useEffect(() => {
         const subscription = fromEvent<KeyboardEvent>(window, 'keydown')
@@ -38,6 +39,7 @@ export const useArrowKeyNavigation = (
                         width: window.innerWidth,
                         height: window.innerHeight
                     })
+
                     const newNodeId = createNodeComponent(({
                         type: options[selectionOptionIndex].type,
                         state: {
@@ -51,6 +53,7 @@ export const useArrowKeyNavigation = (
                             ...nodeComponentEntry.defaultProps
                         }
                     }))
+                    console.log('newNodeId', newNodeId)
                     updateMySelectedNodeIds([...mySelectedNodeIds, newNodeId])
                     setLanguageInterfaceActive(false)
                 }

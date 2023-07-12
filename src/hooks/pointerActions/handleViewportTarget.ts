@@ -1,8 +1,8 @@
 import { fromEvent, takeUntil } from 'rxjs'
 import { mousePoint, mouseRect } from '@thinairthings/mouse-utils'
 import { ContainerState, ScreenState, ViewportState, screenStateToAbsoluteState } from '@thinairthings/zoom-utils'
-import { useStorageContainerStateMap } from '../liveblocks/useStorageContainerStateMap'
 import { useMutationMyMouseSelectionState } from '../liveblocks/useMutationMyMouseSelectionState'
+import { useStorageContainerStateMap } from '@thinairthings/liveblocks-model'
 
 export const handleViewportTarget = (event: PointerEvent, {
     mySelectedNodeIds,

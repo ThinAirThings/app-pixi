@@ -1,7 +1,8 @@
 import { PixiComponent, Graphics as RxGraphics, applyDefaultProps} from "@pixi/react"
 import {Graphics as PxGraphics} from "pixi.js"
-import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState"
 import { RxTxContainer } from "../_base/RxTxContainer"
+import { useStorageContainerState } from "@thinairthings/liveblocks-model"
+import { useStorage } from "../../context/LiveblocksContext"
 
 
 const RxPxRectangle = PixiComponent<{
@@ -27,7 +28,7 @@ export const Rectangle = ({
 }: {
     nodeId: string
 }) => {
-    const containerState = useStorageContainerState(nodeId)
+    const containerState = useStorageContainerState(useStorage, nodeId)
     return(
         <RxTxContainer nodeId={nodeId}>
             <RxPxRectangle

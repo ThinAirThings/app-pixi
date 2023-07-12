@@ -4,6 +4,8 @@ import { useStorageComponentsArray } from "../../hooks/liveblocks/useStorageComp
 import { NodeComponentIndex } from "../../NodeComponentIndex"
 import { memo, useRef } from "react"
 import { useDomSmoothZooming } from "./hooks/useDomSmoothZooming"
+import { useGhostContainersContext } from "../../context/SpaceContext"
+import { GhostContainer } from "../../components-dom/GhostContainer/GhostContainer"
 
 const DomComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentsArray>}) => {
     return (
@@ -26,12 +28,18 @@ export const DomComponentReferencePoint = () => {
     const referencePointRef = useRef<HTMLDivElement>(null)
     // State
     const componentsArray = useStorageComponentsArray('dom')
+    const [ghostContainers] = useGhostContainersContext()
     // Effects
     useDomSmoothZooming(referencePointRef)
     // Render
     return (
         <div ref={referencePointRef} className={classNames(styles.referencePoint)}>
             <DomComponentArrayMemo componentArray={componentsArray}/>
+            {ghostContainers.map(({nodeId, containerState}) => <GhostContainer
+                key={nodeId}
+                nodeId={nodeId}
+                containerState={containerState}
+            />)}
         </div>
     )
 }

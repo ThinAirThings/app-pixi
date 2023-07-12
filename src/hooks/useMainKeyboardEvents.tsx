@@ -5,8 +5,8 @@ import { useStorageMyFocusedNodeId } from "./liveblocks/useStorageMyFocusedNodeI
 import { useMutationMySelectedNodeIds } from "./liveblocks/useMutationMySelectedNodeIds"
 import { useMutationMyFocusedNodeId } from "./liveblocks/useMutationMyFocusedNodeId"
 import { useStorageMySelectedNodeIds } from "./liveblocks/useStorageMySelectedNodeIds"
-import { useMutationDeleteNode } from "./liveblocks/useMutationDeleteNode"
-import { useCanRedo, useCanUndo, useRedo, useUndo } from "../context/LiveblocksContext"
+import { useCanRedo, useCanUndo, useMutation, useRedo, useUndo } from "../context/LiveblocksContext"
+import { useMutationDeleteNode } from "@thinairthings/liveblocks-model"
 
 
 export const useMainKeyboardEvents = () => {
@@ -19,7 +19,7 @@ export const useMainKeyboardEvents = () => {
     // Mutations
     const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
-    const deleteNode = useMutationDeleteNode()
+    const deleteNode = useMutationDeleteNode(useMutation)
     const undo = useUndo()
     const redo = useRedo()
     useEffect(() => {

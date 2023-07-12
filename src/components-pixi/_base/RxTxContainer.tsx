@@ -2,7 +2,8 @@ import { PixiComponent, Container as RxContainer, applyDefaultProps } from "@pix
 import { MixinThinAirTargetingDataset, TxPxContainer } from "../_ext/MixinThinAirTargetingDataset";
 import { ReactNode } from "react";
 import { Graphics as PxGraphics } from "pixi.js";
-import { useStorageContainerState } from "../../hooks/liveblocks/useStorageContainerState";
+import { useStorageContainerState } from "@thinairthings/liveblocks-model";
+import { useStorage } from "../../context/LiveblocksContext";
 
 
 const RxTxPxContainer = PixiComponent<{
@@ -36,7 +37,7 @@ export const RxTxContainer = ({
     nodeId: string
     children?: ReactNode
 }) => {
-    const containerState = useStorageContainerState(nodeId)
+    const containerState = useStorageContainerState(useStorage, nodeId)
     return (
         <RxTxPxContainer
             nodeid={nodeId}
