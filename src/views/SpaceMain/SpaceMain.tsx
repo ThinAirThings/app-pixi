@@ -8,7 +8,7 @@ import { SelectionBoundingBox } from "../../components-dom/SelectionBoundingBox/
 import { SelectionBox } from "../../components-dom/SelectionBox/SelectionBox"
 import classNames from "classnames"
 import styles from "./SpaceMain.module.scss"
-import { usePointerActions } from "../../hooks/pointerActions/usePointerActions"
+import { useMainPointerActions } from "../../hooks/pointerActions/useMainPointerActions"
 import { TopLeftTag } from "../../components-dom/TopLeftTag/TopLeftTag"
 import { DomComponentReferencePoint } from "../InfiniteCanvas/DomComponentReferencePoint"
 import { useWheelActions } from "../../hooks/pointerActions/useWheelActions"
@@ -28,19 +28,19 @@ export const SpaceMain = () => {
     // State
     const [languageInterfaceActive] = useLanguageInterfaceActiveContext()
     // Effects
-    usePointerActions(mainDivRef.current!)
+    useMainPointerActions(mainDivRef.current!)
     useWheelActions(mainDivRef.current!)
     useMainKeyboardEvents()
 
     return (
         <div ref={mainDivRef} className={classNames(styles.spaceMain)}>
             <MainDivContext.Provider value={mainDivRef.current}>
-                <TopLeftTag/>
-                {languageInterfaceActive && <LanguageInterface/>}
-                <SelectionBox/>
-                <SelectionBoundingBox/>
                 <DomComponentReferencePoint/>
                 <PixiMemo/>
+                <SelectionBoundingBox/>
+                <SelectionBox/>
+                {languageInterfaceActive && <LanguageInterface/>}
+                <TopLeftTag/>
             </MainDivContext.Provider>
         </div>
     )

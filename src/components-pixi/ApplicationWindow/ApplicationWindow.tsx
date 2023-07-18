@@ -1,16 +1,15 @@
 
 import { RxTxContainer } from "../_base/RxTxContainer"
-import { RenderTexture } from "pixi.js"
+import {  Container as PxContainer } from "pixi.js"
 import { ReactNode, useRef, useState } from "react"
 import { PixiLoading } from "../PixiLoading/PixiLoading"
 import { WorkerClient } from "@thinairthings/worker-client"
-import { useApplicationTextureRendering } from "./hooks/useApplicationTextureRendering"
-import { useApplicationPointerEvents } from "./hooks/useApplicationPointerEvents"
-import {Sprite as PxSprite} from "pixi.js"
-import { ApplicationSprite } from "../_base/ApplicationSprite"
+import { useApplicationRendering } from "./hooks/useApplicationRendering"
+import { useApplicationPointerEvents } from "../../hooks/pointerActions/useApplicationPointerActions"
 import { useStorageContainerState, useStorageNodeState } from "@thinairthings/liveblocks-model"
-import { useApplicationKeyboardEvents } from "./hooks/useApplicationKeyboardEvents"
 import { useStorage } from "../../context/LiveblocksContext"
+import { ApplicationContainer } from "../ApplicationContainer/ApplicationContainer"
+import { useApplicationKeyboardEvents } from "../../hooks/useApplicationKeyboardEvents"
 
 export const applicationSocketMap = new Map<string, WorkerClient>()
 
@@ -26,25 +25,20 @@ export const ApplicationWindow = ({
     const [readyToRender, setReadyToRender] = useState(false)
     const cursor = useStorageNodeState<'browser', 'cursor'>(useStorage, nodeId, "cursor")
     // Refs
-    const applicationSpriteRef = useRef<PxSprite>(null)
-    const applicationTextureRef = useRef<RenderTexture>(RenderTexture.create({
-        width: containerState.width,
-        height: containerState.height
-    }))
-
+    const applicationContainerRef = useRef<PxContainer | null>(null)
     const workerClientRef = useRef<WorkerClient | null>(null)
     applicationSocketMap.has(nodeId) || applicationSocketMap.set(nodeId, workerClientRef.current!)
     // Effects
-    useApplicationTextureRendering(nodeId, {
-        applicationTextureRef,
-        applicationSpriteRef,
+    useApplicationRendering(nodeId, {
+        applicationContainerRef,
         workerClientRef,
         setReadyToRender
     })
-    useApplicationPointerEvents(applicationSpriteRef, nodeId, {
-        workerClientRef,
-        readyToRender
-    })
+    useApplicationPointerEvents(
+        nodeId, 
+        applicationContainerRef.current, 
+        workerClientRef
+    )
     useApplicationKeyboardEvents(nodeId, {
         workerClientRef,
         readyToRender
@@ -52,12 +46,10 @@ export const ApplicationWindow = ({
     return(
         <RxTxContainer nodeId={nodeId}>
             {readyToRender
-                ? <ApplicationSprite
-                    ref={applicationSpriteRef}
+                ? <ApplicationContainer
+                    ref={applicationContainerRef}
                     nodeId={nodeId}
-                    texture={applicationTextureRef.current!}
                     cursor={cursor}
-                    containerState={containerState}
                 /> 
                 : <PixiLoading
                     width={(1/containerState.scale)*containerState.width}

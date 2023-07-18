@@ -3,7 +3,7 @@ import { usePixiViewportStage } from "./hooks/usePixiViewportStage"
 import { memo } from "react"
 import { useStorageComponentsArray } from "../../hooks/liveblocks/useStorageComponentsArray"
 import { useWheelActions } from "../../hooks/pointerActions/useWheelActions"
-import { usePointerActions } from "../../hooks/pointerActions/usePointerActions"
+import { useMainPointerActions } from "../../hooks/pointerActions/useMainPointerActions"
 import { useApp } from "@pixi/react"
 
 export const ComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentsArray>}) => {
@@ -25,7 +25,7 @@ export const PixiCanvas = () => {
     // Initialize App 
     const app = useApp()
     usePixiViewportStage()
-    usePointerActions(app.stage)
+    useMainPointerActions(app.stage)
     useWheelActions(app.stage)
     // Render Components
     const componentArray = useStorageComponentsArray('pixi')

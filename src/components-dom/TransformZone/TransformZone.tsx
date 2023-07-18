@@ -1,5 +1,5 @@
 import { ScreenState } from "@thinairthings/zoom-utils"
-import { TransformTargetType } from "../../hooks/pointerActions/usePointerActions"
+import { TransformTargetType } from "../../hooks/pointerActions/useMainPointerActions"
 import styles from "./TransformZone.module.scss"
 import classNames from "classnames"
 

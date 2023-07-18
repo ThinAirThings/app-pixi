@@ -19,7 +19,7 @@ import { useMutationContainerState, useMutationCreateNode, useStorageContainerSt
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
 
-export const usePointerActions = (targetRef: HTMLElement | DisplayObject) => {
+export const useMainPointerActions = (targetRef: HTMLElement | DisplayObject) => {
     // Refs
     const clickCount = useRef(0)
     const clickTimeout = useRef<NodeJS.Timeout | null>(null)

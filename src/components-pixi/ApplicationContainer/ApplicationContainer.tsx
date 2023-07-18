@@ -5,6 +5,7 @@ import { MixinThinAirTargetingDataset } from "../_ext/MixinThinAirTargetingDatas
 
 export const ApplicationContainer = PixiComponent<{
     nodeId?: string
+    cursor?: string
 }, PxContainer>('ApplicationContainer', {
     create: ({nodeId}) => {
         return MixinThinAirTargetingDataset(PxContainer).create({

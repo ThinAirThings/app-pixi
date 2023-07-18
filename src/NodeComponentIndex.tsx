@@ -1,6 +1,6 @@
+import { ApplicationWindow } from "./components-dom/ApplicationWindow/ApplicationWindow"
 import { DomBox } from "./components-dom/DomBox/DomBox"
 import { TextBox } from "./components-dom/TextBox/TextBox"
-import { ApplicationWindow } from "./components-pixi/ApplicationWindow/ApplicationWindow"
 import { Rectangle } from "./components-pixi/Rectangle/Rectangle"
 import {NodeTypeIndex} from "@thinairthings/liveblocks-model"
 
@@ -20,7 +20,7 @@ export const NodeComponentIndex: {
 }= {
     browser: {
         type: 'browser',
-        renderer: 'pixi',
+        renderer: 'dom',
         typeDisplayName: "Browser",
         typeDisplayIcon: "/icons/icon-earth.svg",
         defaultProps: {
@@ -48,7 +48,7 @@ export const NodeComponentIndex: {
     },
     vsCode: {
         type: 'vsCode',
-        renderer: 'pixi',
+        renderer: 'dom',
         typeDisplayName: "VS Code",
         typeDisplayIcon: "/icons/icon-rectangle.svg",
         defaultProps: {

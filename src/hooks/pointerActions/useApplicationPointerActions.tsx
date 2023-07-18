@@ -1,24 +1,19 @@
 import { DisplayObject } from "pixi.js";
-import { useViewportStateContext } from "../../../context/SpaceContext";
-import { useStorageMyFocusedNodeId } from "../../../hooks/liveblocks/useStorageMyFocusedNodeId";
+import { useViewportStateContext } from "../../context/SpaceContext";
+import { useStorageMyFocusedNodeId } from "../liveblocks/useStorageMyFocusedNodeId";
 import { MutableRefObject, useEffect, useRef } from "react";
 import { fromEvent } from "rxjs";
 import { WorkerClient } from "@thinairthings/worker-client";
 import { MouseButton, mouseButton } from "@thinairthings/mouse-utils";
 import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils";
 import { useStorageContainerState } from "@thinairthings/liveblocks-model";
-import { useStorage } from "../../../context/LiveblocksContext";
+import { useStorage } from "../../context/LiveblocksContext";
 
-export const useApplicationPointerEvents = (
-    targetRef: MutableRefObject<DisplayObject | null>,
+export const useApplicationPointerActions = (
     nodeId: string, 
-{
-    workerClientRef,
-    readyToRender
-}: {
-    workerClientRef: MutableRefObject<WorkerClient | null>
-    readyToRender: boolean
-}) => {
+    targetRef: HTMLElement | DisplayObject, 
+    workerClientRef: MutableRefObject<WorkerClient | null>,
+) => {
     // Refs
     const clickCount = useRef(0)
     const clickTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -29,8 +24,8 @@ export const useApplicationPointerEvents = (
     // Effects
     // PointerDown
     useEffect(() => {
-        if (!readyToRender) return
-        const subscription = fromEvent<PointerEvent>(targetRef.current!, 'pointerdown')
+        if (!targetRef) return
+        const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId)) return
             runClickCounter(clickCount, clickTimeout)
@@ -45,8 +40,8 @@ export const useApplicationPointerEvents = (
     }, [myFocusedNodeId, viewportState, containerState])
     // PointerMove
     useEffect(() => {
-        if (!readyToRender) return
-        const subscription = fromEvent<PointerEvent>(targetRef.current!, 'pointermove')
+        if (!targetRef) return
+        const subscription = fromEvent<PointerEvent>(targetRef, 'pointermove')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId)) return
             workerClientRef.current?.sendMessage('txMouseInput', {
@@ -60,8 +55,8 @@ export const useApplicationPointerEvents = (
     }, [myFocusedNodeId, viewportState, containerState])
     // PointerUp
     useEffect(() => {
-        if (!readyToRender) return
-        const subscription = fromEvent<PointerEvent>(targetRef.current!, 'pointerup')
+        if (!targetRef) return
+        const subscription = fromEvent<PointerEvent>(targetRef, 'pointerup')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId)) return
             workerClientRef.current?.sendMessage('txMouseInput', {
@@ -75,8 +70,8 @@ export const useApplicationPointerEvents = (
     }, [myFocusedNodeId, viewportState, containerState])
     // PointerWheel
     useEffect(() => {
-        if (!readyToRender) return
-        const subscription = fromEvent<WheelEvent>(targetRef.current!, 'wheel')
+        if (!targetRef) return
+        const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || !(event.altKey)) return
             workerClientRef.current?.sendMessage('txMouseWheel', {

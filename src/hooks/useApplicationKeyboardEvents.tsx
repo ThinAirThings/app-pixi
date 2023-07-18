@@ -1,19 +1,15 @@
 import { useEffect } from "react"
-import { useStorageMyFocusedNodeId } from "../../../hooks/liveblocks/useStorageMyFocusedNodeId"
 import { WorkerClient } from "@thinairthings/worker-client"
 import { fromEvent } from "rxjs"
+import { useStorageMyFocusedNodeId } from "./liveblocks/useStorageMyFocusedNodeId"
 
-export const useApplicationKeyboardEvents = (nodeId: string, {
-    readyToRender,
-    workerClientRef
-}: {
-    readyToRender: boolean
+export const useApplicationKeyboardEvents = (
+    nodeId: string, 
     workerClientRef: React.MutableRefObject<WorkerClient | null>
-}) => {
+) => {
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     // Key Down
     useEffect(() => {
-        if (!readyToRender) return
         const subscription = fromEvent<KeyboardEvent>(window, "keydown").subscribe((event) => {
             if (myFocusedNodeId !== nodeId) return
             event.key === "Tab" && event.preventDefault()
@@ -28,7 +24,6 @@ export const useApplicationKeyboardEvents = (nodeId: string, {
     }, [myFocusedNodeId])
     // Key Up
     useEffect(() => {
-        if (!readyToRender) return
         const subscription = fromEvent<KeyboardEvent>(window, "keyup").subscribe((event) => {
             if (myFocusedNodeId !== nodeId) return
             event.key === "Tab" && event.preventDefault()

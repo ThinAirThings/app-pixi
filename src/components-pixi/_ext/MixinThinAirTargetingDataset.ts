@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite } from "pixi.js";
-import { TransformTargetType } from "../../hooks/pointerActions/usePointerActions";
+import { TransformTargetType } from "../../hooks/pointerActions/useMainPointerActions";
 
 /* 
     What is all this?
