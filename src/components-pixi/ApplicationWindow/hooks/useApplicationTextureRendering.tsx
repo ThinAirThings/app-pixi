@@ -80,3 +80,26 @@ export const useApplicationTextureRendering = (nodeId: string, {
         applicationSpriteRef.current!.texture = applicationTextureRef.current
     }, [containerState.width, containerState.height])
 }
+
+
+function downloadImage(imageBitmap: ImageBitmap, filename = 'image.png') {
+    // Create a canvas and draw the ImageBitmap to it
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    canvas.width = imageBitmap.width;
+    canvas.height = imageBitmap.height;
+    ctx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height);
+
+    // Convert the canvas to a data URL
+    let imageData = canvas.toDataURL('image/png');
+
+    // Create a new anchor element, set its href to the data URL, and set its download attribute to the desired filename
+    let a = document.createElement('a');
+    a.href = imageData;
+    a.download = filename;
+
+    // Append the anchor to the document, trigger a click to start the download, then remove the anchor
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}

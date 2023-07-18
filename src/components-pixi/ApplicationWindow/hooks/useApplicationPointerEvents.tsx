@@ -9,7 +9,6 @@ import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils";
 import { useStorageContainerState } from "@thinairthings/liveblocks-model";
 import { useStorage } from "../../../context/LiveblocksContext";
 
-
 export const useApplicationPointerEvents = (
     targetRef: MutableRefObject<DisplayObject | null>,
     nodeId: string, 

@@ -9,7 +9,7 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
         serverUrl: string
         nodeId: string,
     }) => {
-        ioClient = new SocketioClient( `${serverUrl}/${nodeId}`, {
+        ioClient = new SocketioClient( `${serverUrl}/${nodeId}-webClient`, {
             'rxFrameDamage': async (payload: {
                 dirtyRect: ScreenState
                 frameBuffer: ArrayBuffer
