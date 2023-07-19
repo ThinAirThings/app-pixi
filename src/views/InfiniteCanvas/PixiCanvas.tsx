@@ -12,10 +12,14 @@ export const ComponentArrayMemo = memo(({componentArray}: {componentArray: Retur
             {componentArray.map((componentSpec) => {
                 const Component = NodeComponentIndex[componentSpec.type].Component
                 return (
-                    <Component
-                        key={componentSpec.nodeId}
-                        nodeId={componentSpec.nodeId}
-                    />
+                    <>
+                        <Component
+                            key={componentSpec.nodeId}
+                            nodeId={componentSpec.nodeId}
+                        />
+
+                    </>
+
                 )
             })}
         </>

@@ -68,14 +68,8 @@ new WorkerClient(self as unknown as Worker, {
                         x: payload.dirtyRect.x,
                         y: payload.dirtyRect.y
                     })
-                    if (queue.length > 1 
-                        // && 1/viewportScaleRef > 0.7
-                    ) {
+                    if (queue.length > 1 ) {
                         requestAnimationFrame(() => {
-                            // if (repaintNeeded){
-                            //     onScreenCanvasCtx.drawImage(backbufferCanvas, 0, 0)
-                            // }
-                            // repaintNeeded = false
                             while(queue.length > 0) {
                                 const { dirtyBitmap, x, y } = queue.shift()!
                                 onScreenCanvasCtx.drawImage(dirtyBitmap, x, y);
@@ -84,17 +78,6 @@ new WorkerClient(self as unknown as Worker, {
                             }
                         })
                     }
-                    // if (1/viewportScaleRef < 0.7) {
-                    //     while(queue.length > 0){
-                    //         const { dirtyBitmap, x, y } = queue.shift()!
-                    //         backbufferCanvasCtx.drawImage(dirtyBitmap, x, y)
-                    //         dirtyBitmap.close()
-                    //     }
-                    //     repaintNeeded = true
-                    // }
-                    // backbufferCanvasCtx.drawImage(dirtyBitmap, payload.dirtyRect.x, payload.dirtyRect.y);
-                    // dirtyBitmap.close()
-                    // repaintNeeded = true
                 } catch (err) {
                     console.error(err)
                 }

@@ -12,6 +12,7 @@ import { useMainPointerActions } from "../../hooks/mainPointerActions/useMainPoi
 import { TopLeftTag } from "../../components-dom/TopLeftTag/TopLeftTag"
 import { DomComponentReferencePoint } from "../InfiniteCanvas/DomComponentReferencePoint"
 import { useMainWheelActions } from "../../hooks/mainPointerActions/useMainWheelActions"
+import { LeftToolbar } from "../../components-dom/LeftToolbar/LeftToolbar"
 // Keep the Pixi component from rendering when the language interface toggle runs
 const PixiMemo = memo(() => {
     return (
@@ -40,7 +41,8 @@ export const SpaceMain = () => {
                 <SelectionBoundingBox/>
                 <SelectionBox/>
                 {languageInterfaceActive && <LanguageInterface/>}
-                <TopLeftTag/>
+                {/* <TopLeftTag/> */}
+                <LeftToolbar/>
             </MainDivContext.Provider>
         </div>
     )
