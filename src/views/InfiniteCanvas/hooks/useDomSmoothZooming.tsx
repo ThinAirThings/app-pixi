@@ -4,6 +4,8 @@ import { zoomSpeed } from "./usePixiViewportStage"
 
 
 export const useDomSmoothZooming = (referencePointRef: React.RefObject<HTMLDivElement>) => {
+    // Refs
+    const prevTimestampRef = useRef(0)
     // State
     const [viewportState] = useViewportStateContext()
     const viewportStateFrameRef = useRef(viewportState)
@@ -11,7 +13,9 @@ export const useDomSmoothZooming = (referencePointRef: React.RefObject<HTMLDivEl
     useEffect(() => {
         if (!referencePointRef.current) return
         let animationFrameId: number
-        const tick = () => {
+        const tick: FrameRequestCallback = (timestamp) => {
+            // console.log(timestamp - prevTimestampRef.current)
+            // prevTimestampRef.current = timestamp
             if (viewportStateFrameRef.current !== viewportState) {
                 const {dx, dy, dScale} = {
                     dx: viewportState.x - viewportStateFrameRef.current.x,

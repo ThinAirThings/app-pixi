@@ -5,7 +5,6 @@ import { TxPxContainer } from "../../components-pixi/_ext/MixinThinAirTargetingD
 import { useHistory } from "../../context/LiveblocksContext"
 import { useMutationContainerState, useMutationCreateNode, useStorageContainerStateMap, useStorageNodeMap } from "@thinairthings/liveblocks-model"
 import { useGhostContainersContext } from "../../context/SpaceContext"
-import { NodeComponentIndex } from "../../NodeComponentIndex"
 export const handleSelectionTarget = (event: PointerEvent, {
     viewportState,
     mySelectedNodeIds,

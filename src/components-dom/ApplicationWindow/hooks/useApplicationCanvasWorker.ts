@@ -36,17 +36,10 @@ export const useApplicationCanvasWorker = (
             canvas: offscreenCanvasTransfer
         }, [offscreenCanvasTransfer])
         return () => {
+            canvasRef.current?.remove()
+            canvasRef.current = null
             workerClientRef.current?.worker.terminate()
         }
     }, [readyToConnect])
-    
-    useEffect(() => {
-        // You need to do some math here
-        if (!canvasRef.current) return;
-        workerClientRef.current.sendMessage('txResizeCanvas', {
-            width: containerState.width,
-            height: containerState.height
-        })
-    }, [containerState.width, containerState.height])
-    return workerClientRef
+    return {workerClientRef, canvasRef}
 }

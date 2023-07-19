@@ -15,32 +15,41 @@ import { ContainerState } from "@thinairthings/zoom-utils"
 import { useMutationMyFocusedNodeId } from "../liveblocks/useMutationMyFocusedNodeId"
 import { useHistory, useMutation, useStorage } from "../../context/LiveblocksContext"
 import { useMutationContainerState, useMutationCreateNode, useStorageContainerStateMap, useStorageNodeMap } from "@thinairthings/liveblocks-model"
+import { useRerender } from "../useRerender"
+import { updateClickCounter } from "@thinairthings/mouse-utils"
 
 export const transformTargetTypes = ["topLeft", "topMiddle" , "topRight" , "middleLeft" , "middleRight" , "bottomLeft" ,"bottomMiddle" , "bottomRight" ] as const;
 export type TransformTargetType = typeof transformTargetTypes[number];
 
 export const useMainPointerActions = (targetRef: HTMLElement | DisplayObject) => {
     // Refs
-    const clickCount = useRef(0)
-    const clickTimeout = useRef<NodeJS.Timeout | null>(null)
+    const clickCounter = useRef({
+        count: 0,
+        timeout: null as NodeJS.Timeout | null
+    })
     // States
     const [viewportState, setViewportState] = useViewportStateContext() 
     const mySelectedNodeIds = useStorageMySelectedNodeIds()
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     const allContainerStatesMap = useStorageContainerStateMap(useStorage)
     const nodeMap = useStorageNodeMap(useStorage)
-    const [ghostContainers, setGhostContainers] = useGhostContainersContext()
+    const [_, setGhostContainers] = useGhostContainersContext()
     // Mutations
     const createNode = useMutationCreateNode(useMutation)
     const updateMyMouseSelectionState = useMutationMyMouseSelectionState()
     const updateMySelectedNodeIds = useMutationMySelectedNodeIds()
     const updateContainerState = useMutationContainerState(useMutation)
     const updateMyFocusedNodeId = useMutationMyFocusedNodeId()
+    // Specialty Hooks
+    const rerender = useRerender()
     // History Controls
     const historyControl = useHistory()
     // Compound Pointer Actions
     useEffect(() => {
-        if (!targetRef) return  // React Suspense with Liveblocks sort of breaks the react timeline
+        if (!targetRef) {
+            rerender()  // In the event the targetRef is null, rerender to try again
+            return
+        }  // React Suspense with Liveblocks sort of breaks the react timeline
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             const target = event.target as TxPxContainer
@@ -63,10 +72,8 @@ export const useMainPointerActions = (targetRef: HTMLElement | DisplayObject) =>
                 if (myFocusedNodeId === target.dataset.nodeid!) {
                     return  // Pass control off to application event listeners
                 }
-                clickCount.current += 1
-                clearTimeout(clickTimeout.current!)
-                clickTimeout.current = setTimeout(() => clickCount.current = 0, 400)
-                if (clickCount.current > 1) {
+                updateClickCounter(clickCounter.current)
+                if (clickCounter.current.count > 1) {
                     updateMyFocusedNodeId(target.dataset.nodeid!)
                 }
             } else {

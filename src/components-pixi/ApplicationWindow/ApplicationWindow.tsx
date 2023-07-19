@@ -5,11 +5,11 @@ import { ReactNode, useRef, useState } from "react"
 import { PixiLoading } from "../PixiLoading/PixiLoading"
 import { WorkerClient } from "@thinairthings/worker-client"
 import { useApplicationRendering } from "./hooks/useApplicationRendering"
-import { useApplicationPointerEvents } from "../../hooks/pointerActions/useApplicationPointerActions"
 import { useStorageContainerState, useStorageNodeState } from "@thinairthings/liveblocks-model"
 import { useStorage } from "../../context/LiveblocksContext"
 import { ApplicationContainer } from "../ApplicationContainer/ApplicationContainer"
 import { useApplicationKeyboardEvents } from "../../hooks/useApplicationKeyboardEvents"
+import { useApplicationPointerActions } from "../../hooks/applicationPointerActions/useApplicationPointerActionsv2"
 
 export const applicationSocketMap = new Map<string, WorkerClient>()
 
@@ -34,15 +34,12 @@ export const ApplicationWindow = ({
         workerClientRef,
         setReadyToRender
     })
-    useApplicationPointerEvents(
+    useApplicationPointerActions(
         nodeId, 
         applicationContainerRef.current, 
         workerClientRef
     )
-    useApplicationKeyboardEvents(nodeId, {
-        workerClientRef,
-        readyToRender
-    })
+    useApplicationKeyboardEvents(nodeId, workerClientRef,)
     return(
         <RxTxContainer nodeId={nodeId}>
             {readyToRender

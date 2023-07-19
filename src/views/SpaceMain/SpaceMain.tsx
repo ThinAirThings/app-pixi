@@ -1,4 +1,4 @@
-import { createContext, memo, useRef, useState } from "react"
+import { createContext, memo, useRef } from "react"
 import { DomPixiContextBridge } from "../../context/DomPixiContextBridge"
 import { useLanguageInterfaceActiveContext } from "../../context/SpaceContext"
 import { useMainKeyboardEvents } from "../../hooks/useMainKeyboardEvents"
@@ -8,10 +8,10 @@ import { SelectionBoundingBox } from "../../components-dom/SelectionBoundingBox/
 import { SelectionBox } from "../../components-dom/SelectionBox/SelectionBox"
 import classNames from "classnames"
 import styles from "./SpaceMain.module.scss"
-import { useMainPointerActions } from "../../hooks/pointerActions/useMainPointerActions"
+import { useMainPointerActions } from "../../hooks/mainPointerActions/useMainPointerActions"
 import { TopLeftTag } from "../../components-dom/TopLeftTag/TopLeftTag"
 import { DomComponentReferencePoint } from "../InfiniteCanvas/DomComponentReferencePoint"
-import { useWheelActions } from "../../hooks/pointerActions/useWheelActions"
+import { useMainWheelActions } from "../../hooks/mainPointerActions/useMainWheelActions"
 // Keep the Pixi component from rendering when the language interface toggle runs
 const PixiMemo = memo(() => {
     return (
@@ -29,7 +29,7 @@ export const SpaceMain = () => {
     const [languageInterfaceActive] = useLanguageInterfaceActiveContext()
     // Effects
     useMainPointerActions(mainDivRef.current!)
-    useWheelActions(mainDivRef.current!)
+    useMainWheelActions(mainDivRef.current!)
     useMainKeyboardEvents()
 
     return (

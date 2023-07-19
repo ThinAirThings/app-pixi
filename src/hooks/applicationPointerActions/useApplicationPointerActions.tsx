@@ -4,7 +4,7 @@ import { useStorageMyFocusedNodeId } from "../liveblocks/useStorageMyFocusedNode
 import { MutableRefObject, useEffect, useRef } from "react";
 import { fromEvent } from "rxjs";
 import { WorkerClient } from "@thinairthings/worker-client";
-import { MouseButton, mouseButton } from "@thinairthings/mouse-utils";
+import { MouseButton, mouseButton, updateClickCounter } from "@thinairthings/mouse-utils";
 import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils";
 import { useStorageContainerState } from "@thinairthings/liveblocks-model";
 import { useStorage } from "../../context/LiveblocksContext";
@@ -15,8 +15,10 @@ export const useApplicationPointerActions = (
     workerClientRef: MutableRefObject<WorkerClient | null>,
 ) => {
     // Refs
-    const clickCount = useRef(0)
-    const clickTimeout = useRef<NodeJS.Timeout | null>(null)
+    const clickCounter = useRef({
+        count: 0,
+        timeout: null as NodeJS.Timeout | null
+    })
     // State
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     const [viewportState] = useViewportStateContext()
@@ -28,12 +30,12 @@ export const useApplicationPointerActions = (
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId)) return
-            runClickCounter(clickCount, clickTimeout)
+            updateClickCounter(clickCounter.current)
             workerClientRef.current?.sendMessage('txMouseInput', {
                 type: 'mouseDown',
                 ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                 button: mouseButton(event) === MouseButton.Left ? 'left' : 'right',
-                clickCount: clickCount.current
+                clickCount: clickCounter.current.count
             })
         })
         return () => subscription.unsubscribe()
@@ -81,12 +83,4 @@ export const useApplicationPointerActions = (
         })
         return () => subscription.unsubscribe()
     }, [myFocusedNodeId, viewportState, containerState])
-}
-
-const runClickCounter = (clickCount: MutableRefObject<number>, clickTimeout: MutableRefObject<NodeJS.Timeout | null>) => {
-    clickCount.current++
-    clearTimeout(clickTimeout.current!)
-    clickTimeout.current = setTimeout(() => {
-        clickCount.current = 0
-    }, 500)
 }

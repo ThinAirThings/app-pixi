@@ -3,14 +3,19 @@ import { useViewportStateContext } from "../../context/SpaceContext"
 import { fromEvent } from "rxjs"
 import { mousePoint } from "@thinairthings/mouse-utils"
 import { DisplayObject } from "pixi.js"
+import { useRerender } from "../useRerender"
 
-export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
+export const useMainWheelActions = (targetRef: HTMLElement | DisplayObject) => {
     // States
     const [viewportState, setViewportState] = useViewportStateContext()
-
+    // Specialty Hooks
+    const rerender = useRerender()
     // Wheel Actions
     useEffect(() => {
-        if (!targetRef) return
+        if (!targetRef) {
+            rerender()  // In the event the targetRef is null, rerender to try again
+            return
+        }
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (event.altKey) return    // Application Zoom owns this
@@ -33,5 +38,5 @@ export const useWheelActions = (targetRef: HTMLElement | DisplayObject) => {
             )()
         })
         return () => subscription.unsubscribe()
-    }, [viewportState])
+    }, [viewportState, targetRef])
 }
