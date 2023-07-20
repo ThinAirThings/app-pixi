@@ -1,3 +1,4 @@
+import { ApplicationTarget } from "./components-dom/ApplicationTarget/ApplicationTarget"
 import { ApplicationWindow } from "./components-dom/ApplicationWindow/ApplicationWindow"
 import { DomBox } from "./components-dom/DomBox/DomBox"
 import { TextBox } from "./components-dom/TextBox/TextBox"
@@ -32,7 +33,7 @@ export const NodeComponentIndex: {
             width: 836,
             height: 536
         },
-        Component: ({nodeId}) => <ApplicationWindow nodeId={nodeId} />
+        Component: ({nodeId}) => <ApplicationTarget nodeId={nodeId} />
     },
     rectangle: {
         type: 'rectangle',
@@ -59,7 +60,7 @@ export const NodeComponentIndex: {
             width: 836,
             height: 536
         },
-        Component: ({nodeId}) => <ApplicationWindow nodeId={nodeId} />
+        Component: ({nodeId}) => <ApplicationTarget nodeId={nodeId} />
     },
     textBox: {
         type: 'textBox',

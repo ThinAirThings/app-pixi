@@ -38,7 +38,7 @@ export const useApplicationCanvasWorker = (
         return () => {
             canvasRef.current?.remove()
             canvasRef.current = null
-            workerClientRef.current?.worker.terminate()
+            workerClientRef.current?.cleanup()
         }
     }, [readyToConnect])
     return {workerClientRef, canvasRef}

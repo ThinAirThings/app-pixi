@@ -70,7 +70,7 @@ export const useApplicationRendering = (nodeId: string, {
         })
         return () => {
             setTimeout(() => {
-                workerClientRef.current?.worker.terminate()
+                workerClientRef.current?.cleanup()
             }, 500)
         }
     }, [readyToConnect])
