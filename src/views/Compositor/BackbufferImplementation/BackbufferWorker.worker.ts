@@ -10,7 +10,6 @@ let backbufferCanvas: OffscreenCanvas
 let backbufferCanvasCtx: OffscreenCanvasRenderingContext2D
 // Setup Messaging
 let ioClient: SocketioClient
-console.log("INITIALIZING BACKBUFFER WORKER")
 // requestAnimationFrame(paint)
 const workerClient = new WorkerClient(self as unknown as Worker, {
     'initialize': async ({serverUrl, nodeId, containerState}: {
@@ -43,6 +42,7 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
                         }
                         const canvasCopy = new OffscreenCanvas(backbufferCanvas.width, backbufferCanvas.height)
                         const canvasCopyCtx = canvasCopy.getContext('2d')
+                        
                         canvasCopyCtx!.drawImage(backbufferCanvas, 0, 0)
                         const backbufferBitmap = canvasCopy.transferToImageBitmap()
                         workerClient.sendMessage('txBackbufferBitmap', {
