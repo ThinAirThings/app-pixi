@@ -26,29 +26,27 @@ const workerClient = new WorkerClient(self as unknown as Worker, {
                 frameBuffer: ArrayBuffer
             }) => {
                 try {
+                    console.time('decompress')
                     const arrayBufferView = new Uint8Array(payload.frameBuffer)
                     const blob = new Blob([arrayBufferView], { type: "image/jpeg" })
-                    const dirtyBitmap = await createImageBitmap(blob)
-                    queue.push({
-                        dirtyBitmap,
-                        x: payload.dirtyRect.x,
-                        y: payload.dirtyRect.y
-                    })
-                    if (queue.length > 1 ) {
-                        while(queue.length > 0) {
-                            const { dirtyBitmap, x, y } = queue.shift()!
-                            backbufferCanvasCtx.drawImage(dirtyBitmap, x, y);
-                            dirtyBitmap.close()
+                    let dirtyBitmap = await createImageBitmap(blob)   // Decompression happens here
+                    console.timeEnd('decompress')
+                    let dirtyRect = payload.dirtyRect
+                    if (dirtyBitmap.width > containerState.width || dirtyBitmap.height > containerState.height) {
+                        const canvas = new OffscreenCanvas(containerState.width, containerState.height)
+                        const ctx = canvas.getContext('2d')!
+                        ctx.drawImage(dirtyBitmap, 0, 0)
+                        dirtyBitmap = canvas.transferToImageBitmap()
+                        dirtyRect = {
+                            x: 0, y: 0,
+                            width: containerState.width,
+                            height: containerState.height
                         }
-                        const canvasCopy = new OffscreenCanvas(backbufferCanvas.width, backbufferCanvas.height)
-                        const canvasCopyCtx = canvasCopy.getContext('2d')
-                        
-                        canvasCopyCtx!.drawImage(backbufferCanvas, 0, 0)
-                        const backbufferBitmap = canvasCopy.transferToImageBitmap()
-                        workerClient.sendMessage('txBackbufferBitmap', {
-                            backbufferBitmap
-                        }, [backbufferBitmap])
                     }
+                    workerClient.sendMessage('txDirtyBitmap', {
+                        dirtyBitmap,
+                        dirtyRect
+                    }, [dirtyBitmap])
                 } catch (err) {
                     console.error(err)
                 }

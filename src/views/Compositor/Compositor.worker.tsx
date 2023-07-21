@@ -1,6 +1,7 @@
 import { WorkerClient } from "@thinairthings/worker-client";
 import { ContainerState, ViewportState } from "@thinairthings/zoom-utils";
 import { Application } from "@pixi/webworker";
+import {TextureSystem} from "@pixi/core"
 import { AppProvider, ReactPixiRoot, createRoot} from '@pixi/react';
 import { enableMapSet } from 'immer'
 import { sendWorkerNodeSignal } from "./hooks/useWorkerNodeSignal.worker";

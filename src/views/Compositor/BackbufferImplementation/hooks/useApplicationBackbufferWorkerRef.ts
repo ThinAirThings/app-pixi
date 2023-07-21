@@ -1,14 +1,15 @@
 import { WorkerClient } from "@thinairthings/worker-client"
 import { MutableRefObject, useEffect, useRef } from "react"
 import BackbufferWorker from "../BackbufferWorker.worker?worker"
-import { ContainerState } from "@thinairthings/zoom-utils"
-import {Texture } from "@pixi/webworker"
+import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
+import {Renderer, Texture, TextureSystem } from "@pixi/webworker"
 import { useRerender } from "../../../../hooks/useRerender"
 import { useApp } from "@pixi/react"
+import { ApplicationFramebufferResource } from "../webgl/ApplicationFramebufferResource"
 export const useApplicationBackbufferWorkerRef = (
     nodeId: string,
     containerState: ContainerState,
-    applicationTextureRef: MutableRefObject<Texture>
+    applicationTextureRef: MutableRefObject<Texture<ApplicationFramebufferResource>>
 ) => {
     // Refs
     const app = useApp()
@@ -23,9 +24,18 @@ export const useApplicationBackbufferWorkerRef = (
                 // app.renderer.addSystem(TextureSystem)
                 const temp = applicationTextureRef.current
                 const newTexture = Texture.from(backbufferBitmap)
-                applicationTextureRef.current = newTexture
+                // applicationTextureRef.current = newTexture
                 temp.baseTexture.destroy()
                 rerender()
+            },
+            'rxDirtyBitmap': async ({dirtyBitmap, dirtyRect}: {
+                dirtyBitmap: ImageBitmap
+                dirtyRect: ScreenState
+            }) => {
+                applicationTextureRef.current.baseTexture.resource.uploadDirtyFrame(
+                    dirtyBitmap,
+                    dirtyRect
+                )
             }
         })
         backBufferWorkerClientRef.current.sendMessage('initialize', {
