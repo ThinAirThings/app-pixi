@@ -4,12 +4,14 @@ import BackbufferWorker from "../BackbufferWorker.worker?worker"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import {Texture } from "@pixi/webworker"
 import { useRerender } from "../../../../hooks/useRerender"
+import { useApp } from "@pixi/react"
 export const useApplicationBackbufferWorkerRef = (
     nodeId: string,
     containerState: ContainerState,
     applicationTextureRef: MutableRefObject<Texture>
 ) => {
     // Refs
+    const app = useApp()
     const backBufferWorkerClientRef = useRef<WorkerClient>(null)
     const rerender = useRerender()
     // Effects
@@ -18,6 +20,7 @@ export const useApplicationBackbufferWorkerRef = (
             'rxBackbufferBitmap': ({backbufferBitmap}: {
                 backbufferBitmap: ImageBitmap
             }) => {
+                // app.renderer.addSystem(TextureSystem)
                 const temp = applicationTextureRef.current
                 const newTexture = Texture.from(backbufferBitmap)
                 applicationTextureRef.current = newTexture
