@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useRerender } from "../../../hooks/useRerender"
 import { WorkerClient } from "@thinairthings/worker-client"
 import CompositorWorker from "../Compositor.worker?worker"
+import { sendNodeSignal } from "../../../hooks/useNodeSignal"
 
 export let compositorWorkerClient: WorkerClient
 export const useInitializeCompositor = (
@@ -17,7 +18,16 @@ export const useInitializeCompositor = (
             return
         }
         // Create Worker
-        compositorWorkerClient = new WorkerClient(new CompositorWorker(), {})
+        compositorWorkerClient = new WorkerClient(new CompositorWorker(), {
+            "rxCursorType": (payload: {
+                nodeId: string
+                cursorType: string
+            }) => {
+               sendNodeSignal('main', payload.nodeId, 'txCursorType', {
+                     cursorType: payload.cursorType
+               })
+            }
+        })
         // Create Canvas
         const compositorCanvas = document.createElement("canvas")
         compositorCanvas.width = compositorDiv.clientWidth

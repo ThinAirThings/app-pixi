@@ -1,13 +1,13 @@
 import { ViewportState } from "@thinairthings/zoom-utils";
-import { useWorkerNodeSignal } from "./useWorkerNodeSignal.worker";
 import { useApp } from "@pixi/react";
+import { useNodeSignal } from "../../../hooks/useNodeSignal";
 
 
 export const useRootRxViewportState = () => {
     const app = useApp()
-    useWorkerNodeSignal<{
+    useNodeSignal<{
         viewportState: ViewportState
-    }>('root', 'rxViewportState', ({
+    }>("worker", 'root', 'rxViewportState', ({
         viewportState
     }) => {
         app.stage.position.set(

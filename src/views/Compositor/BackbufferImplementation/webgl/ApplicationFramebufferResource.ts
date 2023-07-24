@@ -15,7 +15,6 @@ export class ApplicationFramebufferResource extends Resource {
         ctx.fillStyle = 'white'
         ctx.fillRect(0, 0, containerState.width, containerState.height)
         this.baseRect = canvas.transferToImageBitmap()
-        console.log(this)
     }
     uploadDirtyFrame(dirtyBitmap: ImageBitmap, dirtyRect: ScreenState) {
         this.dirtyBitmap = dirtyBitmap

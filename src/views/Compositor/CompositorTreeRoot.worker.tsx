@@ -1,7 +1,6 @@
 import { useImmer } from "use-immer"
 import { useRootRxCreateNode } from "./hooks/useRootRxCreateNode.worker"
 import { useRootRxDeleteNode } from "./hooks/useRootRxDeleteNode.worker"
-import { RenderTextureSprite } from "./RenderTextureImplementation/RenderTextureSprite.worker"
 import { useRootRxViewportState } from "./hooks/useRootRxViewportState"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { BackbufferSprite } from "./BackbufferImplementation/BackbufferSprite.worker"

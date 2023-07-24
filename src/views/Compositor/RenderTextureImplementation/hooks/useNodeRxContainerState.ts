@@ -1,16 +1,16 @@
 import { ContainerState } from "@thinairthings/zoom-utils";
 import { Dispatch, SetStateAction } from "react";
-import { useWorkerNodeSignal } from "../../hooks/useWorkerNodeSignal.worker";
 import {RenderTexture} from "@pixi/webworker"
+import { useNodeSignal } from "../../../../hooks/useNodeSignal";
 
 export const useNodeRxContainerState = (
     nodeId: string,
     applicationTexture: RenderTexture,
     setContainerState: Dispatch<SetStateAction<ContainerState>>
 ) => {
-    useWorkerNodeSignal<{
+    useNodeSignal<{
         containerState: ContainerState
-    }>(nodeId, 'rxContainerState', ({
+    }>("worker", nodeId, 'rxContainerState', ({
         containerState
     }) => {
         applicationTexture.resize(containerState.width, containerState.height)

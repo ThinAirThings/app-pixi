@@ -2,32 +2,19 @@ import { WorkerClient } from "@thinairthings/worker-client"
 import { MutableRefObject, useEffect, useRef } from "react"
 import BackbufferWorker from "../BackbufferWorker.worker?worker"
 import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
-import {Renderer, Texture, TextureSystem } from "@pixi/webworker"
-import { useRerender } from "../../../../hooks/useRerender"
-import { useApp } from "@pixi/react"
+import { Texture } from "@pixi/webworker"
 import { ApplicationFramebufferResource } from "../webgl/ApplicationFramebufferResource"
+import { mainThreadClient } from "../../Compositor.worker"
 export const useApplicationBackbufferWorkerRef = (
     nodeId: string,
     containerState: ContainerState,
     applicationTextureRef: MutableRefObject<Texture<ApplicationFramebufferResource>>
 ) => {
     // Refs
-    const app = useApp()
     const backBufferWorkerClientRef = useRef<WorkerClient>(null)
-    const rerender = useRerender()
     // Effects
     useEffect(() => {
         backBufferWorkerClientRef.current = new WorkerClient(new BackbufferWorker(), {
-            'rxBackbufferBitmap': ({backbufferBitmap}: {
-                backbufferBitmap: ImageBitmap
-            }) => {
-                // app.renderer.addSystem(TextureSystem)
-                const temp = applicationTextureRef.current
-                const newTexture = Texture.from(backbufferBitmap)
-                // applicationTextureRef.current = newTexture
-                temp.baseTexture.destroy()
-                rerender()
-            },
             'rxDirtyBitmap': async ({dirtyBitmap, dirtyRect}: {
                 dirtyBitmap: ImageBitmap
                 dirtyRect: ScreenState
@@ -36,6 +23,14 @@ export const useApplicationBackbufferWorkerRef = (
                     dirtyBitmap,
                     dirtyRect
                 )
+            },
+            "rxCursorType": async (payload: {
+                cursorType: string
+            }) => {
+                mainThreadClient.sendMessage('txCursorType', {
+                    nodeId,
+                    cursorType: payload.cursorType
+                })
             }
         })
         backBufferWorkerClientRef.current.sendMessage('initialize', {

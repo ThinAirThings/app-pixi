@@ -1,15 +1,14 @@
 import { WorkerClient } from "@thinairthings/worker-client";
 import { ContainerState, ViewportState } from "@thinairthings/zoom-utils";
 import { Application } from "@pixi/webworker";
-import {TextureSystem} from "@pixi/core"
 import { AppProvider, ReactPixiRoot, createRoot} from '@pixi/react';
 import { enableMapSet } from 'immer'
-import { sendWorkerNodeSignal } from "./hooks/useWorkerNodeSignal.worker";
 import { CompositorTreeRoot } from "./CompositorTreeRoot.worker";
+import { sendNodeSignal } from "../../hooks/useNodeSignal";
 enableMapSet()
 let app: Application
 let root: ReactPixiRoot
-const mainThreadClient = new WorkerClient(self as unknown as Worker, {
+export const mainThreadClient = new WorkerClient(self as unknown as Worker, {
     'initialize': async ({compositorCanvas}: {
         compositorCanvas: OffscreenCanvas
     }) => {
@@ -33,7 +32,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
     'rxViewportState': async ({viewportState}: {
         viewportState: ViewportState
     }) => {
-        sendWorkerNodeSignal('root', 'txViewportState', {
+        sendNodeSignal("worker", 'root', 'txViewportState', {
             viewportState
         })
     },
@@ -41,7 +40,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         nodeId: string, 
         containerState: ContainerState
     }) => {
-        sendWorkerNodeSignal('root', 'txCreateNode', {
+        sendNodeSignal("worker", 'root', 'txCreateNode', {
             nodeId,
             containerState
         })
@@ -49,7 +48,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
     'rxDeleteNode': async ({nodeId}: {
         nodeId: string
     }) => {
-        sendWorkerNodeSignal('root', 'txDeleteNode', {
+        sendNodeSignal("worker", 'root', 'txDeleteNode', {
             nodeId
         })
     },
@@ -57,7 +56,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         nodeId: string,
         containerState: ContainerState
     }) => {
-        sendWorkerNodeSignal(nodeId, 'txContainerState', {
+        sendNodeSignal("worker", nodeId, 'txContainerState', {
             nodeId,
             containerState
         })
@@ -75,14 +74,14 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         button: 'left'|'right'
         clickCount: number
     }) => {
-        sendWorkerNodeSignal(nodeId, 'txMouseInput', {
+        sendNodeSignal("worker", nodeId, 'txMouseInput', {
             type,
             x: Math.round(x), y: Math.round(y),
             button,
             clickCount
         })
     },
-    'rxMouseWheel': ({
+    'rxWheelInput': ({
         nodeId,
         x, y,
         wheelX, wheelY
@@ -91,7 +90,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         x: number, y: number
         wheelX: number, wheelY: number
     }) => {
-        sendWorkerNodeSignal(nodeId, 'txMouseWheel', {
+        sendNodeSignal("worker", nodeId, 'txWheelInput', {
             x, y,
             wheelX, wheelY
         })
@@ -104,7 +103,7 @@ const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         type: 'keyDown'|'keyUp', 
         keyCode: string
     }) => {
-        sendWorkerNodeSignal(nodeId, 'txKeyboardInput', {
+        sendNodeSignal("worker", nodeId, "txKeyboardInput", {
             type, keyCode
         })
     }

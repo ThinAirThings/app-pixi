@@ -1,13 +1,13 @@
 import { Updater } from "use-immer"
-import { useWorkerNodeSignal } from "./useWorkerNodeSignal.worker"
-import { CompositorNode } from "../../CompositorTreeRoot.worker"
+import { useNodeSignal } from "../../../hooks/useNodeSignal"
+import { CompositorNode } from "../CompositorTreeRoot.worker"
 
 export const useRootRxDeleteNode = (
     setCompositorNodeMap: Updater<Map<string, CompositorNode>>
 ) => {
-    useWorkerNodeSignal<{
+    useNodeSignal<{
         nodeId: string
-    }>("root", "rxDeleteNode", ({
+    }>("worker", "root", "rxDeleteNode", ({
         nodeId,
     }) => {
         setCompositorNodeMap((draft) => {

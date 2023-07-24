@@ -5,14 +5,18 @@ import { useApplicationBackbufferWorkerRef } from "./hooks/useApplicationBackbuf
 import {BaseTexture, Texture } from "@pixi/webworker"
 import { useNodeRxContainerState } from "./hooks/useNodeRxContainerState"
 import { useNodeRxMouseInput } from "./hooks/useNodeRxMouseInput"
+import { useNodeRxKeyboardInput } from "./hooks/useNodeRxKeyboardInput"
+import { useNodeRxWheelInput } from "./hooks/useNodeRxWheelInput"
 import { ApplicationFramebufferResource } from "./webgl/ApplicationFramebufferResource"
+
+
 
 export const BackbufferSprite: FC<{
     nodeId: string,
     initialContainerState: ContainerState
 }> = ({nodeId, initialContainerState}) => {
     // Refs
-    const applicationTextureRef = useRef<Texture>((() => {
+    const applicationTextureRef = useRef((() => {
         return new Texture<ApplicationFramebufferResource>(new BaseTexture(
             new ApplicationFramebufferResource(initialContainerState)
         ))
@@ -26,6 +30,8 @@ export const BackbufferSprite: FC<{
     const [containerState, setContainerState] = useState<ContainerState>(initialContainerState)
     useNodeRxContainerState(nodeId, setContainerState)
     useNodeRxMouseInput(nodeId, backbufferWorkerRef)
+    useNodeRxKeyboardInput(nodeId, backbufferWorkerRef)
+    useNodeRxWheelInput(nodeId, backbufferWorkerRef)
     return (<>
        <Sprite
             texture={applicationTextureRef.current}

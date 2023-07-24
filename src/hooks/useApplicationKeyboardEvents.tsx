@@ -5,7 +5,7 @@ import { useStorageMyFocusedNodeId } from "./liveblocks/useStorageMyFocusedNodeI
 
 export const useApplicationKeyboardEvents = (
     nodeId: string, 
-    workerClientRef: React.MutableRefObject<WorkerClient | null>
+    workerClient: WorkerClient
 ) => {
     const myFocusedNodeId = useStorageMyFocusedNodeId()
     // Key Down
@@ -13,7 +13,8 @@ export const useApplicationKeyboardEvents = (
         const subscription = fromEvent<KeyboardEvent>(window, "keydown").subscribe((event) => {
             if (myFocusedNodeId !== nodeId) return
             event.key === "Tab" && event.preventDefault()
-            workerClientRef.current?.sendMessage('txKeyboardInput', {
+            workerClient.sendMessage('txKeyboardInput', {
+                nodeId,
                 type: 'keyDown',
                 code: event.code,
                 keyCode: event.key,
@@ -27,7 +28,8 @@ export const useApplicationKeyboardEvents = (
         const subscription = fromEvent<KeyboardEvent>(window, "keyup").subscribe((event) => {
             if (myFocusedNodeId !== nodeId) return
             event.key === "Tab" && event.preventDefault()
-            workerClientRef.current?.sendMessage('txKeyboardInput', {
+            workerClient.sendMessage('txKeyboardInput', {
+                nodeId,
                 type: 'keyUp',
                 code: event.code,
                 keyCode: event.key,

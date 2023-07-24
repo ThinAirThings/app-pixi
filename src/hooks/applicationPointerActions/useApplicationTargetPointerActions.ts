@@ -111,7 +111,7 @@ export const useApplicationTargetPointerActions = (
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || !(event.altKey)) return
-            workerClient.sendMessage('txMouseWheel', {
+            workerClient.sendMessage('txWheelInput', {
                 nodeId,
                 ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                 wheelX: -event.deltaX, wheelY: -event.deltaY
