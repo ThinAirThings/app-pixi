@@ -25,7 +25,7 @@ export const NodeComponentIndex: {
         typeDisplayName: "Browser",
         typeDisplayIcon: "/icons/icon-earth.svg",
         defaultProps: {
-            url: "https://www.google.com",
+            url: "https://www.youtube.com/watch?v=msnYBMdaB08&t=1756s",
             cursor: "pointer",
             readyToConnect: false
         },

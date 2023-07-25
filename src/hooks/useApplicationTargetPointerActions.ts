@@ -1,10 +1,10 @@
 import { WorkerClient } from "@thinairthings/worker-client"
 import { DisplayObject } from "pixi.js"
-import {  useEffect, useRef } from "react"
-import { useStorageMyFocusedNodeId } from "../liveblocks/useStorageMyFocusedNodeId"
-import { useViewportStateContext } from "../../context/SpaceContext"
+import {  MutableRefObject, useEffect, useRef } from "react"
+import { useStorageMyFocusedNodeId } from "./liveblocks/useStorageMyFocusedNodeId"
+import { useViewportStateContext } from "../context/SpaceContext"
 import { useStorageContainerState } from "@thinairthings/liveblocks-model"
-import { useStorage } from "../../context/LiveblocksContext"
+import { useStorage } from "../context/LiveblocksContext"
 import { fromEvent, takeUntil } from "rxjs"
 import { MouseButton, mouseButton, mousePoint, updateClickCounter } from "@thinairthings/mouse-utils"
 import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils"
@@ -12,7 +12,7 @@ import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils"
 export const useApplicationTargetPointerActions = (
     nodeId: string, 
     targetRef: HTMLElement | DisplayObject, 
-    workerClient: WorkerClient,
+    compositorNodePairWorkerClientRef: MutableRefObject<WorkerClient>,
 ) => {
     // Refs
     const clickCounter = useRef({
@@ -39,8 +39,7 @@ export const useApplicationTargetPointerActions = (
             let ignoreRightClick = false
             if (buttonDown === MouseButton.Left) {
                 // If left click, send message to worker immediately
-                workerClient.sendMessage('txMouseInput', {
-                    nodeId,
+                compositorNodePairWorkerClientRef.current.sendMessage('txMouseInput', {
                     type: 'mouseDown',
                     ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                     button: 'left',
@@ -53,8 +52,7 @@ export const useApplicationTargetPointerActions = (
                 takeUntil(fromEvent<PointerEvent, void>(document.body, 'pointerup', {}, (event) => {
                     document.body.releasePointerCapture(event.pointerId)
                     if (!ignoreRightClick && mouseButton(event) === MouseButton.Right){
-                        workerClient.sendMessage('txMouseInput', {
-                            nodeId,
+                        compositorNodePairWorkerClientRef.current.sendMessage('txMouseInput', {
                             type: 'mouseDown',
                             ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                             button: 'right',
@@ -62,8 +60,7 @@ export const useApplicationTargetPointerActions = (
                         })
                     }
                     pointerIsDownRef.current = false
-                    workerClient.sendMessage('txMouseInput', {
-                        nodeId,
+                    compositorNodePairWorkerClientRef.current.sendMessage('txMouseInput', {
                         type: 'mouseUp',
                         ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                         button: mouseButton(event) === MouseButton.Left ? 'left' : 'right',
@@ -78,8 +75,7 @@ export const useApplicationTargetPointerActions = (
                     Math.pow(pointerMovePoint.y - pointerDownPoint.y, 2)
                 )
                 if (distance > 5) ignoreRightClick = true
-                workerClient.sendMessage('txMouseInput', {
-                    nodeId,
+                compositorNodePairWorkerClientRef.current.sendMessage('txMouseInput', {
                     type: 'mouseMove',
                     ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                     button: mouseButton(event) === MouseButton.Left ? 'left' : 'right',
@@ -95,8 +91,7 @@ export const useApplicationTargetPointerActions = (
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointermove')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || pointerIsDownRef.current) return
-            workerClient.sendMessage('txMouseInput', {
-                nodeId,
+            compositorNodePairWorkerClientRef.current.sendMessage('txMouseInput', {
                 type: 'mouseMove',
                 ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                 button: mouseButton(event) === MouseButton.Left ? 'left' : 'right',
@@ -111,7 +106,7 @@ export const useApplicationTargetPointerActions = (
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || !(event.altKey)) return
-            workerClient.sendMessage('txWheelInput', {
+            compositorNodePairWorkerClientRef.current.sendMessage('txWheelInput', {
                 nodeId,
                 ...mouseEventToApplicationTranslation(event, viewportState, containerState),
                 wheelX: -event.deltaX, wheelY: -event.deltaY

@@ -9,14 +9,17 @@ export const useRootRxCreateNode = (
     useNodeSignal<{
         nodeId: string
         containerState: ContainerState
+        messagePort: MessagePort
     }>("worker", "root", "rxCreateNode", ({
         nodeId,
         containerState,
+        messagePort
     }) => {
         setCompositorNodeMap((draft) => {
             draft.set(nodeId, {
                 nodeId,
-                containerState
+                containerState,
+                messagePort
             })
         })
     })

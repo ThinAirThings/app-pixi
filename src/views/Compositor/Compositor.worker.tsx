@@ -36,13 +36,15 @@ export const mainThreadClient = new WorkerClient(self as unknown as Worker, {
             viewportState
         })
     },
-    'rxCreateNode': async ({nodeId, containerState}: {
+    'rxCreateNode': async ({nodeId, containerState, messagePort}: {
         nodeId: string, 
-        containerState: ContainerState
+        containerState: ContainerState,
+        messagePort: MessagePort
     }) => {
         sendNodeSignal("worker", 'root', 'txCreateNode', {
             nodeId,
-            containerState
+            containerState,
+            messagePort
         })
     },
     'rxDeleteNode': async ({nodeId}: {
@@ -59,52 +61,6 @@ export const mainThreadClient = new WorkerClient(self as unknown as Worker, {
         sendNodeSignal("worker", nodeId, 'txContainerState', {
             nodeId,
             containerState
-        })
-    },
-    'rxMouseInput': ({
-        nodeId,
-        type,
-        x, y,
-        button,
-        clickCount
-    }: {
-        nodeId: string,
-        type: 'mouseDown'|'mouseUp'|'mouseMove'
-        x: number, y: number
-        button: 'left'|'right'
-        clickCount: number
-    }) => {
-        sendNodeSignal("worker", nodeId, 'txMouseInput', {
-            type,
-            x: Math.round(x), y: Math.round(y),
-            button,
-            clickCount
-        })
-    },
-    'rxWheelInput': ({
-        nodeId,
-        x, y,
-        wheelX, wheelY
-    }: {
-        nodeId: string,
-        x: number, y: number
-        wheelX: number, wheelY: number
-    }) => {
-        sendNodeSignal("worker", nodeId, 'txWheelInput', {
-            x, y,
-            wheelX, wheelY
-        })
-    },
-    'rxKeyboardInput': ({
-        nodeId,
-        type, keyCode
-    }: {
-        nodeId: string,
-        type: 'keyDown'|'keyUp', 
-        keyCode: string
-    }) => {
-        sendNodeSignal("worker", nodeId, "txKeyboardInput", {
-            type, keyCode
         })
     }
 })

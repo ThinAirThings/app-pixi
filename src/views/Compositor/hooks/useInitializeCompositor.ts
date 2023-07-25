@@ -4,7 +4,7 @@ import { WorkerClient } from "@thinairthings/worker-client"
 import CompositorWorker from "../Compositor.worker?worker"
 import { sendNodeSignal } from "../../../hooks/useNodeSignal"
 
-export let compositorWorkerClient: WorkerClient
+export let compositorMainThreadWorkerClient: WorkerClient
 export const useInitializeCompositor = (
     compositorDiv: HTMLDivElement | null
 ) => {
@@ -18,28 +18,19 @@ export const useInitializeCompositor = (
             return
         }
         // Create Worker
-        compositorWorkerClient = new WorkerClient(new CompositorWorker(), {
-            "rxCursorType": (payload: {
-                nodeId: string
-                cursorType: string
-            }) => {
-               sendNodeSignal('main', payload.nodeId, 'txCursorType', {
-                     cursorType: payload.cursorType
-               })
-            }
-        })
+        compositorMainThreadWorkerClient = new WorkerClient(new CompositorWorker(), {})
         // Create Canvas
         const compositorCanvas = document.createElement("canvas")
         compositorCanvas.width = compositorDiv.clientWidth
         compositorCanvas.height = compositorDiv.clientHeight
         compositorDiv.appendChild(compositorCanvas)
         const offscreenCanvasTransfer = compositorCanvas.transferControlToOffscreen()
-        compositorWorkerClient.sendMessage('initialize', {
+        compositorMainThreadWorkerClient.sendMessage('initialize', {
             compositorCanvas: offscreenCanvasTransfer,
         }, [offscreenCanvasTransfer])
         // Initialize Resize Observer
         const resizeObserver = new ResizeObserver(() => {
-            compositorWorkerClient.sendMessage('txScreenSize', {
+            compositorMainThreadWorkerClient.sendMessage('txScreenSize', {
                 width: compositorDiv.clientWidth,
                 height: compositorDiv.clientHeight,
             })
@@ -49,7 +40,7 @@ export const useInitializeCompositor = (
         setCompositorReady(true)
         return () => {
             compositorCanvas.remove()
-            compositorWorkerClient.cleanup()
+            compositorMainThreadWorkerClient.cleanup()
             resizeObserver.disconnect()
             setCompositorReady(false)
         }

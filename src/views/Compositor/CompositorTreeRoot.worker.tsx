@@ -1,12 +1,13 @@
-import { useImmer } from "use-immer"
+import { Updater, useImmer } from "use-immer"
 import { useRootRxCreateNode } from "./hooks/useRootRxCreateNode.worker"
 import { useRootRxDeleteNode } from "./hooks/useRootRxDeleteNode.worker"
 import { useRootRxViewportState } from "./hooks/useRootRxViewportState"
 import { ContainerState } from "@thinairthings/zoom-utils"
-import { BackbufferSprite } from "./BackbufferImplementation/BackbufferSprite.worker"
+import { ApplicationSprite } from "./ApplicationSprite/ApplicationSprite.worker"
 export type CompositorNode = {
     nodeId: string,
-    containerState: ContainerState
+    containerState: ContainerState,
+    messagePort: MessagePort
 }
 
 export const CompositorTreeRoot = () => {
@@ -22,10 +23,11 @@ export const CompositorTreeRoot = () => {
     return (<>
         {Array.from(compositorNodeMap).map(([nodeId, node]) => {
             return (
-                <BackbufferSprite
+                <ApplicationSprite
                     key={nodeId}
                     nodeId={nodeId}
                     initialContainerState={node.containerState}
+                    messagePort={node.messagePort}
                 />
             )
         })}

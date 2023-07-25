@@ -2,37 +2,36 @@ import { ContainerState, ScreenState } from "@thinairthings/zoom-utils";
 import { BaseTexture, GLTexture, Renderer, Resource } from "@pixi/webworker";
 
 
-export class ApplicationFramebufferResource extends Resource {
+export class ApplicationTextureResource extends Resource {
     dirtyBitmap: ImageBitmap
     dirtyRect: ScreenState
     canvas: OffscreenCanvas
     firstRender: boolean = true
     baseRect: ImageBitmap
+    desiredWidth: number
+    desiredHeight: number
     constructor(containerState: ContainerState){
         super(containerState.width, containerState.height)
-        const canvas = new OffscreenCanvas(containerState.width, containerState.height)
-        const ctx = canvas.getContext('2d')!
-        ctx.fillStyle = 'white'
-        ctx.fillRect(0, 0, containerState.width, containerState.height)
-        this.baseRect = canvas.transferToImageBitmap()
+        this.baseRect = this.createBlankImageBitmap(containerState.width, containerState.height)
+        this.desiredWidth = containerState.width
+        this.desiredHeight = containerState.height
     }
     uploadDirtyFrame(dirtyBitmap: ImageBitmap, dirtyRect: ScreenState) {
         this.dirtyBitmap = dirtyBitmap
         this.dirtyRect = dirtyRect
         this.update()
     }
+    resizeTexture(width: number, height: number) {
+        this.baseRect = this.createBlankImageBitmap(width, height)
+        this.desiredWidth = width
+        this.desiredHeight = height
+        this.update()
+    }
     upload(renderer: Renderer, baseTexture: BaseTexture, glTexture: GLTexture): boolean {
-        const { width } = this; // default size or from baseTexture?
-        const { height } = this; // your choice.
         // This info ios usseful if upload happens second time
         // Some people use that to track used memory
-        glTexture.width = width;
-        glTexture.height = height;
-
-        // PURE WEBGL CALLS - that's what its all about.
-        // PixiJS cant wrap all that API, we give you acceess to it!
         const { gl } = renderer;
-        if (this.firstRender) {
+        if (glTexture.width !== this.desiredWidth || glTexture.height !== this.desiredHeight) {
             gl.texImage2D(
                 baseTexture.target, 
                 0, 
@@ -41,7 +40,8 @@ export class ApplicationFramebufferResource extends Resource {
                 baseTexture.type, 
                 this.baseRect
             );
-            this.firstRender = false
+            glTexture.width = this.desiredWidth;
+            glTexture.height = this.desiredHeight;
         } else {
             gl.texSubImage2D(
                 baseTexture.target,     // target
@@ -56,5 +56,12 @@ export class ApplicationFramebufferResource extends Resource {
             );
         }
         return true; 
+    }
+    private createBlankImageBitmap(width: number, height: number) {
+        const canvas = new OffscreenCanvas(width, height)
+        const ctx = canvas.getContext('2d')!
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, width, height)
+        return canvas.transferToImageBitmap()
     }
 }

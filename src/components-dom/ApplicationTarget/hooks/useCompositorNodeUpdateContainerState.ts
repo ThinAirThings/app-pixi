@@ -1,6 +1,6 @@
 
 import { useEffect } from "react"
-import { compositorWorkerClient } from "../../../views/Compositor/hooks/useInitializeCompositor"
+import { compositorMainThreadWorkerClient } from "../../../views/Compositor/hooks/useInitializeCompositor"
 import { ContainerState } from "@thinairthings/zoom-utils"
 
 
@@ -9,7 +9,7 @@ export const useCompositorNodeUpdateContainerState = (
     containerState: ContainerState
 ) => {
     useEffect(() => {
-        compositorWorkerClient.sendMessage("txContainerState", {
+        compositorMainThreadWorkerClient.sendMessage("txContainerState", {
             nodeId,
             containerState
         })

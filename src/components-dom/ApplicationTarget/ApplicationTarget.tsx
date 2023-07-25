@@ -5,13 +5,11 @@ import classNames from "classnames";
 import { useStorageContainerState } from "@thinairthings/liveblocks-model";
 import { useStorage } from "../../context/LiveblocksContext";
 import styles from "./ApplicationTarget.module.scss";
-import { useCompositorNodeLifecycle } from "./hooks/useCompositorNodeLifecycle";
 import { useCompositorNodeUpdateContainerState } from "./hooks/useCompositorNodeUpdateContainerState";
-import { useApplicationTargetPointerActions } from "../../hooks/applicationPointerActions/useApplicationTargetPointerActions";
-import { compositorWorkerClient } from "../../views/Compositor/hooks/useInitializeCompositor";
+import { useApplicationTargetPointerActions } from "../../hooks/useApplicationTargetPointerActions";
 import { useApplicationKeyboardEvents } from "../../hooks/useApplicationKeyboardEvents";
-import { useNodeRxCursorType } from "./hooks/useNodeRxCursorType";
 import { useStorageMyFocusedNodeId } from "../../hooks/liveblocks/useStorageMyFocusedNodeId";
+import { useCompositorNode } from "./hooks/useCompositorNode";
 export const ApplicationTarget: FC<{nodeId: string}> = ({
     nodeId
 }) => {
@@ -20,12 +18,15 @@ export const ApplicationTarget: FC<{nodeId: string}> = ({
     // State
     const containerState = useStorageContainerState(useStorage, nodeId)
     const myFocusedNodeId = useStorageMyFocusedNodeId()
-    const remoteCursorType = useNodeRxCursorType(nodeId, pointerTargetRef)
+    
     // Effects
-    useCompositorNodeLifecycle(nodeId, containerState)
+    const {
+        remoteCursorType,
+        compositorNodePairWorkerClientRef
+    } = useCompositorNode(nodeId, containerState)
     useCompositorNodeUpdateContainerState(nodeId, containerState)
-    useApplicationTargetPointerActions(nodeId, pointerTargetRef.current, compositorWorkerClient)
-    useApplicationKeyboardEvents(nodeId, compositorWorkerClient)
+    useApplicationTargetPointerActions(nodeId, pointerTargetRef.current, compositorNodePairWorkerClientRef)
+    useApplicationKeyboardEvents(nodeId, compositorNodePairWorkerClientRef)
     
     return(
         <DomContainer nodeId={nodeId}>

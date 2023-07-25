@@ -3,7 +3,7 @@ import { Rectangle } from "pixi.js"
 import { useEffect, useRef } from "react"
 import { useViewportStateContext } from "../../../context/SpaceContext"
 import { TxPxContainer } from "../../../components-pixi/_ext/MixinThinAirTargetingDataset"
-import { compositorWorkerClient } from "../../Compositor/hooks/useInitializeCompositor"
+import { compositorMainThreadWorkerClient } from "../../Compositor/hooks/useInitializeCompositor"
 
 
 export const zoomSpeed = 0.15
@@ -31,7 +31,7 @@ export const usePixiViewportStage = () => {
                 1/viewportStateFrameRef.current.scale * viewportStateFrameRef.current.y
             )
             app.stage.scale.set(1/viewportStateFrameRef.current.scale)
-            compositorWorkerClient.sendMessage('txViewportState', {
+            compositorMainThreadWorkerClient.sendMessage('txViewportState', {
                 viewportState: viewportStateFrameRef.current
             })
         }
