@@ -3,15 +3,15 @@ import styles from './LanguageInterface.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useThinAirClient } from '../../clients/ThinAirClient/useThinAirClient';
 import { AutocompleteInterfaceCommand } from '../../clients/ThinAirClient/commands/ai/AutocompleteInterfaceCommand';
-import { NodeComponentIndex } from '../../NodeComponentIndex';
 import { useArrowKeyNavigation } from './useArrowKeyNavigation';
 import { ColorBar } from './ColorBar';
+import { UserCreatedNodeIndex } from '../../UserCreatedNodeIndex';
 
 
 export type NodeOption = {
-    type: keyof typeof NodeComponentIndex
-    typeDisplayName: string
-    typeDisplayIcon: string
+    key: keyof typeof UserCreatedNodeIndex
+    displayName: string
+    displayIcon: string
 }
 export const LanguageInterface = ({
 
@@ -22,11 +22,11 @@ export const LanguageInterface = ({
     const [query, setQuery] = useState('');
     const [isAutoCompleting, setIsAutoCompleting] = useState(false)
     
-    const [options, setOptions] = useState<Array<NodeOption>>((Object.keys(NodeComponentIndex) as Array<keyof typeof NodeComponentIndex>).map((key) => {
+    const [options, setOptions] = useState<Array<NodeOption>>((Object.keys(UserCreatedNodeIndex) as Array<keyof typeof UserCreatedNodeIndex>).map((key) => {
         return {
-            type: key,
-            typeDisplayName: NodeComponentIndex[key].typeDisplayName,
-            typeDisplayIcon: NodeComponentIndex[key].typeDisplayIcon
+            key,
+            displayName: UserCreatedNodeIndex[key].displayName,
+            displayIcon: UserCreatedNodeIndex[key].displayIcon
         }
     }))
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1) // -1 is searchbar
@@ -39,13 +39,13 @@ export const LanguageInterface = ({
                 query
             })))
             .results.function_call.arguments
-        ).keys as Array<keyof typeof NodeComponentIndex>)
-        .filter(key=>Object.keys(NodeComponentIndex).includes(key))
+        ).keys as Array<keyof typeof UserCreatedNodeIndex>)
+        .filter(key=>Object.keys(UserCreatedNodeIndex).includes(key))
         .map((key) => {
             return {
-                type: key,
-                typeDisplayName: NodeComponentIndex[key].typeDisplayName,
-                typeDisplayIcon: NodeComponentIndex[key].typeDisplayIcon
+                key,
+                displayName: UserCreatedNodeIndex[key].displayName,
+                displayIcon: UserCreatedNodeIndex[key].displayIcon
             }
         }))
         setIsAutoCompleting(false)
@@ -99,15 +99,15 @@ export const LanguageInterface = ({
             <div className={classNames(styles.results)}>
                 <span>Tools</span>
                 {options.map((option, index) => (
-                    <div key={option.type}
+                    <div key={option.key}
                         ref={toolsMapRef[index]}
                     >
                         <div>
                             <div className={classNames({
                                 [styles.selected]: index === selectedOptionIndex
                             })}>
-                                <img src={option.typeDisplayIcon} alt="result" />
-                                <span>{option.typeDisplayName}</span>
+                                <img src={option.displayIcon} alt="result" />
+                                <span>{option.displayName}</span>
                             </div>
                             <ColorBar visible={index === selectedOptionIndex}/>
                         </div>

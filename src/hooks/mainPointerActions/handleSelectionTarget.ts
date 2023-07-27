@@ -53,15 +53,12 @@ export const handleSelectionTarget = (event: PointerEvent, {
             if (event.altKey) {
                 [...finalContainerStatesMap].forEach(([nodeId, containerState]) => {
                     const immutableNodeData = nodeMap.get(nodeId)!
-                    const nodeData = JSON.parse(JSON.stringify(immutableNodeData))
-                    if ((nodeData.state as any).readyToConnect) {
-                        (nodeData.state as any).readyToConnect = false
-                    }
-                    console.log(nodeData)
+                    // Check for application window for process duplication
                     createNode({
+                        key: immutableNodeData.key,
                         type: immutableNodeData.type,
                         state: {
-                            ...nodeData.state,
+                            ...immutableNodeData.state,
                             containerState: {
                                 ...containerState,
                             }

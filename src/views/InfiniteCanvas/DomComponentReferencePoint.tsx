@@ -1,17 +1,17 @@
 import classNames from "classnames"
 import styles from "./DomComponentReferencePoint.module.scss"
 import { useStorageComponentsArray } from "../../hooks/liveblocks/useStorageComponentsArray"
-import { NodeComponentIndex } from "../../NodeComponentIndex"
 import { memo, useRef } from "react"
 import { useDomSmoothZooming } from "./hooks/useDomSmoothZooming"
 import { useGhostContainersContext } from "../../context/SpaceContext"
 import { GhostContainer } from "../../components-dom/GhostContainer/GhostContainer"
+import { DomComponentNodeIndex } from "../../components-dom/DomComponentNodeIndex"
 
-const DomComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentsArray>}) => {
+const DomComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnType<typeof useStorageComponentsArray<'dom'>>}) => {
     return (
         <>  
             {componentArray.map((componentSpec) => {
-                const Component = NodeComponentIndex[componentSpec.type].Component
+                const Component = DomComponentNodeIndex[componentSpec.key].DomComponent
                 return (
                     <Component
                         key={componentSpec.nodeId}
