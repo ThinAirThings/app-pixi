@@ -1,4 +1,4 @@
-import { ContainerState, ScreenState } from "@thinairthings/zoom-utils";
+import { ScreenState } from "@thinairthings/zoom-utils";
 import { BaseTexture, GLTexture, Renderer, Resource } from "@pixi/webworker";
 
 
@@ -10,15 +10,15 @@ export class ApplicationTextureResource extends Resource {
     baseRect: ImageBitmap
     desiredWidth: number
     desiredHeight: number
-    constructor(containerState: ContainerState){
-        super(containerState.width, containerState.height)
-        this.baseRect = this.createBlankImageBitmap(containerState.width, containerState.height)
-        this.desiredWidth = containerState.width
-        this.desiredHeight = containerState.height
+    constructor(screenState: ScreenState){
+        super(screenState.width, screenState.height)
+        this.baseRect = this.createBlankImageBitmap(screenState.width, screenState.height)
+        this.desiredWidth = screenState.width
+        this.desiredHeight = screenState.height
     }
-    uploadDirtyFrame(dirtyBitmap: ImageBitmap, dirtyRect: ScreenState) {
-        this.dirtyBitmap = dirtyBitmap
+    uploadDirtyFrame(dirtyRect: ScreenState, dirtyBitmap: ImageBitmap) {
         this.dirtyRect = dirtyRect
+        this.dirtyBitmap = dirtyBitmap
         this.update()
     }
     resizeTexture(width: number, height: number) {

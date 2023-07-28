@@ -12,10 +12,10 @@ let queue: Array<{
 let backbufferCanvas: OffscreenCanvas
 let backbufferCanvasCtx: OffscreenCanvasRenderingContext2D
 // Setup Messaging
-let ioClient: SocketioClient
+let applicationServerIoClient: SocketioClient
 let mainThreadNodePairWorkerClient: WorkerClient
-// requestAnimationFrame(paint)
-const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worker, {
+
+const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker, {
     'initialize': async ({serverUrl, nodeId, containerState, mainThreadPairMessagePort}: {
         serverUrl: string
         nodeId: string,
@@ -25,7 +25,7 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
         // Setup Backbuffer
         backbufferCanvas = new OffscreenCanvas(containerState.width, containerState.height)
         backbufferCanvasCtx = backbufferCanvas.getContext('2d')!
-        ioClient = new SocketioClient( `${serverUrl}/${nodeId}-webClient`, {
+        applicationServerIoClient = new SocketioClient( `${serverUrl}/${nodeId}-webClient`, {
             'rxFrameDamage': async (payload: {
                 dirtyRect: ScreenState
                 jpegData: ArrayBuffer
@@ -34,7 +34,7 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
                     const arrayBufferView = new Uint8Array(payload.jpegData)
                     const blob = new Blob([arrayBufferView], { type: "image/jpeg" })
                     let dirtyBitmap = await createImageBitmap(blob)   // Decompression happens here
-                    applicationTextureWorkerClient.sendMessage('txDirtyBitmap', {
+                    applicationServerWorkerClient.sendMessage('txFrameDamage', {
                         dirtyBitmap,
                         dirtyRect: payload.dirtyRect
                     }, [dirtyBitmap])
@@ -46,6 +46,38 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
                 cursorType: string
             }) => {
                 mainThreadNodePairWorkerClient.sendMessage('txCursorType', payload)
+            },
+            "rxCreatePopupWindow": async (payload: {
+                pixmapId: number
+                screenState: ScreenState
+            }) => {
+                applicationServerWorkerClient.sendMessage('txCreatePopupWindow', payload)
+                mainThreadNodePairWorkerClient.sendMessage('txCreatePopupWindow', payload)
+                applicationServerIoClient.sendMessage('txPopupWindowReady', {})
+            },
+            "rxDeletePopupWindow": async (payload: {
+                pixmapId: number
+            }) => {
+                applicationServerWorkerClient.sendMessage('txDeletePopupWindow', payload)
+                mainThreadNodePairWorkerClient.sendMessage('txDeletePopupWindow', payload)
+            },
+            "rxPopupDamage": async (payload: {
+                pixmapId: number
+                dirtyRect: ScreenState
+                jpegData: ArrayBuffer
+            }) => {
+                try {
+                    const arrayBufferView = new Uint8Array(payload.jpegData)
+                    const blob = new Blob([arrayBufferView], { type: "image/jpeg" })
+                    let dirtyBitmap = await createImageBitmap(blob)   // Decompression happens here
+                    applicationServerWorkerClient.sendMessage('txPopupDamage', {
+                        pixmapId: payload.pixmapId,
+                        dirtyBitmap,
+                        dirtyRect: payload.dirtyRect
+                    }, [dirtyBitmap])
+                } catch (err) {
+                    console.error(err)
+                }
             }
         })
         mainThreadNodePairWorkerClient = new WorkerClient(mainThreadPairMessagePort, {
@@ -60,7 +92,7 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
                 button: 'left'|'right'|'middle'
                 clickCount: number
             }) => {
-                ioClient?.sendMessage('txMouseInput', {
+                applicationServerIoClient?.sendMessage('txMouseInput', {
                     type,
                     x: Math.round(x), y: Math.round(y),
                     button,
@@ -74,7 +106,7 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
                 x: number, y: number
                 wheelX: number, wheelY: number
             }) => {
-                ioClient?.sendMessage('txWheelInput', {
+                applicationServerIoClient?.sendMessage('txWheelInput', {
                     x, y,
                     wheelX, wheelY
                 })
@@ -82,7 +114,7 @@ const applicationTextureWorkerClient = new WorkerClient(self as unknown as Worke
             'rxKeyboardInput': ({
                 type, keyCode
             }: {type: 'keyDown'|'keyUp', keyCode: string}) => {
-                ioClient?.sendMessage('txKeyboardInput', {
+                applicationServerIoClient?.sendMessage('txKeyboardInput', {
                     type, keyCode
                 })
             },

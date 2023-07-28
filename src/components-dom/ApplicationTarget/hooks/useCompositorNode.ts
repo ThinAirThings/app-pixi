@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import { compositorMainThreadWorkerClient } from "../../../views/Compositor/hooks/useInitializeCompositor"
-import { ContainerState } from "@thinairthings/zoom-utils"
+import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
 import { WorkerClient } from "@thinairthings/worker-client"
+import { Updater } from "use-immer"
 
 
 export const useCompositorNode = (
     nodeId: string,
-    containerState: ContainerState
+    containerState: ContainerState,
+    setPopupWindows: Updater<Map<number, {
+        pixmapId: number;
+        screenState: ScreenState;
+    }>>
 ) => {
     const [remoteCursorType, setRemoteCursorType] = useState<string>('default')
     const compositorNodePairWorkerClientRef = useRef<WorkerClient>()
@@ -17,6 +22,24 @@ export const useCompositorNode = (
                 cursorType: string
             }) => {
                 setRemoteCursorType(payload.cursorType)
+            },
+            "rxCreatePopupWindow": (payload: {
+                pixmapId: number
+                screenState: ScreenState
+            }) => {
+                setPopupWindows((popupWindows) => {
+                    popupWindows.set(payload.pixmapId, {
+                        pixmapId: payload.pixmapId,
+                        screenState: payload.screenState
+                    })
+                })
+            },
+            "rxDeletePopupWindow": (payload: {
+                pixmapId: number
+            }) => {
+                setPopupWindows((popupWindows) => {
+                    popupWindows.delete(payload.pixmapId)
+                })
             }
         })
         compositorMainThreadWorkerClient.sendMessage("txCreateNode", {
