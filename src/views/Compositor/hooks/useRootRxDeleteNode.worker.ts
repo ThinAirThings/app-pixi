@@ -1,6 +1,6 @@
 import { Updater } from "use-immer"
 import { useNodeSignal } from "../../../hooks/useNodeSignal"
-import { CompositorNode } from "../CompositorTreeRoot.worker"
+import { CompositorNode } from "../worker/CompositorTreeRoot.worker"
 
 export const useRootRxDeleteNode = (
     setCompositorNodeMap: Updater<Map<string, CompositorNode>>

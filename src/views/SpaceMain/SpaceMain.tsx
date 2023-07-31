@@ -13,6 +13,7 @@ import { DomComponentReferencePoint } from "../InfiniteCanvas/DomComponentRefere
 import { useMainWheelActions } from "../../hooks/mainPointerActions/useMainWheelActions"
 import { LeftToolbar } from "../../components-dom/LeftToolbar/LeftToolbar"
 import { Compositor } from "../Compositor/Compositor"
+import { PopupReferencePoint } from "../InfiniteCanvas/PopupReferencePoint"
 // Keep the Pixi component from rendering when the language interface toggle runs
 const PixiMemo = memo(() => {
     return (
@@ -23,9 +24,11 @@ const PixiMemo = memo(() => {
 })
 
 export const MainDivContext = createContext<HTMLDivElement | null>(null)
+export const PopupReferencePointContext = createContext<HTMLDivElement | null>(null)
 export const SpaceMain = () => {
     // Refs
     const mainDivRef = useRef<HTMLDivElement>(null)
+    const popupReferencePointRef = useRef<HTMLDivElement>(null)
     // State
     const [languageInterfaceActive] = useLanguageInterfaceActiveContext()
     // Effects
@@ -37,10 +40,13 @@ export const SpaceMain = () => {
         <div ref={mainDivRef} className={classNames(styles.spaceMain)}>
             <MainDivContext.Provider value={mainDivRef.current}>
                 <Compositor>
-                    <DomComponentReferencePoint/>
-                    <PixiMemo/>
+                    <PopupReferencePointContext.Provider value={popupReferencePointRef.current}>
+                        <DomComponentReferencePoint/>
+                        <PixiMemo/>
+                    </PopupReferencePointContext.Provider>
                 </Compositor>
                 <SelectionBoundingBox/>
+                <PopupReferencePoint ref={popupReferencePointRef}/>
                 <SelectionBox/>
                 {languageInterfaceActive && <LanguageInterface/>}
                 <LeftToolbar/>

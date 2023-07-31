@@ -4,7 +4,7 @@ import { Application } from "@pixi/webworker";
 import { AppProvider, ReactPixiRoot, createRoot} from '@pixi/react';
 import { enableMapSet } from 'immer'
 import { CompositorTreeRoot } from "./CompositorTreeRoot.worker";
-import { sendNodeSignal } from "../../hooks/useNodeSignal";
+import { sendNodeSignal } from "../../../hooks/useNodeSignal";
 enableMapSet()
 let app: Application
 let root: ReactPixiRoot

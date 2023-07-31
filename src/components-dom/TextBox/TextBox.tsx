@@ -17,10 +17,10 @@ export const TextBox = ({nodeId}: {
 }) => {
     // State
     const [editorInitialized, setEditorInitialized] = useState(false)
-    const content = useStorageNodeState< 'textBox', 'content'>(useStorage, nodeId, "content")
+    const content = useStorageNodeState< 'textBox'>(useStorage, nodeId, "content")
     const isFocused = useStorageMyFocusedNodeId() === nodeId
     // Mutations
-    const updateContent = useMutationNodeState<'textBox', 'content'>(useMutation, nodeId, "content")
+    const updateContent = useMutationNodeState<'textBox'>(useMutation, nodeId, "content")
     const editor = useEditor({
         extensions: [
             StarterKit,

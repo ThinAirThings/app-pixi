@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import styles from "./DomComponentReferencePoint.module.scss"
 import { useStorageComponentsArray } from "../../hooks/liveblocks/useStorageComponentsArray"
-import { memo, useRef } from "react"
+import { createContext, memo, useRef } from "react"
 import { useDomSmoothZooming } from "./hooks/useDomSmoothZooming"
 import { useGhostContainersContext } from "../../context/SpaceContext"
 import { GhostContainer } from "../../components-dom/GhostContainer/GhostContainer"
@@ -23,6 +23,7 @@ const DomComponentArrayMemo = memo(({componentArray}: {componentArray: ReturnTyp
     )
 })
 
+export const DomComponentReferencePointContext = createContext<HTMLDivElement>(null)
 export const DomComponentReferencePoint = () => {
     // Refs
     const referencePointRef = useRef<HTMLDivElement>(null)
@@ -34,12 +35,14 @@ export const DomComponentReferencePoint = () => {
     // Render
     return (
         <div ref={referencePointRef} className={classNames(styles.referencePoint)}>
-            <DomComponentArrayMemo componentArray={componentsArray}/>
-            {ghostContainers.map(({nodeId, containerState}) => <GhostContainer
-                key={nodeId}
-                nodeId={nodeId}
-                containerState={containerState}
-            />)}
+            <DomComponentReferencePointContext.Provider value={referencePointRef.current}>
+                <DomComponentArrayMemo componentArray={componentsArray}/>
+                {ghostContainers.map(({nodeId, containerState}) => <GhostContainer
+                    key={nodeId}
+                    nodeId={nodeId}
+                    containerState={containerState}
+                />)}
+            </DomComponentReferencePointContext.Provider>
         </div>
     )
 }

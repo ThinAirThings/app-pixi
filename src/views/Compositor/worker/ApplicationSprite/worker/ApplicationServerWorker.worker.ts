@@ -51,7 +51,6 @@ const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker
                 pixmapId: number
                 screenState: ScreenState
             }) => {
-                applicationServerWorkerClient.sendMessage('txCreatePopupWindow', payload)
                 mainThreadNodePairWorkerClient.sendMessage('txCreatePopupWindow', payload)
                 applicationServerIoClient.sendMessage('txPopupWindowReady', {})
             },
@@ -70,10 +69,11 @@ const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker
                     const arrayBufferView = new Uint8Array(payload.jpegData)
                     const blob = new Blob([arrayBufferView], { type: "image/jpeg" })
                     let dirtyBitmap = await createImageBitmap(blob)   // Decompression happens here
-                    applicationServerWorkerClient.sendMessage('txPopupDamage', {
+                    // Send to main thread
+                    mainThreadNodePairWorkerClient.sendMessage('txPopupDamage', {
                         pixmapId: payload.pixmapId,
-                        dirtyBitmap,
-                        dirtyRect: payload.dirtyRect
+                        dirtyRect: payload.dirtyRect,
+                        dirtyBitmap
                     }, [dirtyBitmap])
                 } catch (err) {
                     console.error(err)

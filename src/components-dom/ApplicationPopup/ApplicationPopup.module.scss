@@ -1,0 +1,14 @@
+
+
+@layer Component {
+    .applicationPopup {
+        // Layout
+        position: absolute;
+        transform-origin: top left;
+        left: 0px;
+        top: 0px;
+        canvas {
+            pointer-events: none;
+        }
+    }
+}

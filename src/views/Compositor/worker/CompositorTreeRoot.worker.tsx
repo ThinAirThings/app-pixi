@@ -1,7 +1,7 @@
 import { Updater, useImmer } from "use-immer"
-import { useRootRxCreateNode } from "./hooks/useRootRxCreateNode.worker"
-import { useRootRxDeleteNode } from "./hooks/useRootRxDeleteNode.worker"
-import { useRootRxViewportState } from "./hooks/useRootRxViewportState"
+import { useRootRxCreateNode } from "../hooks/useRootRxCreateNode.worker"
+import { useRootRxDeleteNode } from "../hooks/useRootRxDeleteNode.worker"
+import { useRootRxViewportState } from "../hooks/useRootRxViewportState"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { ApplicationSprite } from "./ApplicationSprite/ApplicationSprite.worker"
 export type CompositorNode = {

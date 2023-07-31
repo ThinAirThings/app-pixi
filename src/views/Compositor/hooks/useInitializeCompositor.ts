@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import { useRerender } from "../../../hooks/useRerender"
 import { WorkerClient } from "@thinairthings/worker-client"
-import CompositorWorker from "../Compositor.worker?worker"
-import { sendNodeSignal } from "../../../hooks/useNodeSignal"
+import CompositorWorker from "../worker/Compositor.worker?worker"
 
 export let compositorMainThreadWorkerClient: WorkerClient
 export const useInitializeCompositor = (

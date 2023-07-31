@@ -1,5 +1,5 @@
 import { Updater } from "use-immer"
-import { CompositorNode } from "../CompositorTreeRoot.worker"
+import { CompositorNode } from "../worker/CompositorTreeRoot.worker"
 import { ContainerState } from "@thinairthings/zoom-utils"
 import { useNodeSignal } from "../../../hooks/useNodeSignal"
 

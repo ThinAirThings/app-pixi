@@ -1,20 +1,14 @@
 import { WorkerClient } from "@thinairthings/worker-client"
 import { MutableRefObject, useEffect, useRef } from "react"
-import ApplicationServerWorker from "../ApplicationServerWorker.worker?worker"
+import ApplicationServerWorker from "../worker/ApplicationServerWorker.worker?worker"
 import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
 import { Texture } from "@pixi/webworker"
 import { ApplicationTextureResource } from "../webgl/ApplicationTextureResource"
-import { Updater } from "use-immer"
-import {txNodeSignal} from "@thinairthings/react-utils"
 export const useApplicationServerWorker = (
     nodeId: string,
     containerState: ContainerState,
     applicationTextureRef: MutableRefObject<Texture<ApplicationTextureResource>>,
-    messagePort: MessagePort,
-    setPopupWindows: Updater<Map<number, {
-        pixmapId: number;
-        screenState: ScreenState;
-    }>>
+    messagePort: MessagePort
 ) => {
     // Refs
     const applicationTextureWorkerClientRef = useRef<WorkerClient>(null)
@@ -29,35 +23,6 @@ export const useApplicationServerWorker = (
                     dirtyRect,
                     dirtyBitmap
                 )
-            },
-            'rxCreatePopupWindow': async ({pixmapId, screenState}: {
-                pixmapId: number
-                screenState: ScreenState
-            }) => {
-                setPopupWindows((popupWindows) => {
-                    popupWindows.set(pixmapId, {
-                        pixmapId,
-                        screenState
-                    })
-                })
-            },
-            "rxPopupDamage": async (payload: {
-                pixmapId: number
-                dirtyRect: ScreenState
-                dirtyBitmap: ImageBitmap
-            }) => {
-                const {pixmapId, dirtyRect, dirtyBitmap} = payload
-                txNodeSignal("worker", pixmapId.toString(), "txPopupDamage", {
-                    dirtyRect,
-                    dirtyBitmap
-                })
-            },
-            "rxDeletePopupWindow": async ({pixmapId}: {
-                pixmapId: number
-            }) => {
-                setPopupWindows((popupWindows) => {
-                    popupWindows.delete(pixmapId)
-                })
             }
         })
         applicationTextureWorkerClientRef.current.sendMessage('initialize', {

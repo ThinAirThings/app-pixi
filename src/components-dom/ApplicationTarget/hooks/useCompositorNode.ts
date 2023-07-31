@@ -3,6 +3,7 @@ import { compositorMainThreadWorkerClient } from "../../../views/Compositor/hook
 import { ContainerState, ScreenState } from "@thinairthings/zoom-utils"
 import { WorkerClient } from "@thinairthings/worker-client"
 import { Updater } from "use-immer"
+import { txNodeSignal } from "@thinairthings/react-utils"
 
 
 export const useCompositorNode = (
@@ -40,6 +41,13 @@ export const useCompositorNode = (
                 setPopupWindows((popupWindows) => {
                     popupWindows.delete(payload.pixmapId)
                 })
+            },
+            "rxPopupDamage": (payload: {
+                pixmapId: number
+                dirtyRect: ScreenState
+                dirtyBitmap: ImageBitmap
+            }) => {
+                txNodeSignal('main', payload.pixmapId.toString(), 'txPopupDamage', payload)
             }
         })
         compositorMainThreadWorkerClient.sendMessage("txCreateNode", {

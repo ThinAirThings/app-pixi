@@ -8,6 +8,7 @@ import { useStorage } from "../context/LiveblocksContext"
 import { fromEvent, takeUntil } from "rxjs"
 import { MouseButton, mouseButton, mousePoint, updateClickCounter } from "@thinairthings/mouse-utils"
 import { mouseEventToApplicationTranslation } from "@thinairthings/zoom-utils"
+import { useRerender } from "@thinairthings/react-utils"
 
 export const useApplicationTargetPointerActions = (
     nodeId: string, 
@@ -25,9 +26,13 @@ export const useApplicationTargetPointerActions = (
     const [viewportState] = useViewportStateContext()
     const containerState = useStorageContainerState(useStorage, nodeId)
     // Effects
+    const rerender = useRerender()
     // PointerDown
     useEffect(() => {
-        if (!targetRef) return
+        if (!targetRef) {
+            rerender()
+            return
+        }
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointerdown')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId)) return
@@ -84,10 +89,13 @@ export const useApplicationTargetPointerActions = (
             })
         })
         return () => subscription.unsubscribe()
-    }, [myFocusedNodeId, viewportState, containerState])
+    }, [myFocusedNodeId, viewportState, containerState, targetRef])
     // Pointer (Hover Control)
     useEffect(() => {
-        if (!targetRef) return
+        if (!targetRef) {
+            rerender()
+            return
+        }
         const subscription = fromEvent<PointerEvent>(targetRef, 'pointermove')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || pointerIsDownRef.current) return
@@ -99,10 +107,13 @@ export const useApplicationTargetPointerActions = (
             })
         })
         return () => subscription.unsubscribe()
-    }, [myFocusedNodeId, viewportState, containerState])
+    }, [myFocusedNodeId, viewportState, containerState, targetRef])
     // PointerWheel
     useEffect(() => {
-        if (!targetRef) return
+        if (!targetRef) {
+            rerender()
+            return
+        }
         const subscription = fromEvent<WheelEvent>(targetRef, 'wheel')
         .subscribe((event) => {
             if (!(myFocusedNodeId === nodeId) || !(event.altKey)) return
@@ -113,5 +124,5 @@ export const useApplicationTargetPointerActions = (
             })
         })
         return () => subscription.unsubscribe()
-    }, [myFocusedNodeId, viewportState, containerState])
+    }, [myFocusedNodeId, viewportState, containerState, targetRef])
 }

@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, Fragment, useContext, useRef } from "react";
 import { DomContainer } from "../DomContainer/DomContainer";
 import { DivTarget } from "../DivTarget/DivTarget";
 import classNames from "classnames";
@@ -12,11 +12,15 @@ import { useStorageMyFocusedNodeId } from "../../hooks/liveblocks/useStorageMyFo
 import { useCompositorNode } from "./hooks/useCompositorNode";
 import { useImmer } from "use-immer";
 import { ScreenState } from "@thinairthings/zoom-utils";
+import { PopupReferencePointContext } from "../../views/SpaceMain/SpaceMain";
+import { createPortal } from "react-dom";
+import { ApplicationPopup } from "../ApplicationPopup/ApplicationPopup";
 export const ApplicationTarget: FC<{nodeId: string}> = ({
     nodeId
 }) => {
     // Refs
     const pointerTargetRef = useRef<HTMLDivElement | null>(null)
+    const popupReferencePointRef = useContext(PopupReferencePointContext)
     // State
     const containerState = useStorageContainerState(useStorage, nodeId)
     const myFocusedNodeId = useStorageMyFocusedNodeId()
@@ -47,19 +51,15 @@ export const ApplicationTarget: FC<{nodeId: string}> = ({
                 }}
             >
                 {[...popupWindows].map(([pixmapId, {screenState}]) => {
-                    return <DivTarget
-                        key={pixmapId}
-                        nodeId={nodeId}
-                        isApplicationTarget={true}
-                        className={classNames(styles.applicationTarget)}
-                        style={{
-                            position: "absolute",
-                            left: screenState.x,
-                            top: screenState.y,
-                            width: screenState.width,
-                            height: screenState.height
-                        }}
-                    />
+                    return <Fragment key={pixmapId}>
+                        {createPortal(<ApplicationPopup
+                            nodeId={nodeId}
+                            pixmapId={pixmapId}
+                            screenState={screenState}
+                            remoteCursorType={remoteCursorType}
+                            compositorNodePairWorkerClientRef={compositorNodePairWorkerClientRef}
+                        />, popupReferencePointRef)}
+                    </Fragment>
                 })}
             </DivTarget>
         </DomContainer>
