@@ -36,7 +36,6 @@ export const ApplicationTarget: FC<{nodeId: string}> = ({
     useCompositorNodeUpdateContainerState(nodeId, containerState)
     useApplicationTargetPointerActions(nodeId, pointerTargetRef.current, compositorNodePairWorkerClientRef)
     useApplicationKeyboardEvents(nodeId, compositorNodePairWorkerClientRef)
-    
     return(
         <DomContainer nodeId={nodeId}>
             <DivTarget 
