@@ -41,7 +41,6 @@ export const useArrowKeyNavigation = (
                     })
                     const newNodeId = createNode(({
                         key: options[selectionOptionIndex].key,
-                        type: UserCreatedNodeIndex[options[selectionOptionIndex].key].type,
                         state: {
                             ...nodeComponentEntry.defaultProps,
                             containerState: {

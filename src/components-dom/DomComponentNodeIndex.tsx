@@ -4,7 +4,7 @@ import { ApplicationTarget } from "./ApplicationTarget/ApplicationTarget"
 
 
 export const DomComponentNodeIndex: {
-    [Key in FilterNodeKeysByProperty<{type: 'dom'}>]: {
+    [Key in FilterNodeKeysByProperty<{renderer: 'dom'}>]: {
         DomComponent: ({nodeId}: {nodeId: string}) => JSX.Element
     } & typeof NodeDataTypeIndex[Key]
 } = {

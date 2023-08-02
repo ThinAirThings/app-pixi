@@ -2,8 +2,7 @@ import { NodeDataTypeIndex } from "@thinairthings/liveblocks-model";
 
 
 export const UserCreatedNodeIndex: {
-    [Key in keyof typeof NodeDataTypeIndex]
-    : {
+    [Key in keyof typeof NodeDataTypeIndex]: {
         displayName: string,
         displayIcon: string,
     } & typeof NodeDataTypeIndex[Key]

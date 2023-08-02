@@ -3,7 +3,7 @@ import { Rectangle } from "./Rectangle/Rectangle"
 
 
 export const PixiComponentNodeIndex: {
-    [Key in FilterNodeKeysByProperty<{type: 'pixi'}>]: {
+    [Key in FilterNodeKeysByProperty<{renderer: 'pixi'}>]: {
         PixiComponent: ({nodeId}: {nodeId: string}) => JSX.Element
     } & typeof NodeDataTypeIndex[Key]
 } = {

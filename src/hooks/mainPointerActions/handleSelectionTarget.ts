@@ -56,7 +56,6 @@ export const handleSelectionTarget = (event: PointerEvent, {
                     // Check for application window for process duplication
                     createNode({
                         key: immutableNodeData.key,
-                        type: immutableNodeData.type,
                         state: {
                             ...immutableNodeData.state,
                             containerState: {
