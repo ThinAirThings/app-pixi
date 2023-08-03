@@ -47,6 +47,11 @@ const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker
             }) => {
                 mainThreadNodePairWorkerClient.sendMessage('txCursorType', payload)
             },
+            "rxClipboardData": async (payload: {
+                clipboardData: string
+            }) => {
+                mainThreadNodePairWorkerClient.sendMessage('txClipboardData', payload)
+            },
             "rxCreatePopupWindow": async (payload: {
                 pixmapId: number
                 screenState: ScreenState
@@ -81,6 +86,11 @@ const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker
             }
         })
         mainThreadNodePairWorkerClient = new WorkerClient(mainThreadPairMessagePort, {
+            "rxClipboardData": ({clipboardData}: {clipboardData: string}) => {
+                applicationServerIoClient.sendMessage('txClipboardData', {
+                    clipboardData
+                })
+            },
             'rxMouseInput': ({
                 type,
                 x, y,

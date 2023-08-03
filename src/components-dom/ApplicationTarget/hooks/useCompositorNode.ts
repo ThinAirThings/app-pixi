@@ -24,6 +24,11 @@ export const useCompositorNode = (
             }) => {
                 setRemoteCursorType(payload.cursorType)
             },
+            "rxClipboardData": async (payload: {
+                clipboardData: string
+            }) => {
+                await navigator.clipboard.writeText(payload.clipboardData)
+            },
             "rxCreatePopupWindow": (payload: {
                 pixmapId: number
                 screenState: ScreenState
