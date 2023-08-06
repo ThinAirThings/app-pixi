@@ -29,16 +29,16 @@ export const ApplicationSprite: FC<{
         applicationTextureRef,
         messagePort
     )
-    
     return (<>
         <Container
             x={containerState?.x}
             y={containerState?.y}
+            scale={containerState?.scale}
         >
             <Sprite
                 texture={applicationTextureRef.current}
-                width={containerState?.width}
-                height={containerState?.height}
+                width={(1/containerState?.scale)*containerState?.width}
+                height={(1/containerState?.scale)*containerState?.height}
             />
         </Container>
     </>)

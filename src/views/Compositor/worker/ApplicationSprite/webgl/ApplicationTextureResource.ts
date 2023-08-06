@@ -1,4 +1,4 @@
-import { ScreenState } from "@thinairthings/zoom-utils";
+import { ContainerState, ScreenState } from "@thinairthings/zoom-utils";
 import { BaseTexture, GLTexture, Renderer, Resource } from "@pixi/webworker";
 
 
@@ -8,30 +8,35 @@ export class ApplicationTextureResource extends Resource {
     canvas: OffscreenCanvas
     firstRender: boolean = true
     baseRect: ImageBitmap
-    desiredWidth: number
-    desiredHeight: number
-    constructor(screenState: ScreenState){
-        super(screenState.width, screenState.height)
-        this.baseRect = this.createBlankImageBitmap(screenState.width, screenState.height)
-        this.desiredWidth = screenState.width
-        this.desiredHeight = screenState.height
+    currentDimensions: {
+        width: number
+        height: number
+    }
+    constructor(containerState: ContainerState){
+        const dimensions = ApplicationTextureResource.calculateDimensions(containerState)
+        super(dimensions.width,dimensions.height)
+        this.baseRect = this.createBlankImageBitmap(dimensions.width, dimensions.height)
+        this.currentDimensions = dimensions
     }
     uploadDirtyFrame(dirtyRect: ScreenState, dirtyBitmap: ImageBitmap) {
         this.dirtyRect = dirtyRect
         this.dirtyBitmap = dirtyBitmap
         this.update()
     }
-    resizeTexture(width: number, height: number) {
-        this.baseRect = this.createBlankImageBitmap(width, height)
-        this.desiredWidth = width
-        this.desiredHeight = height
+    resizeTexture(containerState: ContainerState) {
+        const newDimensions = ApplicationTextureResource.calculateDimensions(containerState)
+        if (newDimensions.width === this.currentDimensions.width 
+            && newDimensions.height === this.currentDimensions.height
+        ) return 
+        this.baseRect = this.createBlankImageBitmap(newDimensions.width, newDimensions.height)
+        this.currentDimensions = newDimensions
         this.update()
     }
     upload(renderer: Renderer, baseTexture: BaseTexture, glTexture: GLTexture): boolean {
         // This info ios usseful if upload happens second time
         // Some people use that to track used memory
         const { gl } = renderer;
-        if (glTexture.width !== this.desiredWidth || glTexture.height !== this.desiredHeight) {
+        if (glTexture.width !== this.currentDimensions.width || glTexture.height !== this.currentDimensions.height) {
             gl.texImage2D(
                 baseTexture.target, 
                 0, 
@@ -40,8 +45,8 @@ export class ApplicationTextureResource extends Resource {
                 baseTexture.type, 
                 this.baseRect
             );
-            glTexture.width = this.desiredWidth;
-            glTexture.height = this.desiredHeight;
+            glTexture.width = this.currentDimensions.width;
+            glTexture.height = this.currentDimensions.height;
         } else {
             gl.texSubImage2D(
                 baseTexture.target,     // target
@@ -56,6 +61,12 @@ export class ApplicationTextureResource extends Resource {
             );
         }
         return true; 
+    }
+    static calculateDimensions(containerState: ContainerState) {
+        return {
+            width: Math.round((1/containerState.scale)*containerState.width),
+            height: Math.round((1/containerState.scale)*containerState.height)
+        }
     }
     private createBlankImageBitmap(width: number, height: number) {
         const canvas = new OffscreenCanvas(width, height)

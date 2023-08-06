@@ -1,0 +1,16 @@
+@layer Component {
+    .controlHeader {
+        // Layout
+        @include v-stack('left', 'top');
+        gap: 15px;
+        padding: 10px;
+        width: 100%;
+        // Style
+        border-bottom: 2px solid $primary-black;
+        span {
+            // Style
+            @include set-font(30px, 600);
+            text-shadow: $light-text-shadow;
+        }
+    }
+}

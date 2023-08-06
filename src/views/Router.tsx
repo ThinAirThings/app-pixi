@@ -6,7 +6,7 @@ import { AuthenticationPage } from './Authentication/AuthenticationPage';
 import { Loading } from './Loading/Loading';
 import { HandleGrantToken } from './Authentication/HandleGrantToken';
 import { Routes } from 'react-router-dom';  
-import { Dashboard } from './Dashboard/Dashboard';
+import { Dashboard } from './Dashboard_v2/Dashboard';
 import { SpaceMain} from './SpaceMain/SpaceMain';
 import { SpaceMainContextProvider, SpaceMetaContextProvider } from '../context/SpaceContext';
 import { LiveblocksRoomProvider } from '../context/LiveblocksContext';

@@ -9,8 +9,7 @@ export const useResizeApplicationTexture = (
 ) => {
     useEffect(() => {
         applicationTextureRef.current.baseTexture.resource.resizeTexture(
-            containerState.width,
-            containerState.height
+            containerState
         )
-    }, [containerState.width, containerState.height])
+    }, [containerState.width, containerState.height, containerState.scale])
 }

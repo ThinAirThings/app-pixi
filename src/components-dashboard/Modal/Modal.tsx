@@ -1,5 +1,5 @@
 import classNames from "classnames"
-import { ReactNode, forwardRef, useState } from "react"
+import { ReactNode, forwardRef } from "react"
 import styles from './Modal.module.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
@@ -29,8 +29,7 @@ export const Modal = forwardRef<
                 <span className={classNames(styles.title)}>{title}</span>
                 <div className={classNames(styles.content)}>
                     {children}
-                </div>
-                
+                </div> 
             </div>
         </div>
     )

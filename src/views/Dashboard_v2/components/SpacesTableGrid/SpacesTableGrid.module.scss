@@ -1,0 +1,73 @@
+@layer Component {
+    .spacesTableGrid {
+        // Layout
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) 1fr;
+        justify-items: start;
+        align-items: center;
+        width: 100%;
+        grid-row-gap: 10px;
+        // Declare Header Tags
+        @for $i from 1 through 5 {
+            >span:nth-of-type(#{$i}){
+                // Layout
+                grid-row: 1;
+                grid-column: $i;
+                margin-left: 0px;
+                // Style
+                @include set-font(20px, 600);
+                color: $primary-black;
+            }
+        }
+        >span:not(:nth-of-type(-n+5)) {
+            // Style
+            cursor: pointer;
+        }
+        // Declare Table Cells
+        >div {
+            // Layout
+            z-index: 1;
+            grid-column: 1 / -1;
+            width: 100%;
+            height: 40px;
+            // Style
+            background-color: $primary-black;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25), 0px 1px 2px 0px rgba(255, 255, 255, 0.25) inset, 0px -1px 2px 0px rgba(255, 255, 255, 0.25) inset;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            &:hover {
+                background-color: $primary-black-hover;
+            }
+        }   
+        >span {
+            // Layout
+            z-index: 2;
+            margin-left: 15px;
+            // Style
+            @include set-font(16px, 500);
+            color: $primary-white;
+        }
+        >button {
+            // Layout
+            z-index: 3;
+            grid-column: 5;
+            justify-self: end;
+            align-self: center;
+            height: 24px;
+            padding: 0px 10px;
+            margin-right: 10px;
+            // Style
+            border-radius: 3px;
+            background-color: $primary-white;
+            box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -1px 2px 0px rgba(0, 0, 0, 0.25) inset;
+            >span {
+                // Style
+                @include set-font(14px, 600);
+                color: $primary-black;
+            }
+        }
+    }
+}
+
