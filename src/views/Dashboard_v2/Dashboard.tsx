@@ -17,7 +17,7 @@ export const Dashboard: FC<{}> = () => {
             </div>
             <div>
                 <ControlHeader setShowCreateSpaceModal={setShowCreateSpaceModal}/>
-                <SpacesTableGrid/>
+                <SpacesTableGrid showCreateSpaceModal={showCreateSpaceModal}/>
             </div>
             <CreateSpaceModal
                 showModal={showCreateSpaceModal}

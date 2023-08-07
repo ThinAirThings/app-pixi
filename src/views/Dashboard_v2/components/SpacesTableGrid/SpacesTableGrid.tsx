@@ -12,10 +12,10 @@ const headerTags = [
     ""
 ]
 export const SpacesTableGrid: FC<{
-
-}> = ({}) => {
+    showCreateSpaceModal: boolean
+}> = ({showCreateSpaceModal}) => {
     // State
-    const spaceMetadataMap = useSpacesMetadataMap()
+    const spaceMetadataMap = useSpacesMetadataMap(showCreateSpaceModal)
     return (
         <div className={classNames(styles.spacesTableGrid)}>
             {/* Declare Header */}

@@ -4,7 +4,7 @@ import { useThinAirClient } from "../../../../../clients/ThinAirClient/useThinAi
 import { GetSpacesCommand } from "../../../../../clients/ThinAirClient/commands/liveblocks/GetSpacesCommand";
 
 
-export const useSpacesMetadataMap = () => {
+export const useSpacesMetadataMap = (showCreateSpaceModal: boolean) => {
     // Refs
     const thinairClient = useThinAirClient()
     // State
@@ -30,7 +30,7 @@ export const useSpacesMetadataMap = () => {
                 })
             })
         })()
-    }, [])
+    }, [showCreateSpaceModal])
     return spacesMetadataMap
 }
 

@@ -6,8 +6,8 @@ export const Button: FC<ButtonHTMLAttributes<HTMLButtonElement> & {
     label: string
 }> = ({label, ...props}) => {
     return (
-        <button className={classNames(styles.button)}
-            {...props}
+        <button {...props}
+            className={ classNames(props.className, styles.button)}
         >
             <span>{label}</span>
         </button>
