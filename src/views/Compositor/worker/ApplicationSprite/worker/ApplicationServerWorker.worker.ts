@@ -25,6 +25,8 @@ const applicationServerWorkerClient = new WorkerClient(self as unknown as Worker
         // Setup Backbuffer
         backbufferCanvas = new OffscreenCanvas(containerState.width, containerState.height)
         backbufferCanvasCtx = backbufferCanvas.getContext('2d')!
+        // Launch container
+        
         applicationServerIoClient = new SocketioClient( `${serverUrl}/${nodeId}-webClient`, {
             'rxFrameDamage': async (payload: {
                 dirtyRect: ScreenState
